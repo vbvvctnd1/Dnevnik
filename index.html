@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мой дневник</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+body{font-family:-apple-system,Arial,sans-serif;background:#f4f7f7;margin:0;padding:10px;color:#0d2b2b}
+h1{font-size:20px;text-align:center;margin:6px 0}
+.tabs{display:flex;gap:6px;margin:10px 0}
+.tab{flex:1;padding:10px 4px;border:none;border-radius:12px;background:#e3ecec;font-size:13px;font-weight:600}
+.tab.active{background:#0d3b3b;color:#fff}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h3{margin:4px 0 10px;font-size:16px}
+label{font-size:13px;color:#556}
+input,select{width:100%;padding:9px;border:1px solid #ccc;border-radius:10px;font-size:16px;margin:4px 0 8px;box-sizing:border-box}
+button.act{width:100%;padding:13px;border:none;border-radius:12px;background:#0d3b3b;color:#fff;font-size:16px;font-weight:600}
+button.small{padding:8px 12px;border:none;border-radius:10px;background:#0d3b3b;color:#fff;font-size:14px}
+button.del{background:#c0392b}
+.row{display:flex;gap:6px}.row>*{flex:1}
+.item{background:#eef4f4;border-radius:10px;padding:8px;margin:6px 0;font-size:14px}
+.stat{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee;font-size:15px}
+.muted{color:#789;font-size:13px}
+.bar{height:10px;background:#e8eeee;border-radius:6px;margin:3px 0 8px;overflow:hidden}
+.bar>div{height:100%;border-radius:6px}
+.sup{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:15px}
+.sup input{width:auto;margin:0}
+</style>
+</head>
+<body>
+<h1>💪 Мой дневник</h1>
+<div class="tabs">
+<button class="tab active" onclick="showTab('w')">Зал</button>
+<button class="tab" onclick="showTab('n')">Еда</button>
+<button class="tab" onclick="showTab('a')">Аналитика</button>
+<button class="tab" onclick="showTab('d')">Данные</button>
+</div>
+
+<div id="tab-w">
+ <div class="card">
+  <label>Самочувствие до (1 плохо – 10 отлично)</label>
+  <input type="number" id="well" min="1" max="10" value="7">
+ </div>
+ <div class="card">
+  <h3>Упражнения</h3>
+  <select id="exSel"></select>
+  <div class="row">
+   <input type="number" id="wKg" placeholder="Вес, кг">
+   <input type="number" id="wReps" placeholder="Повторы">
+   <input type="number" id="wSets" placeholder="Подходы" value="3">
+  </div>
+  <button class="small" onclick="addEx()">+ Добавить</button>
+  <div id="exList"></div>
+ </div>
+ <div class="card">
+  <label>Тяжесть занятия (1 легко – 10 на пределе)</label>
+  <input type="number" id="rpe" min="1" max="10" value="7">
+  <button class="act" onclick="saveWorkout()">Сохранить тренировку</button>
+ </div>
+ <div class="card">
+  <h3>➕ Своё упражнение</h3>
+  <input id="exName" placeholder="Название упражнения">
+  <div class="row">
+   <input id="exP" placeholder="Целевая мышца">
+   <input id="exS" placeholder="Помощники через запятую">
+  </div>
+  <button class="small" onclick="addCustomEx()">Добавить упражнение</button>
+ </div>
+</div>
+
+<div id="tab-n" style="display:none">
+ <div class="card">
+  <h3>👤 Мои данные</h3>
+  <div class="row">
+   <div><label>Пол</label><select id="pfSex" onchange="saveProfile()"><option value="m">М</option><option value="f">Ж</option></select></div>
+   <div><label>Возраст</label><input type="number" id="pfAge" onchange="saveProfile()"></div>
+  </div>
+  <div class="row">
+   <div><label>Рост, см</label><input type="number" id="pfH" onchange="saveProfile()"></div>
+   <div><label>Вес, кг</label><input type="number" id="pfW" onchange="saveProfile()"></div>
+  </div>
+  <label>Цель</label>
+  <select id="pfGoal" onchange="saveProfile()">
+   <option value="maintain">Поддержание веса</option>
+   <option value="gain">Набор массы</option>
+   <option value="cut">Снижение веса</option>
+  </select>
+  <div id="profileCalc" class="item"></div>
+  <button class="small" onclick="applyGoals()">Применить эти цифры к целям дня</button>
+ </div>
+ <div class="card">
+  <h3>🎯 Цели на день</h3>
+  <div class="row">
+   <div><label>Ккал</label><input type="number" id="gKcal" onchange="saveGoals()"></div>
+   <div><label>Белок, г</label><input type="number" id="gP" onchange="saveGoals()"></div>
+   <div><label>Жир, г</label><input type="number" id="gF" onchange="saveGoals()"></div>
+   <div><label>Углев., г</label><input type="number" id="gC" onchange="saveGoals()"></div>
+  </div>
+ </div>
+ <div class="card">
+  <h3>🍽 Съедено сегодня</h3>
+  <select id="foodSel"></select>
+  <div class="row">
+   <input type="number" id="grams" placeholder="Граммы готовой еды">
+   <button class="small" onclick="addMeal()">+</button>
+  </div>
+  <div id="mealList"></div>
+  <div id="mealTotals"></div>
+ </div>
+ <div class="card">
+  <h3>💊 БАДы сегодня</h3>
+  <div id="supList"></div>
+  <div class="row">
+   <input id="newSup" placeholder="Добавить свой БАД">
+   <button class="small" onclick="addSup()">+</button>
+  </div>
+ </div>
+ <div class="card">
+  <h3>➕ Свой продукт (на 100 г)</h3>
+  <input id="fName" placeholder="Название">
+  <div class="row">
+   <input type="number" id="fK" placeholder="Ккал">
+   <input type="number" id="fP" placeholder="Белки">
+   <input type="number" id="fF" placeholder="Жиры">
+   <input type="number" id="fC" placeholder="Углев.">
+  </div>
+  <button class="small" onclick="addFood()">Добавить продукт</button>
+ </div>
+</div>
+
+<div id="tab-a" style="display:none">
+ <div class="card">
+  <div class="row">
+   <button class="small" onclick="setPeriod(7)">Неделя</button>
+   <button class="small" onclick="setPeriod(30)">Месяц</button>
+   <button class="small" onclick="setPeriod(3650)">Всё время</button>
+  </div>
+  <div id="stats"></div>
+  <p class="muted">Расчёты примерные: 3 сек под нагрузкой на повтор, отдых 2 мин на подход, расход ≈ тоннаж × 0.025 ккал (с поправкой на вес).</p>
+ </div>
+ <div class="card"><canvas id="chartMuscles"></canvas></div>
+ <div class="card"><canvas id="chartTonnage"></canvas></div>
+ <div class="card">
+  <h3>📈 Прогрессия рабочего веса</h3>
+  <select id="progSel" onchange="renderProg()"></select>
+  <div id="progBest" class="muted"></div>
+  <canvas id="chartProg"></canvas>
+ </div>
+</div>
+
+<div id="tab-d" style="display:none">
+ <div class="card">
+  <p class="muted">Данные хранятся только у тебя. Раз в неделю жми «Скачать копию».</p>
+  <button class="act" onclick="exportData()">Скачать копию (бэкап)</button>
+  <br><br>
+  <label>Восстановить из копии</label>
+  <input type="file" id="imp" onchange="importData(event)">
+  <br><br>
+  <button class="small del" onclick="if(confirm('Удалить все данные?')){localStorage.removeItem('myGymV2');location.reload()}">Удалить всё</button>
+ </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY='myGymV2';
+const BASE_EX={
+"Подтягивания":{p:"Спина",s:["Бицепс","Предплечья"]},
+"Тяга блока сверху":{p:"Спина",s:["Бицепс","Предплечья"]},
+"Тяга горизонтального блока":{p:"Спина",s:["Бицепс","Предплечья"]},
+"Тяга гантели одной рукой":{p:"Спина",s:["Бицепс","Предплечья"]},
+"Тяга штанги в наклоне":{p:"Спина",s:["Бицепс","Предплечья","Задняя дельта"]},
+"Становая тяга":{p:"Спина",s:["Ноги","Предплечья"]},
+"Жим лёжа":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
+"Жим гантелей лёжа":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
+"Жим в тренажёре на грудь":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
+"Отжимания на брусьях":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
+"Отжимания от пола":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
+"Приседания со штангой":{p:"Ноги",s:["Ягодицы","Кор"]},
+"Жим ногами":{p:"Ноги",s:["Ягодицы"]},
+"Румынская тяга":{p:"Ноги",s:["Спина"]},
+"Болгарские приседания":{p:"Ноги",s:["Ягодицы","Кор"]},
+"Ягодичный мост":{p:"Ягодицы",s:["Ноги","Кор"]},
+"Отведение ног (машина/кроссовер)":{p:"Ягодицы",s:[]},
+"Сведение ног (машина)":{p:"Ноги",s:[]},
+"Разгибание ног (тренажёр)":{p:"Ноги",s:[]},
+"Сгибание ног (тренажёр)":{p:"Ноги",s:[]},
+"Жим стоя/сидя (плечи)":{p:"Дельты",s:["Трицепс"]},
+"Махи гантелями в стороны":{p:"Дельты",s:[]},
+"Подъём на бицепс":{p:"Бицепс",s:["Предплечья"]},
+"Разгибания на трицепс":{p:"Трицепс",s:[]},
+"Пресс/скручивания":{p:"Кор",s:[]}
+};
+const FOODS={
+"Куриная грудка гриль/варёная":{k:165,p:31,f:4,c:0},
+"Говядина тушёная":{k:232,p:26,f:14,c:0},
+"Лосось":{k:208,p:20,f:13,c:0},
+"Минтай/треска":{k:82,p:18,f:1,c:0},
+"Скумбрия":{k:258,p:18,f:20,c:0},
+"Яйцо куриное":{k:155,p:13,f:11,c:1},
+"Творог 5%":{k:121,p:17,f:5,c:3},
+"Творог 0%":{k:72,p:17,f:0,c:1},
+"Протеин (порошок)":{k:400,p:75,f:7,c:7},
+"Гречка варёная":{k:132,p:5,f:1,c:25},
+"Рис варёный":{k:130,p:3,f:0,c:28},
+"Макароны варёные":{k:157,p:6,f:1,c:31},
+"Овсянка на воде":{k:88,p:3,f:2,c:15},
+"Картофель варёный":{k:82,p:2,f:0,c:17},
+"Хлеб чёрный":{k:214,p:7,f:1,c:41},
+"Хлеб белый":{k:265,p:9,f:3,c:49},
+"Банан":{k:96,p:2,f:1,c:21},
+"Яблоко":{k:52,p:0,f:0,c:14},
+"Огурец":{k:15,p:1,f:0,c:3},
+"Помидор":{k:20,p:1,f:0,c:4},
+"Салат овощной с маслом":{k:90,p:2,f:7,c:6},
+"Масло оливковое":{k:884,p:0,f:100,c:0},
+"Орехи микс":{k:620,p:20,f:55,c:16},
+"Сыр твёрдый":{k:356,p:26,f:27,c:0},
+"Суп куриный с лапшой":{k:50,p:3,f:2,c:6},
+"Борщ с мясом":{k:70,p:3,f:3,c:9},
+"Плов с курицей":{k:170,p:8,f:7,c:22},
+"Котлета домашняя":{k:240,p:17,f:18,c:2}
+};
+function today(){return new Date().toISOString().slice(0,10)}
+function defDB(){return{w:[],meals:{},sup:{},ex:{},supList:["Креатин 5 г","Омега-3","Витамин D","Магний"],foods:Object.assign({},FOODS),goals:{kcal:2600,p:160,f:85,c:300},profile:{sex:'m',age:25,height:180,weight:80,goal:'maintain'}}}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){const b=defDB();b.w=d.w||[];b.meals=d.meals||{};b.sup=d.sup||{};b.ex=d.ex||{};b.supList=d.supList||b.supList;b.foods=d.foods||b.foods;b.goals=Object.assign(b.goals,d.goals);b.profile=Object.assign(b.profile,d.profile);return b}}catch(e){}return defDB()}
+let DB=loadDB();
+function saveDB(){localStorage.setItem(KEY,JSON.stringify(DB))}
+function allEX(){return Object.assign({},BASE_EX,DB.ex)}
+let cur=[],period=7,ch1=null,ch2=null,ch3=null,lastSugg=null;
+
+function fillSelects(){
+ const A=allEX();
+ $('exSel').innerHTML='';for(const k in A)$('exSel').add(new Option(k,k));
+ $('progSel').innerHTML='';for(const k in A)$('progSel').add(new Option(k,k));
+ $('foodSel').innerHTML='';for(const k in DB.foods)$('foodSel').add(new Option(k,k));
+}
+function fillGoals(){$('gKcal').value=DB.goals.kcal;$('gP').value=DB.goals.p;$('gF').value=DB.goals.f;$('gC').value=DB.goals.c}
+function saveGoals(){DB.goals={kcal:+$('gKcal').value||0,p:+$('gP').value||0,f:+$('gF').value||0,c:+$('gC').value||0};saveDB();renderMeals()}
+function showTab(t){
+ ['w','n','a','d'].forEach(x=>$('tab-'+x).style.display=x===t?'':'none');
+ document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['w','n','a','d'][i]===t));
+ if(t==='a')renderAnalytics();
+ if(t==='n'){renderProfile();renderMeals();renderSup()}
+}
+/* --- профиль и нормы --- */
+function workoutsPerWeek(){const from=Date.now()-28*86400000;return DB.w.filter(w=>new Date(w.date)>=from).length/4}
+function saveProfile(){DB.profile={sex:$('pfSex').value,age:+$('pfAge').value||25,height:+$('pfH').value||180,weight:+$('pfW').value||80,goal:$('pfGoal').value};saveDB();renderProfile()}
+function renderProfile(){
+ const p=DB.profile;
+ $('pfSex').value=p.sex;$('pfAge').value=p.age;$('pfH').value=p.height;$('pfW').value=p.weight;$('pfGoal').value=p.goal;
+ const bmr=p.sex==='m'?10*p.weight+6.25*p.height-5*p.age+5:10*p.weight+6.25*p.height-5*p.age-161;
+ const wpw=workoutsPerWeek();
+ const act=wpw<=0?1.2:wpw<2?1.375:wpw<4?1.45:wpw<6?1.55:1.725;
+ const tdee=bmr*act;
+ const kcal=p.goal==='gain'?tdee*1.1:p.goal==='cut'?tdee*0.85:tdee;
+ const prot=Math.round(p.weight*(p.goal==='cut'?2.2:2));
+ const fat=Math.round(p.weight*1);
+ const carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4));
+ const gn={maintain:'поддержание',gain:'набор',cut:'снижение'}[p.goal];
+ lastSugg={kcal:Math.round(kcal),p:prot,f:fat,c:carb};
+ $('profileCalc').innerHTML=`Покой (обмен): <b>${Math.round(bmr)}</b> ккал<br>С активностью (${wpw.toFixed(1)} трен/нед): <b>${Math.round(tdee)}</b> ккал<br>Цель «${gn}»: ≈ <b>${Math.round(kcal)}</b> ккал · Б ${prot} / Ж ${fat} / У ${carb}`;
+}
+function applyGoals(){if(!lastSugg)return;DB.goals={kcal:lastSugg.kcal,p:lastSugg.p,f:lastSugg.f,c:lastSugg.c};saveDB();fillGoals();renderMeals();alert('Цели на день обновлены ✅')}
+/* --- зал --- */
+function addEx(){const w=+$('wKg').value,r=+$('wReps').value,s=+$('wSets').value||1;if(!w||!r){alert('Укажи вес и повторы');return}cur.push({n:$('exSel').value,w,r,s});renderExList()}
+function renderExList(){$('exList').innerHTML=cur.map((e,i)=>`<div class="item">${e.n}: ${e.s}×${e.w} кг×${e.r} = <b>${e.s*e.w*e.r} кг</b> <button class="small del" onclick="cur.splice(${i},1);renderExList()">✕</button></div>`).join('')}
+function saveWorkout(){if(!cur.length){alert('Добавь упражнения');return}DB.w.push({date:today(),well:+$('well').value,rpe:+$('rpe').value,ex:cur});cur=[];renderExList();saveDB();alert('Тренировка сохранена ✅')}
+function addCustomEx(){
+ const n=$('exName').value.trim(),p=$('exP').value.trim();
+ if(!n||!p){alert('Нужны название и целевая мышца');return}
+ const s=$('exS').value.split(',').map(x=>x.trim()).filter(x=>x);
+ DB.ex[n]={p,s};saveDB();fillSelects();$('exName').value='';$('exP').value='';$('exS').value='';alert('Упражнение добавлено ✅');
+}
+function tonnage(e){return e.s*e.w*e.r}
+function workoutMetrics(w){
+ let tons=0,sets=0,reps=0;
+ w.ex.forEach(e=>{tons+=tonnage(e);sets+=e.s;reps+=e.s*e.r});
+ return{tons,sets,reps,tut:reps*3,est:reps*3+sets*120,kcal:Math.round(tons*0.025*(DB.profile.weight/75))};
+}
+function muscleTonnage(w){const m={};const A=allEX();w.ex.forEach(e=>{const d=A[e.n]||{p:"Другое",s:[]},t=tonnage(e),sh=d.s.length?0.3:0;m[d.p]=(m[d.p]||0)+t*(1-sh);d.s.forEach(sec=>{m[sec]=(m[sec]||0)+t*0.3/d.s.length})});return m}
+/* --- еда --- */
+function addMeal(){const n=$('foodSel').value,g=+$('grams').value;if(!g){alert('Сколько граммов?');return}(DB.meals[today()]=DB.meals[today()]||[]).push({n,g});$('grams').value='';saveDB();renderMeals()}
+function delMeal(i){DB.meals[today()].splice(i,1);saveDB();renderMeals()}
+function renderMeals(){
+ const list=DB.meals[today()]||[];
+ $('mealList').innerHTML=list.map((m,i)=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};return `<div class="item">${m.n}, ${m.g} г — ${Math.round(f.k*m.g/100)} ккал (Б${Math.round(f.p*m.g/100)} Ж${Math.round(f.f*m.g/100)} У${Math.round(f.c*m.g/100)}) <button class="small del" onclick="delMeal(${i})">✕</button></div>`}).join('');
+ let t={k:0,p:0,f:0,c:0};
+ list.forEach(m=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};t.k+=f.k*m.g/100;t.p+=f.p*m.g/100;t.f+=f.f*m.g/100;t.c+=f.c*m.g/100});
+ const g=DB.goals;
+ const bar=(n,v,goal,col)=>{const pct=goal?Math.min(100,v/goal*100):0,left=goal-v;return `<label>${n}: ${Math.round(v)} / ${goal} · ${left>0?'осталось '+Math.round(left):'цель закрыта ✅'}</label><div class="bar"><div style="width:${pct}%;background:${col}"></div></div>`};
+ $('mealTotals').innerHTML=bar('Ккал',t.k,g.kcal,'#0d3b3b')+bar('Белок',t.p,g.p,'#27ae60')+bar('Жиры',t.f,g.f,'#e67e22')+bar('Углеводы',t.c,g.c,'#2980b9');
+}
+/* --- бады --- */
+function renderSup(){const t=today();DB.sup[t]=DB.sup[t]||[];$('supList').innerHTML=DB.supList.map(n=>`<label class="sup"><input type="checkbox" ${DB.sup[t].includes(n)?'checked':''} onchange="toggleSup('${n}',this.checked)"> ${n}</label>`).join('')}
+function toggleSup(n,on){const t=today();DB.sup[t]=DB.sup[t]||[];if(on){if(!DB.sup[t].includes(n))DB.sup[t].push(n)}else DB.sup[t]=DB.sup[t].filter(x=>x!==n);saveDB()}
+function addSup(){const n=$('newSup').value.trim();if(!n)return;DB.supList.push(n);$('newSup').value='';saveDB();renderSup()}
+function addFood(){const n=$('fName').value.trim();if(!n){alert('Название?');return}DB.foods[n]={k:+$('fK').value||0,p:+$('fP').value||0,f:+$('fF').value||0,c:+$('fC').value||0};saveDB();fillSelects();$('fName').value='';alert('Продукт добавлен ✅')}
+/* --- аналитика --- */
+function setPeriod(p){period=p;renderAnalytics()}
+function renderAnalytics(){
+ const from=Date.now()-period*86400000;
+ const ws=DB.w.filter(w=>new Date(w.date)>=from);
+ let tot=0,rpeSum=0,wellSum=0,tut=0,est=0,kcalB=0;const muscles={};
+ ws.forEach(w=>{const m=workoutMetrics(w);tot+=m.tons;tut+=m.tut;est+=m.est;kcalB+=m.kcal;rpeSum+=w.rpe;wellSum+=w.well;const mt=muscleTonnage(w);for(const k in mt)muscles[k]=(muscles[k]||0)+mt[k]});
+ const loadIdx=Math.round(ws.reduce((a,w)=>a+(workoutMetrics(w).tons/100)*(w.rpe/10),0));
+ $('stats').innerHTML=`<div class="stat"><span>Тренировок</span><b>${ws.length}</b></div>
+ <div class="stat"><span>Тренировок в неделю (среднее)</span><b>${workoutsPerWeek().toFixed(1)}</b></div>
+ <div class="stat"><span>Общий тоннаж</span><b>${Math.round(tot).toLocaleString('ru')} кг</b></div>
+ <div class="stat"><span>Время под нагрузкой</span><b>${Math.round(tut/60)} мин</b></div>
+ <div class="stat"><span>Примерное время занятий</span><b>${Math.round(est/60)} мин</b></div>
+ <div class="stat"><span>Примерный расход</span><b>${kcalB} ккал</b></div>
+ <div class="stat"><span>Индекс нагрузки (ЦНС)</span><b>${loadIdx}</b></div>
+ <div class="stat"><span>Средняя тяжесть</span><b>${ws.length?(rpeSum/ws.length).toFixed(1):'—'}</b></div>
+ <div class="stat"><span>Среднее самочувствие</span><b>${ws.length?(wellSum/ws.length).toFixed(1):'—'}</b></div>`;
+ const labels=Object.keys(muscles).sort((a,b)=>muscles[b]-muscles[a]);
+ if(ch1)ch1.destroy();if(ch2)ch2.destroy();
+ ch1=new Chart($('chartMuscles'),{type:'bar',data:{labels,datasets:[{label:'Тоннаж по группам, кг',data:labels.map(l=>Math.round(muscles[l]))}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
+ const sorted=ws.slice().sort((a,b)=>a.date<b.date?-1:1);
+ ch2=new Chart($('chartTonnage'),{type:'line',data:{labels:sorted.map(w=>w.date.slice(5)),datasets:[{label:'Тоннаж за тренировку, кг',data:sorted.map(w=>workoutMetrics(w).tons)}]}});
+ renderProg();
+}
+function renderProg(){
+ const n=$('progSel').value;
+ const pts=DB.w.filter(w=>w.ex.some(e=>e.n===n)).map(w=>({d:w.date,mx:Math.max(...w.ex.filter(e=>e.n===n).map(e=>e.w))})).sort((a,b)=>a.d<b.d?-1:1);
+ $('progBest').innerHTML=pts.length?`Лучший рабочий вес: <b>${Math.max(...pts.map(p=>p.mx))} кг</b>`:'Пока нет данных — сохрани пару тренировок с этим упражнением';
+ if(ch3)ch3.destroy();
+ ch3=new Chart($('chartProg'),{type:'line',data:{labels:pts.map(p=>p.d.slice(5)),datasets:[{label:'Макс. вес, кг',data:pts.map(p=>p.mx)}]}});
+}
+/* --- данные --- */
+function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([localStorage.getItem(KEY)||'{}'],{type:'application/json'}));a.download='my-diary-backup.json';a.click()}
+function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{JSON.parse(r.result);localStorage.setItem(KEY,r.result);alert('Готово ✅');location.reload()}catch(e){alert('Не тот файл')}};r.readAsText(f)}
+fillSelects();fillGoals();renderProfile();
+</script>
+</body>
+</html>
