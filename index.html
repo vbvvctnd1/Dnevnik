@@ -100,9 +100,10 @@ button.del{background:#c0392b}
  </div>
  <div class="card">
   <h3>🍽 Съедено сегодня</h3>
-  <select id="foodSel"></select>
+  <select id="foodSel" onchange="unitChanged()"></select>
   <div class="row">
    <input type="number" id="grams" placeholder="Граммы готовой еды">
+   <select id="unitSel" style="display:none" onchange="unitChanged()"><option value="pcs">штуки</option><option value="g">граммы</option></select>
    <button class="small" onclick="addMeal()">+</button>
   </div>
   <div id="mealList"></div>
@@ -125,6 +126,7 @@ button.del{background:#c0392b}
    <input type="number" id="fF" placeholder="Жиры">
    <input type="number" id="fC" placeholder="Углев.">
   </div>
+  <input id="fU" placeholder="Вес 1 штуки в г (необязательно, напр. яйцо=55)">
   <button class="small" onclick="addFood()">Добавить продукт</button>
  </div>
 </div>
@@ -197,33 +199,33 @@ const FOODS={
 "Лосось":{k:208,p:20,f:13,c:0},
 "Минтай/треска":{k:82,p:18,f:1,c:0},
 "Скумбрия":{k:258,p:18,f:20,c:0},
-"Яйцо куриное":{k:155,p:13,f:11,c:1},
+"Яйцо куриное":{k:155,p:13,f:11,c:1,u:55},
 "Творог 5%":{k:121,p:17,f:5,c:3},
 "Творог 0%":{k:72,p:17,f:0,c:1},
-"Протеин (порошок)":{k:400,p:75,f:7,c:7},
+"Протеин (1 скуп)":{k:400,p:75,f:7,c:7,u:30},
 "Гречка варёная":{k:132,p:5,f:1,c:25},
 "Рис варёный":{k:130,p:3,f:0,c:28},
 "Макароны варёные":{k:157,p:6,f:1,c:31},
 "Овсянка на воде":{k:88,p:3,f:2,c:15},
-"Картофель варёный":{k:82,p:2,f:0,c:17},
-"Хлеб чёрный":{k:214,p:7,f:1,c:41},
-"Хлеб белый":{k:265,p:9,f:3,c:49},
-"Банан":{k:96,p:2,f:1,c:21},
-"Яблоко":{k:52,p:0,f:0,c:14},
-"Огурец":{k:15,p:1,f:0,c:3},
-"Помидор":{k:20,p:1,f:0,c:4},
+"Картофель варёный":{k:82,p:2,f:0,c:17,u:90},
+"Хлеб чёрный (1 ломтик)":{k:214,p:7,f:1,c:41,u:30},
+"Хлеб белый (1 ломтик)":{k:265,p:9,f:3,c:49,u:25},
+"Банан":{k:96,p:2,f:1,c:21,u:120},
+"Яблоко":{k:52,p:0,f:0,c:14,u:150},
+"Огурец":{k:15,p:1,f:0,c:3,u:100},
+"Помидор":{k:20,p:1,f:0,c:4,u:90},
 "Салат овощной с маслом":{k:90,p:2,f:7,c:6},
 "Масло оливковое":{k:884,p:0,f:100,c:0},
 "Орехи микс":{k:620,p:20,f:55,c:16},
-"Сыр твёрдый":{k:356,p:26,f:27,c:0},
+"Сыр твёрдый (ломтик)":{k:356,p:26,f:27,c:0,u:25},
 "Суп куриный с лапшой":{k:50,p:3,f:2,c:6},
 "Борщ с мясом":{k:70,p:3,f:3,c:9},
 "Плов с курицей":{k:170,p:8,f:7,c:22},
-"Котлета домашняя":{k:240,p:17,f:18,c:2}
+"Котлета домашняя":{k:240,p:17,f:18,c:2,u:100}
 };
 function today(){return new Date().toISOString().slice(0,10)}
 function defDB(){return{w:[],meals:{},sup:{},ex:{},supList:["Креатин 5 г","Омега-3","Витамин D","Магний"],foods:Object.assign({},FOODS),goals:{kcal:2600,p:160,f:85,c:300},profile:{sex:'m',age:25,height:180,weight:80,goal:'maintain'}}}
-function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){const b=defDB();b.w=d.w||[];b.meals=d.meals||{};b.sup=d.sup||{};b.ex=d.ex||{};b.supList=d.supList||b.supList;b.foods=d.foods||b.foods;b.goals=Object.assign(b.goals,d.goals);b.profile=Object.assign(b.profile,d.profile);return b}}catch(e){}return defDB()}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){const b=defDB();b.w=d.w||[];b.meals=d.meals||{};b.sup=d.sup||{};b.ex=d.ex||{};b.supList=d.supList||b.supList;b.foods=Object.assign({},d.foods,FOODS);b.goals=Object.assign(b.goals,d.goals);b.profile=Object.assign(b.profile,d.profile);return b}}catch(e){}return defDB()}
 let DB=loadDB();
 function saveDB(){localStorage.setItem(KEY,JSON.stringify(DB))}
 function allEX(){return Object.assign({},BASE_EX,DB.ex)}
@@ -234,6 +236,7 @@ function fillSelects(){
  $('exSel').innerHTML='';for(const k in A)$('exSel').add(new Option(k,k));
  $('progSel').innerHTML='';for(const k in A)$('progSel').add(new Option(k,k));
  $('foodSel').innerHTML='';for(const k in DB.foods)$('foodSel').add(new Option(k,k));
+ unitChanged();
 }
 function fillGoals(){$('gKcal').value=DB.goals.kcal;$('gP').value=DB.goals.p;$('gF').value=DB.goals.f;$('gC').value=DB.goals.c}
 function saveGoals(){DB.goals={kcal:+$('gKcal').value||0,p:+$('gP').value||0,f:+$('gF').value||0,c:+$('gC').value||0};saveDB();renderMeals()}
@@ -241,7 +244,7 @@ function showTab(t){
  ['w','n','a','d'].forEach(x=>$('tab-'+x).style.display=x===t?'':'none');
  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['w','n','a','d'][i]===t));
  if(t==='a')renderAnalytics();
- if(t==='n'){renderProfile();renderMeals();renderSup()}
+ if(t==='n'){renderProfile();renderMeals();renderSup();unitChanged()}
 }
 /* --- профиль и нормы --- */
 function workoutsPerWeek(){const from=Date.now()-28*86400000;return DB.w.filter(w=>new Date(w.date)>=from).length/4}
@@ -280,11 +283,23 @@ function workoutMetrics(w){
 }
 function muscleTonnage(w){const m={};const A=allEX();w.ex.forEach(e=>{const d=A[e.n]||{p:"Другое",s:[]},t=tonnage(e),sh=d.s.length?0.3:0;m[d.p]=(m[d.p]||0)+t*(1-sh);d.s.forEach(sec=>{m[sec]=(m[sec]||0)+t*0.3/d.s.length})});return m}
 /* --- еда --- */
-function addMeal(){const n=$('foodSel').value,g=+$('grams').value;if(!g){alert('Сколько граммов?');return}(DB.meals[today()]=DB.meals[today()]||[]).push({n,g});$('grams').value='';saveDB();renderMeals()}
+function unitChanged(){
+ const f=DB.foods[$('foodSel').value];
+ if(f&&f.u){$('unitSel').style.display='';$('grams').placeholder=$('unitSel').value==='pcs'?'Сколько штук':'Граммы'}
+ else{$('unitSel').style.display='none';$('grams').placeholder='Граммы готовой еды'}
+}
+function addMeal(){
+ const n=$('foodSel').value,f=DB.foods[n]||{},val=+$('grams').value;
+ if(!val){alert('Сколько?');return}
+ let g=val,pcs=null;
+ if($('unitSel').style.display!=='none'&&$('unitSel').value==='pcs'){pcs=val;g=Math.round(val*(f.u||100))}
+ (DB.meals[today()]=DB.meals[today()]||[]).push({n,g,pcs});
+ $('grams').value='';saveDB();renderMeals();
+}
 function delMeal(i){DB.meals[today()].splice(i,1);saveDB();renderMeals()}
 function renderMeals(){
  const list=DB.meals[today()]||[];
- $('mealList').innerHTML=list.map((m,i)=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};return `<div class="item">${m.n}, ${m.g} г — ${Math.round(f.k*m.g/100)} ккал (Б${Math.round(f.p*m.g/100)} Ж${Math.round(f.f*m.g/100)} У${Math.round(f.c*m.g/100)}) <button class="small del" onclick="delMeal(${i})">✕</button></div>`}).join('');
+ $('mealList').innerHTML=list.map((m,i)=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};const q=m.pcs?m.pcs+' шт ('+m.g+' г)':m.g+' г';return `<div class="item">${m.n}, ${q} — ${Math.round(f.k*m.g/100)} ккал (Б${Math.round(f.p*m.g/100)} Ж${Math.round(f.f*m.g/100)} У${Math.round(f.c*m.g/100)}) <button class="small del" onclick="delMeal(${i})">✕</button></div>`}).join('');
  let t={k:0,p:0,f:0,c:0};
  list.forEach(m=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};t.k+=f.k*m.g/100;t.p+=f.p*m.g/100;t.f+=f.f*m.g/100;t.c+=f.c*m.g/100});
  const g=DB.goals;
@@ -295,7 +310,12 @@ function renderMeals(){
 function renderSup(){const t=today();DB.sup[t]=DB.sup[t]||[];$('supList').innerHTML=DB.supList.map(n=>`<label class="sup"><input type="checkbox" ${DB.sup[t].includes(n)?'checked':''} onchange="toggleSup('${n}',this.checked)"> ${n}</label>`).join('')}
 function toggleSup(n,on){const t=today();DB.sup[t]=DB.sup[t]||[];if(on){if(!DB.sup[t].includes(n))DB.sup[t].push(n)}else DB.sup[t]=DB.sup[t].filter(x=>x!==n);saveDB()}
 function addSup(){const n=$('newSup').value.trim();if(!n)return;DB.supList.push(n);$('newSup').value='';saveDB();renderSup()}
-function addFood(){const n=$('fName').value.trim();if(!n){alert('Название?');return}DB.foods[n]={k:+$('fK').value||0,p:+$('fP').value||0,f:+$('fF').value||0,c:+$('fC').value||0};saveDB();fillSelects();$('fName').value='';alert('Продукт добавлен ✅')}
+function addFood(){
+ const n=$('fName').value.trim();if(!n){alert('Название?');return}
+ const o={k:+$('fK').value||0,p:+$('fP').value||0,f:+$('fF').value||0,c:+$('fC').value||0};
+ const u=+$('fU').value;if(u>0)o.u=u;
+ DB.foods[n]=o;saveDB();fillSelects();$('fName').value='';$('fU').value='';alert('Продукт добавлен ✅');
+}
 /* --- аналитика --- */
 function setPeriod(p){period=p;renderAnalytics()}
 function renderAnalytics(){
@@ -334,3 +354,4 @@ fillSelects();fillGoals();renderProfile();
 </script>
 </body>
 </html>
+
