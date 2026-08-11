@@ -143,6 +143,31 @@
     -webkit-appearance: none;
   }
 
+  /* Styling Range Input (RPE Slider) */
+  input[type="range"] {
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(118, 118, 128, 0.2);
+    border-radius: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: var(--ios-tint);
+    margin-top: -8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
   select {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
@@ -301,7 +326,6 @@
     margin-top: 6px;
   }
 
-  /* Progress Bars */
   .bar-container {
     margin-bottom: 12px;
   }
@@ -325,7 +349,6 @@
     transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* Supplements Checkbox Row */
   .sup {
     display: flex;
     align-items: center;
@@ -370,16 +393,23 @@
 <!-- ВКЛАДКА: ЗАЛ -->
 <div id="tab-w">
  <div class="card">
-  <label>Самочувствие до (1 – плохо, 10 – отлично)</label>
-  <input type="number" id="well" min="1" max="10" value="7" inputmode="numeric" onfocus="this.select()" oninput="saveDraft()">
+  <div class="row">
+   <div>
+    <label>Самочувствие (1–10)</label>
+    <input type="number" id="well" min="1" max="10" value="7" inputmode="numeric" onfocus="this.select()" oninput="saveDraft()">
+   </div>
+   <div>
+    <label>Текущий вес тела, кг</label>
+    <input type="number" id="curW" min="20" max="300" step="0.1" inputmode="decimal" onfocus="this.select()" oninput="onCurWInput()">
+   </div>
+  </div>
  </div>
 
  <div class="card">
   <h3>Упражнения</h3>
   <label>Выберите упражнение</label>
-  <select id="exSel" onchange="saveDraft()"></select>
+  <select id="exSel" onchange="onExChange()"></select>
   
-  <!-- Динамический список подходов -->
   <div id="setRowsContainer" style="margin-top: 10px;"></div>
   
   <div class="row" style="margin-top: 10px;">
@@ -391,16 +421,21 @@
  </div>
 
  <div class="card">
-  <label>Тяжесть занятия (1 – легко, 10 – на пределе)</label>
-  <input type="number" id="rpe" min="1" max="10" value="7" inputmode="numeric" onfocus="this.select()" oninput="saveDraft()">
-  <button id="saveBtn" class="act" onclick="saveWorkout()" disabled>Сохранить тренировку</button>
+  <label for="rpe">Субъективная тяжесть (RPE): <span id="rpeVal" style="font-weight:600; color:var(--ios-tint);">7 — Умеренно (3 повт. в запасе)</span></label>
+  <input type="range" id="rpe" min="1" max="10" step="0.5" value="7" oninput="updateRPEUI(); saveDraft();">
+  
+  <div id="cnsLiveEstimate" style="font-size: 13px; font-weight: 500; color: var(--ios-subtext); margin-top: 6px;">
+    Расчётная нагрузка на ЦНС: 0.0 (Низкая)
+  </div>
+
+  <button id="saveBtn" class="act" style="margin-top: 14px;" onclick="saveWorkout()" disabled>Сохранить тренировку</button>
  </div>
 
  <div class="card">
   <h3>➕ Своё упражнение</h3>
   <input id="exName" placeholder="Название упражнения">
   <div class="row">
-   <input id="exP" placeholder="Целевая мышца">
+   <input id="exP" placeholder="Главная мышца (целевая)">
    <input id="exS" placeholder="Вторичные (через запятую)">
   </div>
   <button class="small" onclick="addCustomEx()">Добавить упражнение</button>
@@ -498,10 +533,20 @@
    <button id="btnPeriod3650" class="small" onclick="setPeriod(3650)">Всё время</button>
   </div>
   <div id="stats" style="margin-top:10px;"></div>
-  <p class="muted">Расчёты примерные: 3 сек под нагрузкой на повтор, отдых 2 мин на подход, расход ≈ тоннаж × 0.025 ккал (с поправкой на вес).</p>
+  <p class="muted">Расчёты точные: объём распределяется по матрице мышечных коэффициентов. Для калистеники учитывается фактический вес тела на момент тренировки + доп. вес. Нагрузка на ЦНС высчитывается автоматически.</p>
  </div>
- <div class="card"><canvas id="chartMuscles"></canvas></div>
- <div class="card"><canvas id="chartTonnage"></canvas></div>
+ <div class="card">
+  <h3>📊 Объём по мышечным группам (кг)</h3>
+  <canvas id="chartMuscles"></canvas>
+ </div>
+ <div class="card">
+  <h3>🏋️ Общий тоннаж за тренировку</h3>
+  <canvas id="chartTonnage"></canvas>
+ </div>
+ <div class="card">
+  <h3>🧠 Расчётная нагрузка на ЦНС (Баллы)</h3>
+  <canvas id="chartCNS"></canvas>
+ </div>
  <div class="card">
   <h3>📈 Прогрессия рабочего веса</h3>
   <select id="progSel" onchange="renderProg()"></select>
@@ -528,6 +573,15 @@ const $ = id => document.getElementById(id);
 const KEY = 'myGymV2';
 const DRAFT_KEY = 'myGymV2_draft';
 
+// Ключевые слова для упражнений со своим весом
+const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'приседания со своим весом'];
+
+function isBodyweightEx(name) {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  return BW_KEYWORDS.some(kw => lower.includes(kw));
+}
+
 function escapeHTML(str) {
   if (typeof str !== 'string') return '';
   return str.replace(/[&<>"']/g, m => ({
@@ -539,70 +593,76 @@ function destroyChart(chartInstance, canvasId) {
   if (chartInstance && typeof chartInstance.destroy === 'function') {
     chartInstance.destroy();
   }
-  const existing = Chart.getChart($(canvasId));
-  if (existing) {
-    existing.destroy();
+  const el = $(canvasId);
+  if (el) {
+    const existing = Chart.getChart(el);
+    if (existing) {
+      existing.destroy();
+    }
   }
   return null;
 }
 
+/* --- БАЗА УПРАЖНЕНИЙ --- */
 const BASE_EX = {
-"Подтягивания":{p:"Спина",s:["Бицепс","Предплечья"]},
-"Тяга блока сверху":{p:"Спина",s:["Бицепс","Предплечья"]},
-"Тяга горизонтального блока":{p:"Спина",s:["Бицепс","Предплечья"]},
-"Тяга гантели одной рукой":{p:"Спина",s:["Бицепс","Предплечья"]},
-"Тяга штанги в наклоне":{p:"Спина",s:["Бицепс","Предплечья","Задняя дельта"]},
-"Становая тяга":{p:"Спина",s:["Ноги","Предплечья"]},
-"Жим лёжа":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
-"Жим гантелей лёжа":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
-"Жим в тренажёре на грудь":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
-"Отжимания на брусьях":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
-"Отжимания от пола":{p:"Грудь",s:["Трицепс","Передняя дельта"]},
-"Приседания со штангой":{p:"Ноги",s:["Ягодицы","Кор"]},
-"Жим ногами":{p:"Ноги",s:["Ягодицы"]},
-"Румынская тяга":{p:"Ноги",s:["Спина"]},
-"Болгарские приседания":{p:"Ноги",s:["Ягодицы","Кор"]},
-"Ягодичный мост":{p:"Ягодицы",s:["Ноги","Кор"]},
-"Отведение ног (машина/кроссовер)":{p:"Ягодицы",s:[]},
-"Сведение ног (машина)":{p:"Ноги",s:[]},
-"Разгибание ног (тренажёр)":{p:"Ноги",s:[]},
-"Сгибание ног (тренажёр)":{p:"Ноги",s:[]},
-"Жим стоя/сидя (плечи)":{p:"Дельты",s:["Трицепс"]},
-"Махи гантелями в стороны":{p:"Дельты",s:[]},
-"Подъём на бицепс":{p:"Бицепс",s:["Предплечья"]},
-"Разгибания на трицепс":{p:"Трицепс",s:[]},
-"Пресс/скручивания":{p:"Кор",s:[]}
+  "Подтягивания": { muscles: { "Широчайшие": 0.60, "Бицепс": 0.30, "Задняя дельта": 0.10 }, cns: 0.7 },
+  "Тяга блока сверху": { muscles: { "Широчайшие": 0.60, "Бицепс": 0.30, "Задняя дельта": 0.10 }, cns: 0.5 },
+  "Тяга горизонтального блока": { muscles: { "Широчайшие": 0.50, "Трапеции и верх спины": 0.25, "Бицепс": 0.25 }, cns: 0.5 },
+  "Тяга гантели одной рукой": { muscles: { "Широчайшие": 0.60, "Бицепс": 0.25, "Задняя дельта": 0.15 }, cns: 0.5 },
+  "Тяга штанги в наклоне": { muscles: { "Широчайшие": 0.50, "Поясница и кор": 0.20, "Бицепс": 0.20, "Задняя дельта": 0.10 }, cns: 0.8 },
+  "Становая тяга": { muscles: { "Бицепс бедра": 0.40, "Ягодицы": 0.30, "Поясница и кор": 0.20, "Трапеции и верх спины": 0.10 }, cns: 1.0 },
+  "Жим лёжа": { muscles: { "Грудные": 0.50, "Трицепс": 0.35, "Передняя дельта": 0.15 }, cns: 0.7 },
+  "Жим гантелей лёжа": { muscles: { "Грудные": 0.55, "Трицепс": 0.30, "Передняя дельта": 0.15 }, cns: 0.6 },
+  "Жим в тренажёре на грудь": { muscles: { "Грудные": 0.60, "Трицепс": 0.25, "Передняя дельта": 0.15 }, cns: 0.4 },
+  "Отжимания на брусьях": { muscles: { "Грудные": 0.50, "Трицепс": 0.35, "Передняя дельта": 0.15 }, cns: 0.6 },
+  "Отжимания от пола": { muscles: { "Грудные": 0.50, "Трицепс": 0.35, "Передняя дельта": 0.15 }, cns: 0.4 },
+  "Приседания со штангой": { muscles: { "Квадрицепсы": 0.50, "Ягодицы": 0.30, "Бицепс бедра": 0.10, "Поясница и кор": 0.10 }, cns: 0.9 },
+  "Приседания со своим весом": { muscles: { "Квадрицепсы": 0.50, "Ягодицы": 0.30, "Бицепс бедра": 0.10, "Поясница и кор": 0.10 }, cns: 0.3 },
+  "Жим ногами": { muscles: { "Квадрицепсы": 0.60, "Ягодицы": 0.30, "Бицепс бедра": 0.10 }, cns: 0.6 },
+  "Румынская тяга": { muscles: { "Бицепс бедра": 0.50, "Ягодицы": 0.35, "Поясница и кор": 0.15 }, cns: 0.7 },
+  "Болгарские приседания": { muscles: { "Квадрицепсы": 0.45, "Ягодицы": 0.40, "Бицепс бедра": 0.15 }, cns: 0.6 },
+  "Выпады": { muscles: { "Квадрицепсы": 0.45, "Ягодицы": 0.40, "Бицепс бедра": 0.15 }, cns: 0.5 },
+  "Ягодичный мост": { muscles: { "Ягодицы": 0.65, "Бицепс бедра": 0.25, "Поясница и кор": 0.10 }, cns: 0.6 },
+  "Отведение ног (машина/кроссовер)": { muscles: { "Ягодицы": 0.90, "Поясница и кор": 0.10 }, cns: 0.2 },
+  "Сведение ног (машина)": { muscles: { "Приводящие мышцы": 0.90, "Квадрицепсы": 0.10 }, cns: 0.2 },
+  "Разгибание ног (тренажёр)": { muscles: { "Квадрицепсы": 1.0 }, cns: 0.2 },
+  "Сгибание ног (тренажёр)": { muscles: { "Бицепс бедра": 1.0 }, cns: 0.2 },
+  "Жим стоя/сидя (плечи)": { muscles: { "Передняя дельта": 0.35, "Средняя дельта": 0.20, "Трицепс": 0.30, "Грудные": 0.15 }, cns: 0.7 },
+  "Махи гантелями в стороны": { muscles: { "Средняя дельта": 0.90, "Трапеции и верх спины": 0.10 }, cns: 0.2 },
+  "Подъём на бицепс": { muscles: { "Бицепс": 0.85, "Предплечья": 0.15 }, cns: 0.3 },
+  "Разгибания на трицепс": { muscles: { "Трицепс": 1.0 }, cns: 0.2 },
+  "Пресс/скручивания": { muscles: { "Поясница и кор": 1.0 }, cns: 0.2 }
 };
 
 const FOODS = {
-"Куриная грудка гриль/варёная":{k:165,p:31,f:4,c:0},
-"Говядина тушёная":{k:232,p:26,f:14,c:0},
-"Лосось":{k:208,p:20,f:13,c:0},
-"Минтай/треска":{k:82,p:18,f:1,c:0},
-"Скумбрия":{k:258,p:18,f:20,c:0},
-"Яйцо куриное":{k:155,p:13,f:11,c:1,u:55},
-"Творог 5%":{k:121,p:17,f:5,c:3},
-"Творог 0%":{k:72,p:17,f:0,c:1},
-"Протеин (1 скуп)":{k:400,p:75,f:7,c:7,u:30},
-"Гречка варёная":{k:132,p:5,f:1,c:25},
-"Рис варёный":{k:130,p:3,f:0,c:28},
-"Макароны варёные":{k:157,p:6,f:1,c:31},
-"Овсянка на воде":{k:88,p:3,f:2,c:15},
-"Картофель варёный":{k:82,p:2,f:0,c:17,u:90},
-"Хлеб чёрный (1 ломтик)":{k:214,p:7,f:1,c:41,u:30},
-"Хлеб белый (1 ломтик)":{k:265,p:9,f:3,c:49,u:25},
-"Банан":{k:96,p:2,f:1,c:21,u:120},
-"Яблоко":{k:52,p:0,f:0,c:14,u:150},
-"Огурец":{k:15,p:1,f:0,c:3,u:100},
-"Помидор":{k:20,p:1,f:0,c:4,u:90},
-"Салат овощной с маслом":{k:90,p:2,f:7,c:6},
-"Масло оливковое":{k:884,p:0,f:100,c:0},
-"Орехи микс":{k:620,p:20,f:55,c:16},
-"Сыр твёрдый (ломтик)":{k:356,p:26,f:27,c:0,u:25},
-"Суп куриный с лапшой":{k:50,p:3,f:2,c:6},
-"Борщ с мясом":{k:70,p:3,f:3,c:9},
-"Плов с курицей":{k:170,p:8,f:7,c:22},
-"Котлета домашняя":{k:240,p:17,f:18,c:2,u:100}
+  "Куриная грудка гриль/варёная":{k:165,p:31,f:4,c:0},
+  "Говядина тушёная":{k:232,p:26,f:14,c:0},
+  "Лосось":{k:208,p:20,f:13,c:0},
+  "Минтай/треска":{k:82,p:18,f:1,c:0},
+  "Скумбрия":{k:258,p:18,f:20,c:0},
+  "Яйцо куриное":{k:155,p:13,f:11,c:1,u:55},
+  "Творог 5%":{k:121,p:17,f:5,c:3},
+  "Творог 0%":{k:72,p:17,f:0,c:1},
+  "Протеин (1 скуп)":{k:400,p:75,f:7,c:7,u:30},
+  "Гречка варёная":{k:132,p:5,f:1,c:25},
+  "Рис варёный":{k:130,p:3,f:0,c:28},
+  "Макароны варёные":{k:157,p:6,f:1,c:31},
+  "Овсянка на воде":{k:88,p:3,f:2,c:15},
+  "Картофель варёный":{k:82,p:2,f:0,c:17,u:90},
+  "Хлеб чёрный (1 ломтик)":{k:214,p:7,f:1,c:41,u:30},
+  "Хлеб белый (1 ломтик)":{k:265,p:9,f:3,c:49,u:25},
+  "Банан":{k:96,p:2,f:1,c:21,u:120},
+  "Яблоко":{k:52,p:0,f:0,c:14,u:150},
+  "Огурец":{k:15,p:1,f:0,c:3,u:100},
+  "Помидор":{k:20,p:1,f:0,c:4,u:90},
+  "Салат овощной с маслом":{k:90,p:2,f:7,c:6},
+  "Масло оливковое":{k:884,p:0,f:100,c:0},
+  "Орехи микс":{k:620,p:20,f:55,c:16},
+  "Сыр твёрдый (ломтик)":{k:356,p:26,f:27,c:0,u:25},
+  "Суп куриный с лапшой":{k:50,p:3,f:2,c:6},
+  "Борщ с мясом":{k:70,p:3,f:3,c:9},
+  "Плов с курицей":{k:170,p:8,f:7,c:22},
+  "Котлета домашняя":{k:240,p:17,f:18,c:2,u:100}
 };
 
 function today() {
@@ -653,10 +713,33 @@ let DB = loadDB();
 function saveDB() { localStorage.setItem(KEY, JSON.stringify(DB)); }
 function allEX() { return Object.assign({}, BASE_EX, DB.ex); }
 
-/* --- Глобальное состояние текущей тренировки и редактора подходов --- */
-let curWorkout = [];       // Массив уже добавленных упражнений в тренировку
-let currentSetRows = [];   // Массив подходов для редактируемого упражнения: [{w: 50, r: 10}, ...]
-let period = 7, ch1 = null, ch2 = null, ch3 = null, lastSugg = null;
+// Адаптер для безопасной работы с пользовательскими упражнениями (legacy)
+function getExData(name) {
+  const A = allEX();
+  const raw = A[name];
+  if (!raw) return { muscles: { "Другое": 1.0 }, cns: 0.5 };
+
+  if (!raw.muscles) {
+    const musMap = {};
+    const p = raw.p || "Другое";
+    const sList = Array.isArray(raw.s) ? raw.s : [];
+    if (sList.length > 0) {
+      musMap[p] = 0.7;
+      const secCoeff = 0.3 / sList.length;
+      sList.forEach(s => musMap[s] = secCoeff);
+    } else {
+      musMap[p] = 1.0;
+    }
+    return { muscles: musMap, cns: raw.cns || 0.5 };
+  }
+
+  return raw;
+}
+
+/* --- Глобальное состояние --- */
+let curWorkout = [];       
+let currentSetRows = [];   
+let period = 7, ch1 = null, ch2 = null, ch3 = null, ch4 = null, lastSugg = null;
 
 function fillSelects() {
   const A = allEX();
@@ -694,11 +777,44 @@ function showTab(t) {
   if (t === 'n') { renderProfile(); renderMeals(); renderSup(); unitChanged(); }
 }
 
-/* --- Логика автосохранения и восстановления Черновика (Draft) --- */
+/* --- RPE ползунок --- */
+function getRPEDescription(val) {
+  const v = parseFloat(val);
+  if (v <= 4) return `${v} — Очень легко`;
+  if (v <= 6) return `${v} — Легко (4-5 повт. в запасе)`;
+  if (v === 6.5 || v === 7) return `${v} — Умеренно (3 повт. в запасе)`;
+  if (v === 7.5 || v === 8) return `${v} — Тяжело (2 повт. в запасе)`;
+  if (v === 8.5 || v === 9) return `${v} — Очень тяжело (1 повт. в запасе)`;
+  if (v === 9.5) return `${v} — Почти отказ (0.5 повт. в запасе)`;
+  return `${v} — Отказ / Предел (0 повт. в запасе)`;
+}
+
+function updateRPEUI() {
+  const val = $('rpe').value;
+  $('rpeVal').innerText = getRPEDescription(val);
+  calcLiveCNS();
+}
+
+/* --- Ввод веса тела во вкладке Зал --- */
+function onCurWInput() {
+  const w = parseFloat($('curW').value);
+  if (!isNaN(w) && w > 0) {
+    DB.profile.weight = w;
+    if ($('pfW')) $('pfW').value = w;
+    saveDB();
+    renderSetRowsUI();
+    renderExList();
+    calcLiveCNS();
+    saveDraft();
+  }
+}
+
+/* --- Логика Черновика (Draft) --- */
 function saveDraft() {
   try {
     const draft = {
       well: $('well').value,
+      curW: $('curW').value,
       rpe: $('rpe').value,
       exSel: $('exSel').value,
       curWorkout: curWorkout,
@@ -713,14 +829,21 @@ function saveDraft() {
 function loadDraft() {
   try {
     const raw = localStorage.getItem(DRAFT_KEY);
+    const savedWeight = (DB.profile && DB.profile.weight) ? DB.profile.weight : 80;
+    
     if (!raw) {
+      $('curW').value = savedWeight;
       initDefaultSetRows();
       return;
     }
     const draft = JSON.parse(raw);
     if (draft && typeof draft === 'object') {
       if (draft.well) $('well').value = draft.well;
-      if (draft.rpe) $('rpe').value = draft.rpe;
+      $('curW').value = draft.curW ? draft.curW : savedWeight;
+      if (draft.rpe) {
+        $('rpe').value = draft.rpe;
+        updateRPEUI();
+      }
       if (draft.exSel && $('exSel').querySelector(`option[value="${CSS.escape(draft.exSel)}"]`)) {
         $('exSel').value = draft.exSel;
       }
@@ -731,14 +854,17 @@ function loadDraft() {
         initDefaultSetRows();
       }
     } else {
+      $('curW').value = savedWeight;
       initDefaultSetRows();
     }
   } catch(e) {
     console.error("Ошибка загрузки черновика:", e);
+    $('curW').value = (DB.profile && DB.profile.weight) ? DB.profile.weight : 80;
     initDefaultSetRows();
   }
   renderSetRowsUI();
   renderExList();
+  calcLiveCNS();
 }
 
 function clearDraft() {
@@ -749,14 +875,17 @@ function initDefaultSetRows() {
   currentSetRows = [{ w: '', r: '' }];
 }
 
-/* --- Ввод подходов (Динамические строки) --- */
+function onExChange() {
+  renderSetRowsUI();
+  saveDraft();
+}
+
 function addSetRow() {
   const lastSet = currentSetRows.length > 0 ? currentSetRows[currentSetRows.length - 1] : { w: '', r: '' };
   currentSetRows.push({ w: lastSet.w, r: lastSet.r });
   renderSetRowsUI();
   saveDraft();
   
-  // Фокус на поле ввода повторов нового подхода для удобства
   setTimeout(() => {
     const inputs = document.querySelectorAll('.set-reps-input');
     if (inputs.length) inputs[inputs.length - 1].focus();
@@ -784,10 +913,15 @@ function renderSetRowsUI() {
   const container = $('setRowsContainer');
   if (!container) return;
 
+  const currentEx = $('exSel').value;
+  const isBW = isBodyweightEx(currentEx);
+  const userW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 75;
+  const placeholderText = isBW ? `Доп. вес, кг (тело: ${userW}кг)` : 'Вес, кг';
+
   container.innerHTML = currentSetRows.map((set, i) => `
     <div class="set-row">
       <span class="set-num">Подход #${i + 1}</span>
-      <input type="number" class="set-weight-input" placeholder="Вес, кг" inputmode="decimal" step="any"
+      <input type="number" class="set-weight-input" placeholder="${placeholderText}" inputmode="decimal" step="any"
              value="${set.w !== undefined ? set.w : ''}" 
              oninput="updateSetVal(${i}, 'w', this.value)" onfocus="this.select()">
       <input type="number" class="set-reps-input" placeholder="Повторы" inputmode="numeric"
@@ -807,6 +941,7 @@ function flashError(elem) {
 
 function addExToWorkout() {
   const exName = $('exSel').value;
+  const isBW = isBodyweightEx(exName);
   const validSets = [];
   let hasError = false;
 
@@ -814,14 +949,16 @@ function addExToWorkout() {
   const rInputs = document.querySelectorAll('.set-reps-input');
 
   currentSetRows.forEach((s, idx) => {
-    const w = parseFloat(s.w);
+    let w = parseFloat(s.w);
     const r = parseInt(s.r, 10);
 
-    if (isNaN(w) || w <= 0) { flashError(wInputs[idx]); hasError = true; }
+    if (isBW && (isNaN(w) || w < 0)) w = 0;
+
+    if (!isBW && (isNaN(w) || w <= 0)) { flashError(wInputs[idx]); hasError = true; }
     if (isNaN(r) || r <= 0) { flashError(rInputs[idx]); hasError = true; }
 
     if (!hasError) {
-      validSets.push({ w, r });
+      validSets.push({ w: isNaN(w) ? 0 : w, r });
     }
   });
 
@@ -832,35 +969,41 @@ function addExToWorkout() {
     sets: validSets
   });
 
-  // Сброс полей редактирования для следующего упражнения
   initDefaultSetRows();
   renderSetRowsUI();
   renderExList();
+  calcLiveCNS();
   saveDraft();
 }
 
 function removeExFromWorkout(index) {
   curWorkout.splice(index, 1);
   renderExList();
+  calcLiveCNS();
   saveDraft();
 }
 
 function renderExList() {
+  const userW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 75;
+
   $('exList').innerHTML = curWorkout.map((e, i) => {
+    const isBW = isBodyweightEx(e.n);
     let setsText = '';
     let totalKg = 0;
 
     if (Array.isArray(e.sets)) {
-      setsText = e.sets.map(s => `${s.w}кг×${s.r}`).join(', ');
-      totalKg = e.sets.reduce((sum, s) => sum + (s.w * s.r), 0);
-    } else {
-      // Поддержка старого формата
-      setsText = `${e.s}×${e.w}кг×${e.r}`;
-      totalKg = (e.s || 0) * (e.w || 0) * (e.r || 0);
+      setsText = e.sets.map(s => {
+        const addedW = +s.w || 0;
+        const effW = isBW ? (userW + addedW) : addedW;
+        totalKg += effW * (+s.r || 0);
+        return isBW 
+          ? (addedW > 0 ? `(${userW}+${addedW})кг×${s.r}` : `${userW}кг×${s.r}`)
+          : `${s.w}кг×${s.r}`;
+      }).join(', ');
     }
 
     return `<div class="item">
-      <span><b>${escapeHTML(e.n)}</b>: ${setsText} = <b>${totalKg} кг</b></span>
+      <span><b>${escapeHTML(e.n)}</b>: ${setsText} = <b>${Math.round(totalKg)} кг</b></span>
       <button class="small del" onclick="removeExFromWorkout(${i})">✕</button>
      </div>`;
   }).join('');
@@ -871,17 +1014,22 @@ function renderExList() {
 function saveWorkout() {
   if (!curWorkout.length) return;
   const well = Math.min(10, Math.max(1, +$('well').value || 7));
-  const rpe = Math.min(10, Math.max(1, +$('rpe').value || 7));
+  const rpe = parseFloat($('rpe').value) || 7;
+  const bodyWeight = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 75;
   
-  DB.w.push({ date: today(), well, rpe, ex: curWorkout });
+  DB.profile.weight = bodyWeight;
+
+  DB.w.push({ date: today(), well, rpe, bodyWeight, ex: curWorkout });
   
   curWorkout = [];
   initDefaultSetRows();
   $('well').value = 7;
   $('rpe').value = 7;
+  updateRPEUI();
   
   renderSetRowsUI();
   renderExList();
+  calcLiveCNS();
   saveDB();
   clearDraft();
   alert('Тренировка сохранена ✅');
@@ -896,26 +1044,82 @@ function addCustomEx() {
   if (!p) { flashError(pElem); valid = false; }
   if (!valid) return;
 
-  const s = $('exS').value.split(',').map(x => x.trim()).filter(x => x);
-  DB.ex[n] = { p, s };
+  const sList = $('exS').value.split(',').map(x => x.trim()).filter(x => x);
+  const musMap = {};
+  if (sList.length > 0) {
+    musMap[p] = 0.7;
+    const secCoeff = 0.3 / sList.length;
+    sList.forEach(s => musMap[s] = secCoeff);
+  } else {
+    musMap[p] = 1.0;
+  }
+
+  DB.ex[n] = { muscles: musMap, cns: 0.5 };
   saveDB();
   fillSelects();
   nElem.value = ''; pElem.value = ''; $('exS').value = '';
   alert('Упражнение добавлено ✅');
 }
 
-/* --- Хелперы расчёта тоннажа и параметров (совместимы с новым и старым форматом) --- */
-function tonnage(e) { 
+/* --- РАСЧЕТЫ: Тоннаж, Авто-ЦНС, Мышечные группы --- */
+function tonnage(e, bodyWeightOverride) { 
+  const userW = bodyWeightOverride || (DB.profile && DB.profile.weight) || 75;
+  const isBW = isBodyweightEx(e.n);
+
   if (Array.isArray(e.sets)) {
-    return e.sets.reduce((sum, s) => sum + ((+s.w || 0) * (+s.r || 0)), 0);
+    return e.sets.reduce((sum, s) => {
+      const addedW = +s.w || 0;
+      const effW = isBW ? (userW + addedW) : addedW;
+      return sum + (effW * (+s.r || 0));
+    }, 0);
   }
-  return (e.s || 0) * (e.w || 0) * (e.r || 0); 
+
+  // Защита для старого формата данных
+  const addedW = +e.w || 0;
+  const effW = isBW ? (userW + addedW) : addedW;
+  return (e.s || 0) * effW * (e.r || 0); 
+}
+
+function calculateCNSLoad(workoutObj) {
+  if (!workoutObj || !workoutObj.ex || !workoutObj.ex.length) return 0;
+  const rpe = workoutObj.rpe || 7;
+  const rpeMultiplier = Math.pow(rpe / 7, 1.3);
+  const wBodyWeight = workoutObj.bodyWeight || (DB.profile && DB.profile.weight) || 75;
+
+  let totalRawCNS = 0;
+  workoutObj.ex.forEach(e => {
+    const exInfo = getExData(e.n);
+    const cnsFactor = exInfo.cns !== undefined ? exInfo.cns : 0.5;
+    const exTonnage = tonnage(e, wBodyWeight);
+    totalRawCNS += (exTonnage / 500) * cnsFactor;
+  });
+
+  const finalCNS = totalRawCNS * rpeMultiplier;
+  return Math.round(finalCNS * 10) / 10;
+}
+
+function calcLiveCNS() {
+  if (!curWorkout.length) {
+    $('cnsLiveEstimate').innerText = 'Расчётная нагрузка на ЦНС: 0.0 (Низкая)';
+    return;
+  }
+  const curW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 75;
+  const tempW = { rpe: parseFloat($('rpe').value) || 7, bodyWeight: curW, ex: curWorkout };
+  const cnsVal = calculateCNSLoad(tempW);
+  let desc = 'Низкая';
+  if (cnsVal > 5) desc = 'Умеренная';
+  if (cnsVal > 10) desc = 'Высокая';
+  if (cnsVal > 15) desc = 'Экстремальная';
+
+  $('cnsLiveEstimate').innerText = `Расчётная нагрузка на ЦНС: ${cnsVal} (${desc})`;
 }
 
 function workoutMetrics(w) {
   let tons = 0, sets = 0, reps = 0;
+  const wBodyWeight = w.bodyWeight || (DB.profile && DB.profile.weight) || 75;
+
   (w.ex || []).forEach(e => {
-    tons += tonnage(e);
+    tons += tonnage(e, wBodyWeight);
     if (Array.isArray(e.sets)) {
       sets += e.sets.length;
       reps += e.sets.reduce((rSum, s) => rSum + (+s.r || 0), 0);
@@ -924,34 +1128,37 @@ function workoutMetrics(w) {
       reps += (e.s || 0) * (e.r || 0);
     }
   });
-  const userWeight = (DB.profile && DB.profile.weight) ? DB.profile.weight : 75;
+
   return {
     tons, sets, reps,
     tut: reps * 3,
     est: reps * 3 + sets * 120,
-    kcal: Math.round(tons * 0.025 * (userWeight / 75))
+    kcal: Math.round(tons * 0.025 * (wBodyWeight / 75))
   };
 }
 
 function muscleTonnage(w) {
   const m = {};
-  const A = allEX();
+  const rpe = w.rpe || 7;
+  const rpeMultiplier = rpe / 7;
+  const wBodyWeight = w.bodyWeight || (DB.profile && DB.profile.weight) || 75;
+
   (w.ex || []).forEach(e => {
     if (!e || !e.n) return;
-    const d = A[e.n] || { p: "Другое", s: [] };
-    const secList = Array.isArray(d.s) ? d.s : [];
-    const t = tonnage(e);
-    const sh = secList.length ? 0.3 : 0;
-    const primaryGroup = d.p || "Другое";
-    m[primaryGroup] = (m[primaryGroup] || 0) + t * (1 - sh);
-    if (secList.length) {
-      secList.forEach(sec => { m[sec] = (m[sec] || 0) + (t * 0.3) / secList.length; });
+    const exData = getExData(e.n);
+    const musMap = exData.muscles || { "Другое": 1.0 };
+    const t = tonnage(e, wBodyWeight);
+
+    for (const muscleName in musMap) {
+      const coeff = musMap[muscleName];
+      const effectiveMuscleVolume = t * coeff * rpeMultiplier;
+      m[muscleName] = (m[muscleName] || 0) + effectiveMuscleVolume;
     }
   });
   return m;
 }
 
-/* --- Профиль и расчёты --- */
+/* --- Профиль --- */
 function workoutsPerWeek() {
   const from = Date.now() - 28 * 86400000;
   return (DB.w || []).filter(w => w && w.date && new Date(w.date).getTime() >= from).length / 4;
@@ -967,6 +1174,10 @@ function saveProfile() {
   };
   saveDB();
   renderProfile();
+  if ($('curW')) $('curW').value = DB.profile.weight;
+  renderSetRowsUI();
+  renderExList();
+  calcLiveCNS();
 }
 
 function renderProfile() {
@@ -1155,11 +1366,11 @@ function addFood() {
   DB.foods[n] = o;
   saveDB();
   fillSelects();
-  nElem.value = ''; $('fK').value = ''; $('fP').value = ''; $('fF').value = ''; $('fC').value = ''; $('fU').value = '';
+  nElem.value = ''; $('fK').value = ''; $('fP').value = ''; $('fF').value = ''; $('fU').value = '';
   alert('Продукт добавлен ✅');
 }
 
-/* --- Аналитика --- */
+/* --- Аналитика и Графики Chart.js --- */
 function setPeriod(p) {
   period = p;
   [7, 30, 3650].forEach(x => {
@@ -1184,7 +1395,7 @@ function renderAnalytics() {
     for (const k in mt) muscles[k] = (muscles[k] || 0) + mt[k];
   });
 
-  const loadIdx = Math.round(ws.reduce((a, w) => a + (workoutMetrics(w).tons / 100) * ((w.rpe || 7) / 10), 0));
+  const avgCNS = ws.length ? (ws.reduce((a, w) => a + calculateCNSLoad(w), 0) / ws.length).toFixed(1) : '—';
 
   $('stats').innerHTML = `
     <div class="stat"><span>Всего тренировок</span><b>${ws.length}</b></div>
@@ -1193,8 +1404,8 @@ function renderAnalytics() {
     <div class="stat"><span>Время под нагрузкой</span><b>${Math.round(tut / 60)} мин</b></div>
     <div class="stat"><span>Примерное время занятий</span><b>${Math.round(est / 60)} мин</b></div>
     <div class="stat"><span>Примерный расход</span><b>${kcalB} ккал</b></div>
-    <div class="stat"><span>Индекс нагрузки (ЦНС)</span><b>${loadIdx}</b></div>
-    <div class="stat"><span>Средняя тяжесть</span><b>${ws.length ? (rpeSum / ws.length).toFixed(1) : '—'}</b></div>
+    <div class="stat"><span>Средняя нагрузка на ЦНС</span><b>${avgCNS} балла</b></div>
+    <div class="stat"><span>Средняя тяжесть (RPE)</span><b>${ws.length ? (rpeSum / ws.length).toFixed(1) : '—'}</b></div>
     <div class="stat"><span>Среднее самочувствие</span><b>${ws.length ? (wellSum / ws.length).toFixed(1) : '—'}</b></div>
   `;
 
@@ -1202,6 +1413,7 @@ function renderAnalytics() {
   
   ch1 = destroyChart(ch1, 'chartMuscles');
   ch2 = destroyChart(ch2, 'chartTonnage');
+  ch4 = destroyChart(ch4, 'chartCNS');
 
   const computedStyle = getComputedStyle(document.body);
   const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
@@ -1211,7 +1423,7 @@ function renderAnalytics() {
     type: 'bar',
     data: {
       labels,
-      datasets: [{ label: 'Тоннаж по группам, кг', data: labels.map(l => Math.round(muscles[l])), backgroundColor: tintColor, borderRadius: 6 }]
+      datasets: [{ label: 'Эффективный объём, кг', data: labels.map(l => Math.round(muscles[l])), backgroundColor: tintColor, borderRadius: 6 }]
     },
     options: {
       indexAxis: 'y',
@@ -1224,6 +1436,7 @@ function renderAnalytics() {
   });
 
   const sorted = ws.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  
   ch2 = new Chart($('chartTonnage'), {
     type: 'line',
     data: {
@@ -1238,11 +1451,36 @@ function renderAnalytics() {
     }
   });
 
+  ch4 = new Chart($('chartCNS'), {
+    type: 'line',
+    data: {
+      labels: sorted.map(w => (w.date || '').slice(5)),
+      datasets: [{ 
+        label: 'Баллы утомления ЦНС', 
+        data: sorted.map(w => calculateCNSLoad(w)), 
+        borderColor: '#AF52DE', 
+        backgroundColor: 'rgba(175, 82, 222, 0.15)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      scales: {
+        x: { ticks: { color: textColor } },
+        y: { 
+          beginAtZero: true,
+          ticks: { color: textColor } 
+        }
+      }
+    }
+  });
+
   renderProg();
 }
 
 function renderProg() {
   const n = $('progSel').value;
+  const isBW = isBodyweightEx(n);
   ch3 = destroyChart(ch3, 'chartProg');
 
   if (!n) {
@@ -1252,13 +1490,20 @@ function renderProg() {
 
   const pts = (DB.w || []).filter(w => w && Array.isArray(w.ex) && w.ex.some(e => e.n === n))
     .map(w => {
+      const userW = w.bodyWeight || (DB.profile && DB.profile.weight) || 75;
       const exes = w.ex.filter(e => e.n === n);
       let maxW = 0;
       exes.forEach(e => {
         if (Array.isArray(e.sets)) {
-          e.sets.forEach(s => { if ((+s.w || 0) > maxW) maxW = +s.w; });
+          e.sets.forEach(s => { 
+            const addedW = +s.w || 0;
+            const effW = isBW ? (userW + addedW) : addedW;
+            if (effW > maxW) maxW = effW; 
+          });
         } else {
-          if ((+e.w || 0) > maxW) maxW = +e.w;
+          const addedW = +e.w || 0;
+          const effW = isBW ? (userW + addedW) : addedW;
+          if (effW > maxW) maxW = effW;
         }
       });
       return { d: w.date || '', mx: maxW };
@@ -1271,7 +1516,7 @@ function renderProg() {
   }
 
   const bestWeight = Math.max(...pts.map(p => p.mx));
-  $('progBest').innerHTML = `Лучший рабочий вес: <b>${bestWeight} кг</b>`;
+  $('progBest').innerHTML = `Лучший рабочий вес: <b>${bestWeight} кг</b> ${isBW ? '(с учетом веса тела)' : ''}`;
 
   const computedStyle = getComputedStyle(document.body);
   const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
@@ -1322,11 +1567,10 @@ function importData(ev) {
   r.readAsText(f);
 }
 
-// Автосохранение черновика при закрытии / сворачивании вкладки браузера
 window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveDraft(); });
 window.addEventListener('pagehide', saveDraft);
 
-// Инициализация приложения при старте
+// Инициализация приложения
 fillSelects();
 fillGoals();
 renderProfile();
