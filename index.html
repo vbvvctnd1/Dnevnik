@@ -2,83 +2,434 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Мой дневник</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Дневник тренировок</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-body{font-family:-apple-system,Arial,sans-serif;background:#f4f7f7;margin:0;padding:10px;color:#0d2b2b}
-h1{font-size:20px;text-align:center;margin:6px 0}
-.tabs{display:flex;gap:6px;margin:10px 0}
-.tab{flex:1;padding:10px 4px;border:none;border-radius:12px;background:#e3ecec;font-size:13px;font-weight:600}
-.tab.active{background:#0d3b3b;color:#fff}
-.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-h3{margin:4px 0 10px;font-size:16px}
-label{font-size:13px;color:#556}
-input,select{width:100%;padding:9px;border:1px solid #ccc;border-radius:10px;font-size:16px;margin:4px 0 8px;box-sizing:border-box}
-button.act{width:100%;padding:13px;border:none;border-radius:12px;background:#0d3b3b;color:#fff;font-size:16px;font-weight:600}
-button.small{padding:8px 12px;border:none;border-radius:10px;background:#0d3b3b;color:#fff;font-size:14px}
-button.del{background:#c0392b}
-.row{display:flex;gap:6px}.row>*{flex:1}
-.item{background:#eef4f4;border-radius:10px;padding:8px;margin:6px 0;font-size:14px}
-.stat{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee;font-size:15px}
-.muted{color:#789;font-size:13px}
-.bar{height:10px;background:#e8eeee;border-radius:6px;margin:3px 0 8px;overflow:hidden}
-.bar>div{height:100%;border-radius:6px}
-.sup{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:15px}
-.sup input{width:auto;margin:0}
+  :root {
+    --ios-bg: #F2F2F7;
+    --ios-card-bg: #FFFFFF;
+    --ios-text: #000000;
+    --ios-subtext: #8E8E93;
+    --ios-tint: #007AFF;
+    --ios-tint-light: rgba(0, 122, 255, 0.1);
+    --ios-red: #FF3B30;
+    --ios-red-light: rgba(255, 59, 48, 0.1);
+    --ios-green: #34C759;
+    --ios-orange: #FF9500;
+    --ios-purple: #AF52DE;
+    --ios-separator: rgba(60, 60, 67, 0.12);
+    --ios-radius-lg: 16px;
+    --ios-radius-md: 12px;
+    --ios-radius-sm: 8px;
+    --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ios-bg: #000000;
+      --ios-card-bg: #1C1C1E;
+      --ios-text: #FFFFFF;
+      --ios-subtext: #8E8E93;
+      --ios-tint: #0A84FF;
+      --ios-tint-light: rgba(10, 132, 255, 0.15);
+      --ios-red: #FF453A;
+      --ios-red-light: rgba(255, 69, 58, 0.15);
+      --ios-green: #30D158;
+      --ios-orange: #FF9F0A;
+      --ios-purple: #BF5AF2;
+      --ios-separator: rgba(84, 84, 88, 0.35);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--ios-font);
+    background-color: var(--ios-bg);
+    color: var(--ios-text);
+    padding: calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)) 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app-header {
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--ios-text);
+  }
+
+  /* iOS Segmented Control */
+  .tabs {
+    display: flex;
+    background: rgba(120, 120, 128, 0.16);
+    border-radius: 9px;
+    padding: 2px;
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--ios-text);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--ios-font);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .tab.active {
+    background: var(--ios-card-bg);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Card Component */
+  .card {
+    background: var(--ios-card-bg);
+    border-radius: var(--ios-radius-lg);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    border: 0.5px solid var(--ios-separator);
+  }
+
+  h3 {
+    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--ios-subtext);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  /* Inputs & Selects */
+  input, select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: var(--ios-radius-md);
+    background-color: rgba(118, 118, 128, 0.08);
+    color: var(--ios-text);
+    font-size: 16px;
+    font-family: var(--ios-font);
+    margin-bottom: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+  }
+
+  input:focus, select:focus {
+    background-color: var(--ios-card-bg);
+    border-color: var(--ios-tint);
+  }
+
+  input.error {
+    border-color: var(--ios-red) !important;
+    background-color: var(--ios-red-light) !important;
+  }
+
+  /* Buttons */
+  button {
+    font-family: var(--ios-font);
+    cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.15s ease, background-color 0.2s ease;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+
+  button:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  button.act {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: var(--ios-radius-md);
+    background: var(--ios-tint);
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button.small {
+    height: 38px;
+    padding: 0 14px;
+    border: none;
+    border-radius: var(--ios-radius-md);
+    background: var(--ios-tint-light);
+    color: var(--ios-tint);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  button.small.active {
+    background: var(--ios-tint);
+    color: #FFFFFF;
+  }
+
+  button.del {
+    background: var(--ios-red-light);
+    color: var(--ios-red);
+  }
+
+  /* Dynamic Set Row Styles */
+  .set-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .set-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ios-subtext);
+    min-width: 75px;
+  }
+
+  .set-row input {
+    margin-bottom: 0;
+  }
+
+  .btn-icon-del {
+    height: 44px;
+    width: 44px;
+    min-width: 44px;
+    border: none;
+    border-radius: var(--ios-radius-md);
+    background: var(--ios-red-light);
+    color: var(--ios-red);
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Layout helpers */
+  .row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .row > * {
+    flex: 1;
+    margin-bottom: 8px;
+  }
+
+  .item {
+    background: rgba(118, 118, 128, 0.08);
+    border-radius: var(--ios-radius-md);
+    padding: 10px 12px;
+    margin: 8px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .item button {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--ios-separator);
+    font-size: 15px;
+  }
+
+  .stat:last-child {
+    border-bottom: none;
+  }
+
+  .muted {
+    color: var(--ios-subtext);
+    font-size: 13px;
+    line-height: 1.4;
+    margin-top: 6px;
+  }
+
+  /* Progress Bars */
+  .bar-container {
+    margin-bottom: 12px;
+  }
+
+  .bar-container label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .bar {
+    height: 8px;
+    background: rgba(118, 118, 128, 0.16);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar > div {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Supplements Checkbox Row */
+  .sup {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--ios-separator);
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .sup:last-child {
+    border-bottom: none;
+  }
+
+  .sup input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    accent-color: var(--ios-tint);
+    cursor: pointer;
+  }
+
+  canvas {
+    max-width: 100%;
+    margin-top: 8px;
+  }
 </style>
 </head>
 <body>
-<h1>💪 Мой дневник</h1>
-<div class="tabs">
-<button class="tab active" onclick="showTab('w')">Зал</button>
-<button class="tab" onclick="showTab('n')">Еда</button>
-<button class="tab" onclick="showTab('a')">Аналитика</button>
-<button class="tab" onclick="showTab('d')">Данные</button>
+
+<div class="app-header">
+  <h1>💪 Мой дневник</h1>
 </div>
 
+<div class="tabs">
+  <button class="tab active" onclick="showTab('w')">Зал</button>
+  <button class="tab" onclick="showTab('n')">Еда</button>
+  <button class="tab" onclick="showTab('a')">Аналитика</button>
+  <button class="tab" onclick="showTab('d')">Данные</button>
+</div>
+
+<!-- ВКЛАДКА: ЗАЛ -->
 <div id="tab-w">
  <div class="card">
-  <label>Самочувствие до (1 плохо – 10 отлично)</label>
-  <input type="number" id="well" min="1" max="10" value="7">
+  <label>Самочувствие до (1 – плохо, 10 – отлично)</label>
+  <input type="number" id="well" min="1" max="10" value="7" inputmode="numeric" onfocus="this.select()" oninput="saveDraft()">
  </div>
+
  <div class="card">
   <h3>Упражнения</h3>
-  <select id="exSel"></select>
-  <div class="row">
-   <input type="number" id="wKg" placeholder="Вес, кг">
-   <input type="number" id="wReps" placeholder="Повторы">
-   <input type="number" id="wSets" placeholder="Подходы" value="3">
+  <label>Выберите упражнение</label>
+  <select id="exSel" onchange="saveDraft()"></select>
+  
+  <!-- Динамический список подходов -->
+  <div id="setRowsContainer" style="margin-top: 10px;"></div>
+  
+  <div class="row" style="margin-top: 10px;">
+   <button class="small" onclick="addSetRow()">+ Подход</button>
+   <button class="small active" onclick="addExToWorkout()">+ В тренировку</button>
   </div>
-  <button class="small" onclick="addEx()">+ Добавить</button>
-  <div id="exList"></div>
+
+  <div id="exList" style="margin-top: 12px;"></div>
  </div>
+
  <div class="card">
-  <label>Тяжесть занятия (1 легко – 10 на пределе)</label>
-  <input type="number" id="rpe" min="1" max="10" value="7">
-  <button class="act" onclick="saveWorkout()">Сохранить тренировку</button>
+  <label>Тяжесть занятия (1 – легко, 10 – на пределе)</label>
+  <input type="number" id="rpe" min="1" max="10" value="7" inputmode="numeric" onfocus="this.select()" oninput="saveDraft()">
+  <button id="saveBtn" class="act" onclick="saveWorkout()" disabled>Сохранить тренировку</button>
  </div>
+
  <div class="card">
   <h3>➕ Своё упражнение</h3>
   <input id="exName" placeholder="Название упражнения">
   <div class="row">
    <input id="exP" placeholder="Целевая мышца">
-   <input id="exS" placeholder="Помощники через запятую">
+   <input id="exS" placeholder="Вторичные (через запятую)">
   </div>
   <button class="small" onclick="addCustomEx()">Добавить упражнение</button>
  </div>
 </div>
 
+<!-- ВКЛАДКА: ЕДА -->
 <div id="tab-n" style="display:none">
  <div class="card">
   <h3>👤 Мои данные</h3>
   <div class="row">
-   <div><label>Пол</label><select id="pfSex" onchange="saveProfile()"><option value="m">М</option><option value="f">Ж</option></select></div>
-   <div><label>Возраст</label><input type="number" id="pfAge" onchange="saveProfile()"></div>
+   <div>
+    <label>Пол</label>
+    <select id="pfSex" onchange="saveProfile()"><option value="m">М</option><option value="f">Ж</option></select>
+   </div>
+   <div>
+    <label>Возраст</label>
+    <input type="number" id="pfAge" oninput="saveProfile()" onchange="saveProfile()" inputmode="numeric" onfocus="this.select()">
+   </div>
   </div>
   <div class="row">
-   <div><label>Рост, см</label><input type="number" id="pfH" onchange="saveProfile()"></div>
-   <div><label>Вес, кг</label><input type="number" id="pfW" onchange="saveProfile()"></div>
+   <div>
+    <label>Рост, см</label>
+    <input type="number" id="pfH" oninput="saveProfile()" onchange="saveProfile()" inputmode="numeric" onfocus="this.select()">
+   </div>
+   <div>
+    <label>Вес, кг</label>
+    <input type="number" id="pfW" oninput="saveProfile()" onchange="saveProfile()" inputmode="decimal" onfocus="this.select()">
+   </div>
   </div>
   <label>Цель</label>
   <select id="pfGoal" onchange="saveProfile()">
@@ -86,59 +437,67 @@ button.del{background:#c0392b}
    <option value="gain">Набор массы</option>
    <option value="cut">Снижение веса</option>
   </select>
-  <div id="profileCalc" class="item"></div>
-  <button class="small" onclick="applyGoals()">Применить эти цифры к целям дня</button>
+  <div id="profileCalc" class="item" style="display:block; line-height:1.5;"></div>
+  <button class="small" style="width:100%; margin-top:8px;" onclick="applyGoals()">Применить эти цифры к целям дня</button>
  </div>
+
  <div class="card">
   <h3>🎯 Цели на день</h3>
   <div class="row">
-   <div><label>Ккал</label><input type="number" id="gKcal" onchange="saveGoals()"></div>
-   <div><label>Белок, г</label><input type="number" id="gP" onchange="saveGoals()"></div>
-   <div><label>Жир, г</label><input type="number" id="gF" onchange="saveGoals()"></div>
-   <div><label>Углев., г</label><input type="number" id="gC" onchange="saveGoals()"></div>
+   <div><label>Ккал</label><input type="number" id="gKcal" oninput="saveGoals()" onchange="saveGoals()" inputmode="numeric" onfocus="this.select()"></div>
+   <div><label>Белки, г</label><input type="number" id="gP" oninput="saveGoals()" onchange="saveGoals()" inputmode="numeric" onfocus="this.select()"></div>
+   <div><label>Жиры, г</label><input type="number" id="gF" oninput="saveGoals()" onchange="saveGoals()" inputmode="numeric" onfocus="this.select()"></div>
+   <div><label>Углев., г</label><input type="number" id="gC" oninput="saveGoals()" onchange="saveGoals()" inputmode="numeric" onfocus="this.select()"></div>
   </div>
  </div>
+
  <div class="card">
   <h3>🍽 Съедено сегодня</h3>
-  <select id="foodSel" onchange="unitChanged()"></select>
+  <select id="foodSel" onchange="onFoodChange()"></select>
   <div class="row">
-   <input type="number" id="grams" placeholder="Граммы готовой еды">
-   <select id="unitSel" style="display:none" onchange="unitChanged()"><option value="pcs">штуки</option><option value="g">граммы</option></select>
-   <button class="small" onclick="addMeal()">+</button>
+   <input type="number" id="grams" placeholder="Граммы готовой еды" inputmode="decimal" onfocus="this.select()" onkeydown="if(event.key==='Enter') addMeal()">
+   <select id="unitSel" style="display:none" onchange="unitChanged()">
+    <option value="pcs">штуки</option>
+    <option value="g">граммы</option>
+   </select>
+   <button class="small" style="max-width: 60px;" onclick="addMeal()">+</button>
   </div>
   <div id="mealList"></div>
-  <div id="mealTotals"></div>
+  <div id="mealTotals" style="margin-top:12px;"></div>
  </div>
+
  <div class="card">
   <h3>💊 БАДы сегодня</h3>
   <div id="supList"></div>
-  <div class="row">
-   <input id="newSup" placeholder="Добавить свой БАД">
-   <button class="small" onclick="addSup()">+</button>
+  <div class="row" style="margin-top:12px;">
+   <input id="newSup" placeholder="Добавить свой БАД" onkeydown="if(event.key==='Enter') addSup()">
+   <button class="small" style="max-width:60px;" onclick="addSup()">+</button>
   </div>
  </div>
+
  <div class="card">
   <h3>➕ Свой продукт (на 100 г)</h3>
   <input id="fName" placeholder="Название">
   <div class="row">
-   <input type="number" id="fK" placeholder="Ккал">
-   <input type="number" id="fP" placeholder="Белки">
-   <input type="number" id="fF" placeholder="Жиры">
-   <input type="number" id="fC" placeholder="Углев.">
+   <input type="number" id="fK" placeholder="Ккал" inputmode="numeric" onfocus="this.select()">
+   <input type="number" id="fP" placeholder="Белки" inputmode="decimal" onfocus="this.select()">
+   <input type="number" id="fF" placeholder="Жиры" inputmode="decimal" onfocus="this.select()">
+   <input type="number" id="fC" placeholder="Углев." inputmode="decimal" onfocus="this.select()">
   </div>
-  <input id="fU" placeholder="Вес 1 штуки в г (необязательно, напр. яйцо=55)">
+  <input id="fU" placeholder="Вес 1 штуки в г (необязательно, напр. 55)" inputmode="numeric" onfocus="this.select()">
   <button class="small" onclick="addFood()">Добавить продукт</button>
  </div>
 </div>
 
+<!-- ВКЛАДКА: АНАЛИТИКА -->
 <div id="tab-a" style="display:none">
  <div class="card">
   <div class="row">
-   <button class="small" onclick="setPeriod(7)">Неделя</button>
-   <button class="small" onclick="setPeriod(30)">Месяц</button>
-   <button class="small" onclick="setPeriod(3650)">Всё время</button>
+   <button id="btnPeriod7" class="small active" onclick="setPeriod(7)">Неделя</button>
+   <button id="btnPeriod30" class="small" onclick="setPeriod(30)">Месяц</button>
+   <button id="btnPeriod3650" class="small" onclick="setPeriod(3650)">Всё время</button>
   </div>
-  <div id="stats"></div>
+  <div id="stats" style="margin-top:10px;"></div>
   <p class="muted">Расчёты примерные: 3 сек под нагрузкой на повтор, отдых 2 мин на подход, расход ≈ тоннаж × 0.025 ккал (с поправкой на вес).</p>
  </div>
  <div class="card"><canvas id="chartMuscles"></canvas></div>
@@ -146,27 +505,48 @@ button.del{background:#c0392b}
  <div class="card">
   <h3>📈 Прогрессия рабочего веса</h3>
   <select id="progSel" onchange="renderProg()"></select>
-  <div id="progBest" class="muted"></div>
+  <div id="progBest" class="muted" style="margin-bottom:8px;"></div>
   <canvas id="chartProg"></canvas>
  </div>
 </div>
 
+<!-- ВКЛАДКА: ДАННЫЕ -->
 <div id="tab-d" style="display:none">
  <div class="card">
-  <p class="muted">Данные хранятся только у тебя. Раз в неделю жми «Скачать копию».</p>
+  <p class="muted" style="margin-bottom:12px;">Данные хранятся локально на вашем устройстве. Рекомендуется периодически сохранять резервную копию.</p>
   <button class="act" onclick="exportData()">Скачать копию (бэкап)</button>
-  <br><br>
+  <br>
   <label>Восстановить из копии</label>
-  <input type="file" id="imp" onchange="importData(event)">
-  <br><br>
-  <button class="small del" onclick="if(confirm('Удалить все данные?')){localStorage.removeItem('myGymV2');location.reload()}">Удалить всё</button>
+  <input type="file" id="imp" accept=".json" onchange="importData(event)">
+  <br>
+  <button class="act del" onclick="if(confirm('Вы уверены? Все сохраненные данные будут удалены безвозвратно!')){localStorage.removeItem('myGymV2');localStorage.removeItem('myGymV2_draft');location.reload()}">Удалить все данные</button>
  </div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const KEY='myGymV2';
-const BASE_EX={
+const $ = id => document.getElementById(id);
+const KEY = 'myGymV2';
+const DRAFT_KEY = 'myGymV2_draft';
+
+function escapeHTML(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+}
+
+function destroyChart(chartInstance, canvasId) {
+  if (chartInstance && typeof chartInstance.destroy === 'function') {
+    chartInstance.destroy();
+  }
+  const existing = Chart.getChart($(canvasId));
+  if (existing) {
+    existing.destroy();
+  }
+  return null;
+}
+
+const BASE_EX = {
 "Подтягивания":{p:"Спина",s:["Бицепс","Предплечья"]},
 "Тяга блока сверху":{p:"Спина",s:["Бицепс","Предплечья"]},
 "Тяга горизонтального блока":{p:"Спина",s:["Бицепс","Предплечья"]},
@@ -193,7 +573,8 @@ const BASE_EX={
 "Разгибания на трицепс":{p:"Трицепс",s:[]},
 "Пресс/скручивания":{p:"Кор",s:[]}
 };
-const FOODS={
+
+const FOODS = {
 "Куриная грудка гриль/варёная":{k:165,p:31,f:4,c:0},
 "Говядина тушёная":{k:232,p:26,f:14,c:0},
 "Лосось":{k:208,p:20,f:13,c:0},
@@ -223,135 +604,733 @@ const FOODS={
 "Плов с курицей":{k:170,p:8,f:7,c:22},
 "Котлета домашняя":{k:240,p:17,f:18,c:2,u:100}
 };
-function today(){return new Date().toISOString().slice(0,10)}
-function defDB(){return{w:[],meals:{},sup:{},ex:{},supList:["Креатин 5 г","Омега-3","Витамин D","Магний"],foods:Object.assign({},FOODS),goals:{kcal:2600,p:160,f:85,c:300},profile:{sex:'m',age:25,height:180,weight:80,goal:'maintain'}}}
-function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){const b=defDB();b.w=d.w||[];b.meals=d.meals||{};b.sup=d.sup||{};b.ex=d.ex||{};b.supList=d.supList||b.supList;b.foods=Object.assign({},d.foods,FOODS);b.goals=Object.assign(b.goals,d.goals);b.profile=Object.assign(b.profile,d.profile);return b}}catch(e){}return defDB()}
-let DB=loadDB();
-function saveDB(){localStorage.setItem(KEY,JSON.stringify(DB))}
-function allEX(){return Object.assign({},BASE_EX,DB.ex)}
-let cur=[],period=7,ch1=null,ch2=null,ch3=null,lastSugg=null;
 
-function fillSelects(){
- const A=allEX();
- $('exSel').innerHTML='';for(const k in A)$('exSel').add(new Option(k,k));
- $('progSel').innerHTML='';for(const k in A)$('progSel').add(new Option(k,k));
- $('foodSel').innerHTML='';for(const k in DB.foods)$('foodSel').add(new Option(k,k));
- unitChanged();
+function today() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
-function fillGoals(){$('gKcal').value=DB.goals.kcal;$('gP').value=DB.goals.p;$('gF').value=DB.goals.f;$('gC').value=DB.goals.c}
-function saveGoals(){DB.goals={kcal:+$('gKcal').value||0,p:+$('gP').value||0,f:+$('gF').value||0,c:+$('gC').value||0};saveDB();renderMeals()}
-function showTab(t){
- ['w','n','a','d'].forEach(x=>$('tab-'+x).style.display=x===t?'':'none');
- document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['w','n','a','d'][i]===t));
- if(t==='a')renderAnalytics();
- if(t==='n'){renderProfile();renderMeals();renderSup();unitChanged()}
+
+function defDB() {
+  return {
+    w: [],
+    meals: {},
+    sup: {},
+    ex: {},
+    supList: ["Креатин 5 г", "Омега-3", "Витамин D", "Магний"],
+    foods: Object.assign({}, FOODS),
+    goals: { kcal: 2600, p: 160, f: 85, c: 300 },
+    profile: { sex: 'm', age: 25, height: 180, weight: 80, goal: 'maintain' }
+  };
 }
-/* --- профиль и нормы --- */
-function workoutsPerWeek(){const from=Date.now()-28*86400000;return DB.w.filter(w=>new Date(w.date)>=from).length/4}
-function saveProfile(){DB.profile={sex:$('pfSex').value,age:+$('pfAge').value||25,height:+$('pfH').value||180,weight:+$('pfW').value||80,goal:$('pfGoal').value};saveDB();renderProfile()}
-function renderProfile(){
- const p=DB.profile;
- $('pfSex').value=p.sex;$('pfAge').value=p.age;$('pfH').value=p.height;$('pfW').value=p.weight;$('pfGoal').value=p.goal;
- const bmr=p.sex==='m'?10*p.weight+6.25*p.height-5*p.age+5:10*p.weight+6.25*p.height-5*p.age-161;
- const wpw=workoutsPerWeek();
- const act=wpw<=0?1.2:wpw<2?1.375:wpw<4?1.45:wpw<6?1.55:1.725;
- const tdee=bmr*act;
- const kcal=p.goal==='gain'?tdee*1.1:p.goal==='cut'?tdee*0.85:tdee;
- const prot=Math.round(p.weight*(p.goal==='cut'?2.2:2));
- const fat=Math.round(p.weight*1);
- const carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4));
- const gn={maintain:'поддержание',gain:'набор',cut:'снижение'}[p.goal];
- lastSugg={kcal:Math.round(kcal),p:prot,f:fat,c:carb};
- $('profileCalc').innerHTML=`Покой (обмен): <b>${Math.round(bmr)}</b> ккал<br>С активностью (${wpw.toFixed(1)} трен/нед): <b>${Math.round(tdee)}</b> ккал<br>Цель «${gn}»: ≈ <b>${Math.round(kcal)}</b> ккал · Б ${prot} / Ж ${fat} / У ${carb}`;
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return defDB();
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object') return defDB();
+    const b = defDB();
+    return {
+      w: Array.isArray(d.w) ? d.w : [],
+      meals: (typeof d.meals === 'object' && d.meals !== null) ? d.meals : {},
+      sup: (typeof d.sup === 'object' && d.sup !== null) ? d.sup : {},
+      ex: (typeof d.ex === 'object' && d.ex !== null) ? d.ex : {},
+      supList: Array.isArray(d.supList) ? d.supList : b.supList,
+      foods: Object.assign({}, FOODS, d.foods || {}),
+      goals: Object.assign({}, b.goals, d.goals || {}),
+      profile: Object.assign({}, b.profile, d.profile || {})
+    };
+  } catch(e) {
+    console.error("Ошибка загрузки данных:", e);
+    return defDB();
+  }
 }
-function applyGoals(){if(!lastSugg)return;DB.goals={kcal:lastSugg.kcal,p:lastSugg.p,f:lastSugg.f,c:lastSugg.c};saveDB();fillGoals();renderMeals();alert('Цели на день обновлены ✅')}
-/* --- зал --- */
-function addEx(){const w=+$('wKg').value,r=+$('wReps').value,s=+$('wSets').value||1;if(!w||!r){alert('Укажи вес и повторы');return}cur.push({n:$('exSel').value,w,r,s});renderExList()}
-function renderExList(){$('exList').innerHTML=cur.map((e,i)=>`<div class="item">${e.n}: ${e.s}×${e.w} кг×${e.r} = <b>${e.s*e.w*e.r} кг</b> <button class="small del" onclick="cur.splice(${i},1);renderExList()">✕</button></div>`).join('')}
-function saveWorkout(){if(!cur.length){alert('Добавь упражнения');return}DB.w.push({date:today(),well:+$('well').value,rpe:+$('rpe').value,ex:cur});cur=[];renderExList();saveDB();alert('Тренировка сохранена ✅')}
-function addCustomEx(){
- const n=$('exName').value.trim(),p=$('exP').value.trim();
- if(!n||!p){alert('Нужны название и целевая мышца');return}
- const s=$('exS').value.split(',').map(x=>x.trim()).filter(x=>x);
- DB.ex[n]={p,s};saveDB();fillSelects();$('exName').value='';$('exP').value='';$('exS').value='';alert('Упражнение добавлено ✅');
+
+let DB = loadDB();
+function saveDB() { localStorage.setItem(KEY, JSON.stringify(DB)); }
+function allEX() { return Object.assign({}, BASE_EX, DB.ex); }
+
+/* --- Глобальное состояние текущей тренировки и редактора подходов --- */
+let curWorkout = [];       // Массив уже добавленных упражнений в тренировку
+let currentSetRows = [];   // Массив подходов для редактируемого упражнения: [{w: 50, r: 10}, ...]
+let period = 7, ch1 = null, ch2 = null, ch3 = null, lastSugg = null;
+
+function fillSelects() {
+  const A = allEX();
+  $('exSel').innerHTML = '';
+  for (const k in A) $('exSel').add(new Option(k, k));
+  $('progSel').innerHTML = '';
+  for (const k in A) $('progSel').add(new Option(k, k));
+  $('foodSel').innerHTML = '';
+  for (const k in DB.foods) $('foodSel').add(new Option(k, k));
+  unitChanged();
 }
-function tonnage(e){return e.s*e.w*e.r}
-function workoutMetrics(w){
- let tons=0,sets=0,reps=0;
- w.ex.forEach(e=>{tons+=tonnage(e);sets+=e.s;reps+=e.s*e.r});
- return{tons,sets,reps,tut:reps*3,est:reps*3+sets*120,kcal:Math.round(tons*0.025*(DB.profile.weight/75))};
+
+function fillGoals() {
+  $('gKcal').value = DB.goals.kcal || 0;
+  $('gP').value = DB.goals.p || 0;
+  $('gF').value = DB.goals.f || 0;
+  $('gC').value = DB.goals.c || 0;
 }
-function muscleTonnage(w){const m={};const A=allEX();w.ex.forEach(e=>{const d=A[e.n]||{p:"Другое",s:[]},t=tonnage(e),sh=d.s.length?0.3:0;m[d.p]=(m[d.p]||0)+t*(1-sh);d.s.forEach(sec=>{m[sec]=(m[sec]||0)+t*0.3/d.s.length})});return m}
-/* --- еда --- */
-function unitChanged(){
- const f=DB.foods[$('foodSel').value];
- if(f&&f.u){$('unitSel').style.display='';$('grams').placeholder=$('unitSel').value==='pcs'?'Сколько штук':'Граммы'}
- else{$('unitSel').style.display='none';$('grams').placeholder='Граммы готовой еды'}
+
+function saveGoals() {
+  DB.goals = {
+    kcal: Math.max(0, +$('gKcal').value || 0),
+    p: Math.max(0, +$('gP').value || 0),
+    f: Math.max(0, +$('gF').value || 0),
+    c: Math.max(0, +$('gC').value || 0)
+  };
+  saveDB();
+  renderMeals();
 }
-function addMeal(){
- const n=$('foodSel').value,f=DB.foods[n]||{},val=+$('grams').value;
- if(!val){alert('Сколько?');return}
- let g=val,pcs=null;
- if($('unitSel').style.display!=='none'&&$('unitSel').value==='pcs'){pcs=val;g=Math.round(val*(f.u||100))}
- (DB.meals[today()]=DB.meals[today()]||[]).push({n,g,pcs});
- $('grams').value='';saveDB();renderMeals();
+
+function showTab(t) {
+  ['w','n','a','d'].forEach(x => $('tab-' + x).style.display = (x === t ? '' : 'none'));
+  document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', ['w','n','a','d'][i] === t));
+  if (t === 'a') renderAnalytics();
+  if (t === 'n') { renderProfile(); renderMeals(); renderSup(); unitChanged(); }
 }
-function delMeal(i){DB.meals[today()].splice(i,1);saveDB();renderMeals()}
-function renderMeals(){
- const list=DB.meals[today()]||[];
- $('mealList').innerHTML=list.map((m,i)=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};const q=m.pcs?m.pcs+' шт ('+m.g+' г)':m.g+' г';return `<div class="item">${m.n}, ${q} — ${Math.round(f.k*m.g/100)} ккал (Б${Math.round(f.p*m.g/100)} Ж${Math.round(f.f*m.g/100)} У${Math.round(f.c*m.g/100)}) <button class="small del" onclick="delMeal(${i})">✕</button></div>`}).join('');
- let t={k:0,p:0,f:0,c:0};
- list.forEach(m=>{const f=DB.foods[m.n]||{k:0,p:0,f:0,c:0};t.k+=f.k*m.g/100;t.p+=f.p*m.g/100;t.f+=f.f*m.g/100;t.c+=f.c*m.g/100});
- const g=DB.goals;
- const bar=(n,v,goal,col)=>{const pct=goal?Math.min(100,v/goal*100):0,left=goal-v;return `<label>${n}: ${Math.round(v)} / ${goal} · ${left>0?'осталось '+Math.round(left):'цель закрыта ✅'}</label><div class="bar"><div style="width:${pct}%;background:${col}"></div></div>`};
- $('mealTotals').innerHTML=bar('Ккал',t.k,g.kcal,'#0d3b3b')+bar('Белок',t.p,g.p,'#27ae60')+bar('Жиры',t.f,g.f,'#e67e22')+bar('Углеводы',t.c,g.c,'#2980b9');
+
+/* --- Логика автосохранения и восстановления Черновика (Draft) --- */
+function saveDraft() {
+  try {
+    const draft = {
+      well: $('well').value,
+      rpe: $('rpe').value,
+      exSel: $('exSel').value,
+      curWorkout: curWorkout,
+      currentSetRows: currentSetRows
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch(e) {
+    console.error("Ошибка сохранения черновика:", e);
+  }
 }
-/* --- бады --- */
-function renderSup(){const t=today();DB.sup[t]=DB.sup[t]||[];$('supList').innerHTML=DB.supList.map(n=>`<label class="sup"><input type="checkbox" ${DB.sup[t].includes(n)?'checked':''} onchange="toggleSup('${n}',this.checked)"> ${n}</label>`).join('')}
-function toggleSup(n,on){const t=today();DB.sup[t]=DB.sup[t]||[];if(on){if(!DB.sup[t].includes(n))DB.sup[t].push(n)}else DB.sup[t]=DB.sup[t].filter(x=>x!==n);saveDB()}
-function addSup(){const n=$('newSup').value.trim();if(!n)return;DB.supList.push(n);$('newSup').value='';saveDB();renderSup()}
-function addFood(){
- const n=$('fName').value.trim();if(!n){alert('Название?');return}
- const o={k:+$('fK').value||0,p:+$('fP').value||0,f:+$('fF').value||0,c:+$('fC').value||0};
- const u=+$('fU').value;if(u>0)o.u=u;
- DB.foods[n]=o;saveDB();fillSelects();$('fName').value='';$('fU').value='';alert('Продукт добавлен ✅');
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) {
+      initDefaultSetRows();
+      return;
+    }
+    const draft = JSON.parse(raw);
+    if (draft && typeof draft === 'object') {
+      if (draft.well) $('well').value = draft.well;
+      if (draft.rpe) $('rpe').value = draft.rpe;
+      if (draft.exSel && $('exSel').querySelector(`option[value="${CSS.escape(draft.exSel)}"]`)) {
+        $('exSel').value = draft.exSel;
+      }
+      if (Array.isArray(draft.curWorkout)) curWorkout = draft.curWorkout;
+      if (Array.isArray(draft.currentSetRows) && draft.currentSetRows.length > 0) {
+        currentSetRows = draft.currentSetRows;
+      } else {
+        initDefaultSetRows();
+      }
+    } else {
+      initDefaultSetRows();
+    }
+  } catch(e) {
+    console.error("Ошибка загрузки черновика:", e);
+    initDefaultSetRows();
+  }
+  renderSetRowsUI();
+  renderExList();
 }
-/* --- аналитика --- */
-function setPeriod(p){period=p;renderAnalytics()}
-function renderAnalytics(){
- const from=Date.now()-period*86400000;
- const ws=DB.w.filter(w=>new Date(w.date)>=from);
- let tot=0,rpeSum=0,wellSum=0,tut=0,est=0,kcalB=0;const muscles={};
- ws.forEach(w=>{const m=workoutMetrics(w);tot+=m.tons;tut+=m.tut;est+=m.est;kcalB+=m.kcal;rpeSum+=w.rpe;wellSum+=w.well;const mt=muscleTonnage(w);for(const k in mt)muscles[k]=(muscles[k]||0)+mt[k]});
- const loadIdx=Math.round(ws.reduce((a,w)=>a+(workoutMetrics(w).tons/100)*(w.rpe/10),0));
- $('stats').innerHTML=`<div class="stat"><span>Тренировок</span><b>${ws.length}</b></div>
- <div class="stat"><span>Тренировок в неделю (среднее)</span><b>${workoutsPerWeek().toFixed(1)}</b></div>
- <div class="stat"><span>Общий тоннаж</span><b>${Math.round(tot).toLocaleString('ru')} кг</b></div>
- <div class="stat"><span>Время под нагрузкой</span><b>${Math.round(tut/60)} мин</b></div>
- <div class="stat"><span>Примерное время занятий</span><b>${Math.round(est/60)} мин</b></div>
- <div class="stat"><span>Примерный расход</span><b>${kcalB} ккал</b></div>
- <div class="stat"><span>Индекс нагрузки (ЦНС)</span><b>${loadIdx}</b></div>
- <div class="stat"><span>Средняя тяжесть</span><b>${ws.length?(rpeSum/ws.length).toFixed(1):'—'}</b></div>
- <div class="stat"><span>Среднее самочувствие</span><b>${ws.length?(wellSum/ws.length).toFixed(1):'—'}</b></div>`;
- const labels=Object.keys(muscles).sort((a,b)=>muscles[b]-muscles[a]);
- if(ch1)ch1.destroy();if(ch2)ch2.destroy();
- ch1=new Chart($('chartMuscles'),{type:'bar',data:{labels,datasets:[{label:'Тоннаж по группам, кг',data:labels.map(l=>Math.round(muscles[l]))}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
- const sorted=ws.slice().sort((a,b)=>a.date<b.date?-1:1);
- ch2=new Chart($('chartTonnage'),{type:'line',data:{labels:sorted.map(w=>w.date.slice(5)),datasets:[{label:'Тоннаж за тренировку, кг',data:sorted.map(w=>workoutMetrics(w).tons)}]}});
- renderProg();
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
 }
-function renderProg(){
- const n=$('progSel').value;
- const pts=DB.w.filter(w=>w.ex.some(e=>e.n===n)).map(w=>({d:w.date,mx:Math.max(...w.ex.filter(e=>e.n===n).map(e=>e.w))})).sort((a,b)=>a.d<b.d?-1:1);
- $('progBest').innerHTML=pts.length?`Лучший рабочий вес: <b>${Math.max(...pts.map(p=>p.mx))} кг</b>`:'Пока нет данных — сохрани пару тренировок с этим упражнением';
- if(ch3)ch3.destroy();
- ch3=new Chart($('chartProg'),{type:'line',data:{labels:pts.map(p=>p.d.slice(5)),datasets:[{label:'Макс. вес, кг',data:pts.map(p=>p.mx)}]}});
+
+function initDefaultSetRows() {
+  currentSetRows = [{ w: '', r: '' }];
 }
-/* --- данные --- */
-function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([localStorage.getItem(KEY)||'{}'],{type:'application/json'}));a.download='my-diary-backup.json';a.click()}
-function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{JSON.parse(r.result);localStorage.setItem(KEY,r.result);alert('Готово ✅');location.reload()}catch(e){alert('Не тот файл')}};r.readAsText(f)}
-fillSelects();fillGoals();renderProfile();
+
+/* --- Ввод подходов (Динамические строки) --- */
+function addSetRow() {
+  const lastSet = currentSetRows.length > 0 ? currentSetRows[currentSetRows.length - 1] : { w: '', r: '' };
+  currentSetRows.push({ w: lastSet.w, r: lastSet.r });
+  renderSetRowsUI();
+  saveDraft();
+  
+  // Фокус на поле ввода повторов нового подхода для удобства
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.set-reps-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function removeSetRow(index) {
+  if (currentSetRows.length <= 1) {
+    currentSetRows = [{ w: '', r: '' }];
+  } else {
+    currentSetRows.splice(index, 1);
+  }
+  renderSetRowsUI();
+  saveDraft();
+}
+
+function updateSetVal(index, field, value) {
+  if (currentSetRows[index]) {
+    currentSetRows[index][field] = value;
+    saveDraft();
+  }
+}
+
+function renderSetRowsUI() {
+  const container = $('setRowsContainer');
+  if (!container) return;
+
+  container.innerHTML = currentSetRows.map((set, i) => `
+    <div class="set-row">
+      <span class="set-num">Подход #${i + 1}</span>
+      <input type="number" class="set-weight-input" placeholder="Вес, кг" inputmode="decimal" step="any"
+             value="${set.w !== undefined ? set.w : ''}" 
+             oninput="updateSetVal(${i}, 'w', this.value)" onfocus="this.select()">
+      <input type="number" class="set-reps-input" placeholder="Повторы" inputmode="numeric"
+             value="${set.r !== undefined ? set.r : ''}" 
+             oninput="updateSetVal(${i}, 'r', this.value)" onfocus="this.select()"
+             onkeydown="if(event.key==='Enter'){ addSetRow(); }">
+      ${currentSetRows.length > 1 ? `<button class="btn-icon-del" onclick="removeSetRow(${i})">✕</button>` : '<div style="width:44px;"></div>'}
+    </div>
+  `).join('');
+}
+
+function flashError(elem) {
+  if (!elem) return;
+  elem.classList.add('error');
+  setTimeout(() => elem.classList.remove('error'), 1200);
+}
+
+function addExToWorkout() {
+  const exName = $('exSel').value;
+  const validSets = [];
+  let hasError = false;
+
+  const wInputs = document.querySelectorAll('.set-weight-input');
+  const rInputs = document.querySelectorAll('.set-reps-input');
+
+  currentSetRows.forEach((s, idx) => {
+    const w = parseFloat(s.w);
+    const r = parseInt(s.r, 10);
+
+    if (isNaN(w) || w <= 0) { flashError(wInputs[idx]); hasError = true; }
+    if (isNaN(r) || r <= 0) { flashError(rInputs[idx]); hasError = true; }
+
+    if (!hasError) {
+      validSets.push({ w, r });
+    }
+  });
+
+  if (hasError || validSets.length === 0) return;
+
+  curWorkout.push({
+    n: exName,
+    sets: validSets
+  });
+
+  // Сброс полей редактирования для следующего упражнения
+  initDefaultSetRows();
+  renderSetRowsUI();
+  renderExList();
+  saveDraft();
+}
+
+function removeExFromWorkout(index) {
+  curWorkout.splice(index, 1);
+  renderExList();
+  saveDraft();
+}
+
+function renderExList() {
+  $('exList').innerHTML = curWorkout.map((e, i) => {
+    let setsText = '';
+    let totalKg = 0;
+
+    if (Array.isArray(e.sets)) {
+      setsText = e.sets.map(s => `${s.w}кг×${s.r}`).join(', ');
+      totalKg = e.sets.reduce((sum, s) => sum + (s.w * s.r), 0);
+    } else {
+      // Поддержка старого формата
+      setsText = `${e.s}×${e.w}кг×${e.r}`;
+      totalKg = (e.s || 0) * (e.w || 0) * (e.r || 0);
+    }
+
+    return `<div class="item">
+      <span><b>${escapeHTML(e.n)}</b>: ${setsText} = <b>${totalKg} кг</b></span>
+      <button class="small del" onclick="removeExFromWorkout(${i})">✕</button>
+     </div>`;
+  }).join('');
+
+  $('saveBtn').disabled = curWorkout.length === 0;
+}
+
+function saveWorkout() {
+  if (!curWorkout.length) return;
+  const well = Math.min(10, Math.max(1, +$('well').value || 7));
+  const rpe = Math.min(10, Math.max(1, +$('rpe').value || 7));
+  
+  DB.w.push({ date: today(), well, rpe, ex: curWorkout });
+  
+  curWorkout = [];
+  initDefaultSetRows();
+  $('well').value = 7;
+  $('rpe').value = 7;
+  
+  renderSetRowsUI();
+  renderExList();
+  saveDB();
+  clearDraft();
+  alert('Тренировка сохранена ✅');
+}
+
+function addCustomEx() {
+  const nElem = $('exName'), pElem = $('exP');
+  const n = nElem.value.trim(), p = pElem.value.trim();
+  
+  let valid = true;
+  if (!n) { flashError(nElem); valid = false; }
+  if (!p) { flashError(pElem); valid = false; }
+  if (!valid) return;
+
+  const s = $('exS').value.split(',').map(x => x.trim()).filter(x => x);
+  DB.ex[n] = { p, s };
+  saveDB();
+  fillSelects();
+  nElem.value = ''; pElem.value = ''; $('exS').value = '';
+  alert('Упражнение добавлено ✅');
+}
+
+/* --- Хелперы расчёта тоннажа и параметров (совместимы с новым и старым форматом) --- */
+function tonnage(e) { 
+  if (Array.isArray(e.sets)) {
+    return e.sets.reduce((sum, s) => sum + ((+s.w || 0) * (+s.r || 0)), 0);
+  }
+  return (e.s || 0) * (e.w || 0) * (e.r || 0); 
+}
+
+function workoutMetrics(w) {
+  let tons = 0, sets = 0, reps = 0;
+  (w.ex || []).forEach(e => {
+    tons += tonnage(e);
+    if (Array.isArray(e.sets)) {
+      sets += e.sets.length;
+      reps += e.sets.reduce((rSum, s) => rSum + (+s.r || 0), 0);
+    } else {
+      sets += (e.s || 0);
+      reps += (e.s || 0) * (e.r || 0);
+    }
+  });
+  const userWeight = (DB.profile && DB.profile.weight) ? DB.profile.weight : 75;
+  return {
+    tons, sets, reps,
+    tut: reps * 3,
+    est: reps * 3 + sets * 120,
+    kcal: Math.round(tons * 0.025 * (userWeight / 75))
+  };
+}
+
+function muscleTonnage(w) {
+  const m = {};
+  const A = allEX();
+  (w.ex || []).forEach(e => {
+    if (!e || !e.n) return;
+    const d = A[e.n] || { p: "Другое", s: [] };
+    const secList = Array.isArray(d.s) ? d.s : [];
+    const t = tonnage(e);
+    const sh = secList.length ? 0.3 : 0;
+    const primaryGroup = d.p || "Другое";
+    m[primaryGroup] = (m[primaryGroup] || 0) + t * (1 - sh);
+    if (secList.length) {
+      secList.forEach(sec => { m[sec] = (m[sec] || 0) + (t * 0.3) / secList.length; });
+    }
+  });
+  return m;
+}
+
+/* --- Профиль и расчёты --- */
+function workoutsPerWeek() {
+  const from = Date.now() - 28 * 86400000;
+  return (DB.w || []).filter(w => w && w.date && new Date(w.date).getTime() >= from).length / 4;
+}
+
+function saveProfile() {
+  DB.profile = {
+    sex: $('pfSex').value,
+    age: Math.max(1, +$('pfAge').value || 25),
+    height: Math.max(1, +$('pfH').value || 180),
+    weight: Math.max(1, +$('pfW').value || 80),
+    goal: $('pfGoal').value
+  };
+  saveDB();
+  renderProfile();
+}
+
+function renderProfile() {
+  const p = DB.profile || {};
+  const sex = p.sex || 'm';
+  const age = Math.max(1, p.age || 25);
+  const height = Math.max(1, p.height || 180);
+  const weight = Math.max(1, p.weight || 80);
+  const goal = p.goal || 'maintain';
+
+  $('pfSex').value = sex;
+  $('pfAge').value = age;
+  $('pfH').value = height;
+  $('pfW').value = weight;
+  $('pfGoal').value = goal;
+
+  const bmr = sex === 'm' 
+    ? 10 * weight + 6.25 * height - 5 * age + 5 
+    : 10 * weight + 6.25 * height - 5 * age - 161;
+  const wpw = workoutsPerWeek();
+  const act = wpw <= 0 ? 1.2 : wpw < 2 ? 1.375 : wpw < 4 ? 1.45 : wpw < 6 ? 1.55 : 1.725;
+  const tdee = bmr * act;
+  const kcal = goal === 'gain' ? tdee * 1.1 : goal === 'cut' ? tdee * 0.85 : tdee;
+  const prot = Math.round(weight * (goal === 'cut' ? 2.2 : 2));
+  const fat = Math.round(weight * 1);
+  const carb = Math.max(0, Math.round((kcal - prot * 4 - fat * 9) / 4));
+  const gn = { maintain: 'поддержание', gain: 'набор', cut: 'снижение' }[goal] || '';
+
+  lastSugg = { kcal: Math.round(kcal), p: prot, f: fat, c: carb };
+  $('profileCalc').innerHTML = `Основной обмен: <b>${Math.round(bmr)}</b> ккал<br>С активностью (${wpw.toFixed(1)} трен/нед): <b>${Math.round(tdee)}</b> ккал<br>Цель «${gn}»: ≈ <b>${Math.round(kcal)}</b> ккал · Б ${prot} / Ж ${fat} / У ${carb}`;
+}
+
+function applyGoals() {
+  if (!lastSugg) return;
+  DB.goals = { kcal: lastSugg.kcal, p: lastSugg.p, f: lastSugg.f, c: lastSugg.c };
+  saveDB();
+  fillGoals();
+  renderMeals();
+  alert('Цели на день обновлены ✅');
+}
+
+/* --- Еда --- */
+function onFoodChange() {
+  unitChanged();
+  $('grams').focus();
+}
+
+function unitChanged() {
+  const f = DB.foods[$('foodSel').value];
+  if (f && f.u) {
+    $('unitSel').style.display = '';
+    $('grams').placeholder = $('unitSel').value === 'pcs' ? 'Количество штук' : 'Граммы готовой еды';
+  } else {
+    $('unitSel').style.display = 'none';
+    $('grams').placeholder = 'Граммы готовой еды';
+  }
+}
+
+function addMeal() {
+  const gElem = $('grams');
+  const n = $('foodSel').value;
+  if (!n || !DB.foods[n]) return;
+  const f = DB.foods[n];
+  const val = parseFloat(gElem.value);
+  
+  if (isNaN(val) || val <= 0) {
+    flashError(gElem);
+    return;
+  }
+
+  let g = val, pcs = null;
+  if ($('unitSel').style.display !== 'none' && $('unitSel').value === 'pcs') {
+    pcs = val;
+    g = Math.round(val * (f.u || 100));
+  }
+  const t = today();
+  DB.meals[t] = DB.meals[t] || [];
+  DB.meals[t].push({ n, g, pcs });
+  gElem.value = '';
+  saveDB();
+  renderMeals();
+}
+
+function delMeal(i) {
+  const t = today();
+  if (DB.meals[t] && DB.meals[t][i] !== undefined) {
+    DB.meals[t].splice(i, 1);
+    saveDB();
+    renderMeals();
+  }
+}
+
+function renderMeals() {
+  const list = DB.meals[today()] || [];
+  $('mealList').innerHTML = list.map((m, i) => {
+    const f = DB.foods[m.n] || { k: 0, p: 0, f: 0, c: 0 };
+    const q = m.pcs ? `${m.pcs} шт (${m.g} г)` : `${m.g} г`;
+    const cal = Math.round((f.k || 0) * (m.g || 0) / 100);
+    const prot = Math.round((f.p || 0) * (m.g || 0) / 100);
+    const fat = Math.round((f.f || 0) * (m.g || 0) / 100);
+    const carb = Math.round((f.c || 0) * (m.g || 0) / 100);
+    return `<div class="item">
+      <span><b>${escapeHTML(m.n)}</b> (${q}) — ${cal} ккал <small class="muted">Б${prot} Ж${fat} У${carb}</small></span>
+      <button class="small del" onclick="delMeal(${i})">✕</button>
+    </div>`;
+  }).join('');
+
+  let t = { k: 0, p: 0, f: 0, c: 0 };
+  list.forEach(m => {
+    const f = DB.foods[m.n] || { k: 0, p: 0, f: 0, c: 0 };
+    t.k += (f.k || 0) * (m.g || 0) / 100;
+    t.p += (f.p || 0) * (m.g || 0) / 100;
+    t.f += (f.f || 0) * (m.g || 0) / 100;
+    t.c += (f.c || 0) * (m.g || 0) / 100;
+  });
+
+  const g = DB.goals;
+  const bar = (name, val, goal, col) => {
+    const pct = goal > 0 ? Math.min(100, (val / goal) * 100) : 0;
+    const left = goal - val;
+    return `<div class="bar-container">
+      <label>
+        <span>${name}: <b>${Math.round(val)}</b> / ${goal}</span>
+        <span>${left > 0 ? 'Осталось ' + Math.round(left) : 'Цель выполнена ✅'}</span>
+      </label>
+      <div class="bar"><div style="width:${pct}%; background:${col}"></div></div>
+    </div>`;
+  };
+
+  $('mealTotals').innerHTML = 
+    bar('Калории', t.k, g.kcal, 'var(--ios-tint)') +
+    bar('Белки', t.p, g.p, 'var(--ios-green)') +
+    bar('Жиры', t.f, g.f, 'var(--ios-orange)') +
+    bar('Углеводы', t.c, g.c, 'var(--ios-purple)');
+}
+
+/* --- БАДы --- */
+function renderSup() {
+  const t = today();
+  DB.sup[t] = DB.sup[t] || [];
+  $('supList').innerHTML = DB.supList.map((n, idx) => 
+    `<label class="sup">
+      <span>${escapeHTML(n)}</span>
+      <input type="checkbox" ${DB.sup[t].includes(n) ? 'checked' : ''} onchange="toggleSup(${idx}, this.checked)">
+     </label>`
+  ).join('');
+}
+
+function toggleSup(idx, on) {
+  const t = today();
+  const name = DB.supList[idx];
+  if (!name) return;
+  DB.sup[t] = DB.sup[t] || [];
+  if (on) {
+    if (!DB.sup[t].includes(name)) DB.sup[t].push(name);
+  } else {
+    DB.sup[t] = DB.sup[t].filter(x => x !== name);
+  }
+  saveDB();
+}
+
+function addSup() {
+  const input = $('newSup');
+  const n = input.value.trim();
+  if (!n) { flashError(input); return; }
+  if (!DB.supList.includes(n)) DB.supList.push(n);
+  input.value = '';
+  saveDB();
+  renderSup();
+}
+
+function addFood() {
+  const nElem = $('fName');
+  const n = nElem.value.trim();
+  if (!n) { flashError(nElem); return; }
+  
+  const o = {
+    k: Math.max(0, +$('fK').value || 0),
+    p: Math.max(0, +$('fP').value || 0),
+    f: Math.max(0, +$('fF').value || 0),
+    c: Math.max(0, +$('fC').value || 0)
+  };
+  const u = +$('fU').value;
+  if (u > 0) o.u = u;
+  
+  DB.foods[n] = o;
+  saveDB();
+  fillSelects();
+  nElem.value = ''; $('fK').value = ''; $('fP').value = ''; $('fF').value = ''; $('fC').value = ''; $('fU').value = '';
+  alert('Продукт добавлен ✅');
+}
+
+/* --- Аналитика --- */
+function setPeriod(p) {
+  period = p;
+  [7, 30, 3650].forEach(x => {
+    const btn = $('btnPeriod' + x);
+    if (btn) btn.classList.toggle('active', x === p);
+  });
+  renderAnalytics();
+}
+
+function renderAnalytics() {
+  const from = Date.now() - period * 86400000;
+  const ws = (DB.w || []).filter(w => w && w.date && new Date(w.date).getTime() >= from);
+  
+  let tot = 0, rpeSum = 0, wellSum = 0, tut = 0, est = 0, kcalB = 0;
+  const muscles = {};
+
+  ws.forEach(w => {
+    const m = workoutMetrics(w);
+    tot += m.tons; tut += m.tut; est += m.est; kcalB += m.kcal;
+    rpeSum += (w.rpe || 0); wellSum += (w.well || 0);
+    const mt = muscleTonnage(w);
+    for (const k in mt) muscles[k] = (muscles[k] || 0) + mt[k];
+  });
+
+  const loadIdx = Math.round(ws.reduce((a, w) => a + (workoutMetrics(w).tons / 100) * ((w.rpe || 7) / 10), 0));
+
+  $('stats').innerHTML = `
+    <div class="stat"><span>Всего тренировок</span><b>${ws.length}</b></div>
+    <div class="stat"><span>Частота (в неделю)</span><b>${workoutsPerWeek().toFixed(1)}</b></div>
+    <div class="stat"><span>Общий тоннаж</span><b>${Math.round(tot).toLocaleString('ru')} кг</b></div>
+    <div class="stat"><span>Время под нагрузкой</span><b>${Math.round(tut / 60)} мин</b></div>
+    <div class="stat"><span>Примерное время занятий</span><b>${Math.round(est / 60)} мин</b></div>
+    <div class="stat"><span>Примерный расход</span><b>${kcalB} ккал</b></div>
+    <div class="stat"><span>Индекс нагрузки (ЦНС)</span><b>${loadIdx}</b></div>
+    <div class="stat"><span>Средняя тяжесть</span><b>${ws.length ? (rpeSum / ws.length).toFixed(1) : '—'}</b></div>
+    <div class="stat"><span>Среднее самочувствие</span><b>${ws.length ? (wellSum / ws.length).toFixed(1) : '—'}</b></div>
+  `;
+
+  const labels = Object.keys(muscles).sort((a, b) => muscles[b] - muscles[a]);
+  
+  ch1 = destroyChart(ch1, 'chartMuscles');
+  ch2 = destroyChart(ch2, 'chartTonnage');
+
+  const computedStyle = getComputedStyle(document.body);
+  const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
+  const tintColor = computedStyle.getPropertyValue('--ios-tint').trim() || '#007AFF';
+
+  ch1 = new Chart($('chartMuscles'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Тоннаж по группам, кг', data: labels.map(l => Math.round(muscles[l])), backgroundColor: tintColor, borderRadius: 6 }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: textColor } },
+        y: { ticks: { color: textColor } }
+      }
+    }
+  });
+
+  const sorted = ws.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  ch2 = new Chart($('chartTonnage'), {
+    type: 'line',
+    data: {
+      labels: sorted.map(w => (w.date || '').slice(5)),
+      datasets: [{ label: 'Тоннаж за тренировку, кг', data: sorted.map(w => workoutMetrics(w).tons), borderColor: tintColor, tension: 0.3 }]
+    },
+    options: {
+      scales: {
+        x: { ticks: { color: textColor } },
+        y: { ticks: { color: textColor } }
+      }
+    }
+  });
+
+  renderProg();
+}
+
+function renderProg() {
+  const n = $('progSel').value;
+  ch3 = destroyChart(ch3, 'chartProg');
+
+  if (!n) {
+    $('progBest').innerHTML = 'Упражнение не выбрано';
+    return;
+  }
+
+  const pts = (DB.w || []).filter(w => w && Array.isArray(w.ex) && w.ex.some(e => e.n === n))
+    .map(w => {
+      const exes = w.ex.filter(e => e.n === n);
+      let maxW = 0;
+      exes.forEach(e => {
+        if (Array.isArray(e.sets)) {
+          e.sets.forEach(s => { if ((+s.w || 0) > maxW) maxW = +s.w; });
+        } else {
+          if ((+e.w || 0) > maxW) maxW = +e.w;
+        }
+      });
+      return { d: w.date || '', mx: maxW };
+    })
+    .sort((a, b) => a.d.localeCompare(b.d));
+
+  if (!pts.length) {
+    $('progBest').innerHTML = 'Пока нет данных по этому упражнению';
+    return;
+  }
+
+  const bestWeight = Math.max(...pts.map(p => p.mx));
+  $('progBest').innerHTML = `Лучший рабочий вес: <b>${bestWeight} кг</b>`;
+
+  const computedStyle = getComputedStyle(document.body);
+  const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
+
+  ch3 = new Chart($('chartProg'), {
+    type: 'line',
+    data: {
+      labels: pts.map(p => p.d.slice(5)),
+      datasets: [{ label: 'Макс. вес, кг', data: pts.map(p => p.mx), borderColor: '#34C759', tension: 0.3 }]
+    },
+    options: {
+      scales: {
+        x: { ticks: { color: textColor } },
+        y: { ticks: { color: textColor } }
+      }
+    }
+  });
+}
+
+/* --- Резервное копирование и экспорт --- */
+function exportData() {
+  const dataStr = JSON.stringify(DB, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `workout-diary-backup-${today()}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importData(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const parsed = JSON.parse(r.result);
+      if (!parsed || typeof parsed !== 'object') throw new Error("Invalid structure");
+      localStorage.setItem(KEY, JSON.stringify(parsed));
+      alert('Данные успешно восстановлены! ✅');
+      location.reload();
+    } catch(e) {
+      alert('Ошибка чтения файла. Убедитесь, что это правильный JSON бэкап.');
+    } finally {
+      ev.target.value = '';
+    }
+  };
+  r.readAsText(f);
+}
+
+// Автосохранение черновика при закрытии / сворачивании вкладки браузера
+window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveDraft(); });
+window.addEventListener('pagehide', saveDraft);
+
+// Инициализация приложения при старте
+fillSelects();
+fillGoals();
+renderProfile();
+loadDraft();
 </script>
 </body>
 </html>
-
