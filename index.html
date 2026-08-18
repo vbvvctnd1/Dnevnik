@@ -3,49 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Дневник тренировок</title>
+<title>Силовой трекер атлета</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
     --ios-bg: #F2F2F7;
     --ios-card-bg: #FFFFFF;
     --ios-text: #000000;
+    --ios-text-secondary: #545458;
     --ios-subtext: #8E8E93;
     --ios-tint: #007AFF;
-    --ios-tint-light: rgba(0, 122, 255, 0.1);
+    --ios-tint-light: rgba(0, 122, 255, 0.10);
+    --ios-tint-border: rgba(0, 122, 255, 0.35);
     --ios-red: #FF3B30;
-    --ios-red-light: rgba(255, 59, 48, 0.1);
+    --ios-red-light: rgba(255, 59, 48, 0.12);
     --ios-green: #34C759;
     --ios-green-light: rgba(52, 199, 89, 0.12);
     --ios-orange: #FF9500;
     --ios-orange-light: rgba(255, 149, 0, 0.12);
+    --ios-yellow: #FFCC00;
+    --ios-yellow-light: rgba(255, 204, 0, 0.18);
+    --ios-soft-red: #FF8D85;
+    --ios-soft-red-light: rgba(255, 141, 133, 0.18);
     --ios-purple: #AF52DE;
     --ios-purple-light: rgba(175, 82, 222, 0.12);
-    --ios-separator: rgba(60, 60, 67, 0.12);
+    --ios-separator: #E5E5EA;
+    --ios-input-bg: #F2F2F7;
     --ios-radius-lg: 16px;
     --ios-radius-md: 12px;
     --ios-radius-sm: 8px;
-    --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ios-bg: #000000;
-      --ios-card-bg: #1C1C1E;
-      --ios-text: #FFFFFF;
-      --ios-subtext: #8E8E93;
-      --ios-tint: #0A84FF;
-      --ios-tint-light: rgba(10, 132, 255, 0.15);
-      --ios-red: #FF453A;
-      --ios-red-light: rgba(255, 69, 58, 0.15);
-      --ios-green: #30D158;
-      --ios-green-light: rgba(48, 209, 88, 0.15);
-      --ios-orange: #FF9F0A;
-      --ios-orange-light: rgba(255, 159, 10, 0.15);
-      --ios-purple: #BF5AF2;
-      --ios-purple-light: rgba(191, 90, 242, 0.15);
-      --ios-separator: rgba(84, 84, 88, 0.35);
-    }
+    --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   * {
@@ -59,54 +46,54 @@
     font-family: var(--ios-font);
     background-color: var(--ios-bg);
     color: var(--ios-text);
-    padding: calc(12px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)) 16px;
-    max-width: 600px;
+    padding: calc(14px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)) 16px;
+    max-width: 620px;
     margin: 0 auto;
     -webkit-font-smoothing: antialiased;
+    line-height: 1.35;
   }
 
   .app-header {
-    margin-bottom: 14px;
-    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
   h1 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
     color: var(--ios-text);
   }
 
   .tabs {
     display: flex;
-    background: rgba(120, 120, 128, 0.16);
-    border-radius: 10px;
-    padding: 2px;
-    margin-bottom: 16px;
-    overflow-x: auto;
+    background: #E5E5EA;
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 14px;
   }
 
   .tab {
     flex: 1;
-    min-width: 65px;
-    padding: 8px 0;
+    padding: 9px 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 9px;
     background: transparent;
-    color: var(--ios-text);
-    font-size: 13px;
-    font-weight: 500;
+    color: var(--ios-text-secondary);
+    font-size: 14px;
+    font-weight: 700;
     font-family: var(--ios-font);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    white-space: nowrap;
+    transition: all 0.2s ease;
     text-align: center;
   }
 
   .tab.active {
-    background: var(--ios-card-bg);
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.04);
+    background: #FFFFFF;
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
   }
 
   .card {
@@ -114,37 +101,40 @@
     border-radius: var(--ios-radius-lg);
     padding: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-    border: 0.5px solid var(--ios-separator);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--ios-separator);
+    position: relative;
   }
 
   h3 {
     margin-bottom: 12px;
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: var(--ios-text);
   }
 
   label {
     display: block;
     font-size: 13px;
-    color: var(--ios-subtext);
+    color: var(--ios-text-secondary);
     margin-bottom: 6px;
-    font-weight: 400;
+    font-weight: 600;
   }
 
   input, select {
     width: 100%;
     height: 44px;
     padding: 0 12px;
-    border: 1px solid transparent;
+    border: 1.5px solid transparent;
     border-radius: var(--ios-radius-md);
-    background-color: rgba(118, 118, 128, 0.08);
+    background-color: var(--ios-input-bg);
     color: var(--ios-text);
     font-size: 16px;
+    font-weight: 600;
     font-family: var(--ios-font);
     margin-bottom: 8px;
     outline: none;
@@ -153,148 +143,421 @@
     -webkit-appearance: none;
   }
 
-  input[type="range"] {
-    height: 36px;
-    padding: 0;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  input[type="range"]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 8px;
-    background: rgba(118, 118, 128, 0.2);
-    border-radius: 4px;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    background: var(--ios-tint);
-    margin-top: -8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  input::placeholder {
+    color: #8E8E93;
+    font-weight: 500;
+    opacity: 0.8;
   }
 
   select {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 36px;
+    background-position: right 14px center;
+    background-size: 14px;
+    padding-right: 38px;
+    font-weight: 700;
   }
 
   input:focus, select:focus {
-    background-color: var(--ios-card-bg);
+    background-color: #FFFFFF;
     border-color: var(--ios-tint);
   }
 
   input.error {
     border-color: var(--ios-red) !important;
     background-color: var(--ios-red-light) !important;
+    animation: shake 0.25s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
   }
 
   button {
     font-family: var(--ios-font);
     cursor: pointer;
-    transition: transform 0.1s ease, opacity 0.15s ease, background-color 0.2s ease;
+    transition: transform 0.08s ease, opacity 0.15s ease, background-color 0.2s ease;
     -webkit-user-select: none;
     user-select: none;
   }
 
   button:active:not(:disabled) {
-    transform: scale(0.98);
-    opacity: 0.8;
+    transform: scale(0.97);
+    opacity: 0.85;
   }
 
   button:disabled {
-    opacity: 0.4 !important;
+    opacity: 0.35 !important;
     cursor: not-allowed;
     transform: none !important;
   }
 
   button.act {
     width: 100%;
-    height: 46px;
+    height: 48px;
     border: none;
     border-radius: var(--ios-radius-md);
     background: var(--ios-tint);
     color: #FFFFFF;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
   }
 
   button.small {
     height: 36px;
     padding: 0 12px;
-    border: none;
+    border: 1px solid var(--ios-tint-border);
     border-radius: var(--ios-radius-md);
     background: var(--ios-tint-light);
     color: var(--ios-tint);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   button.small.active {
     background: var(--ios-tint);
     color: #FFFFFF;
+    border-color: var(--ios-tint);
   }
 
   button.del {
     background: var(--ios-red-light);
     color: var(--ios-red);
+    border-color: rgba(255, 59, 48, 0.3);
   }
 
-  .set-row {
+  /* ТАЙМЕР И СЕКУНДОМЕР */
+  .timer-card {
+    background: #FFFFFF;
+    border: 1px solid var(--ios-separator);
+    border-radius: var(--ios-radius-lg);
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .timer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .timer-box {
+    background: var(--ios-input-bg);
+    border-radius: var(--ios-radius-md);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .timer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ios-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .timer-display {
+    font-size: 26px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ios-text);
+    text-align: center;
+    margin: 4px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .timer-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .timer-actions button {
+    flex: 1;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+  }
+
+  .btn-timer-primary {
+    background: var(--ios-tint);
+    color: #FFFFFF;
+  }
+
+  .btn-timer-stop {
+    background: var(--ios-orange);
+    color: #FFFFFF;
+  }
+
+  .btn-timer-reset {
+    background: #E5E5EA;
+    color: #3A3A3C;
+  }
+
+  .custom-timer-inputs {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--ios-separator);
+  }
+
+  .custom-timer-inputs input {
+    width: 48px;
+    height: 30px;
+    font-size: 13px;
+    text-align: center;
+    padding: 0;
+    margin-bottom: 0;
+    font-weight: 700;
+    background: #FFFFFF;
+    border: 1px solid #D1D1D6;
+  }
+
+  .custom-timer-inputs span {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ios-text-secondary);
+  }
+
+  /* ПОИСК И ДРОПДАУН УПРАЖНЕНИЙ */
+  .search-container {
+    position: relative;
     margin-bottom: 8px;
   }
 
-  .set-num {
-    font-size: 13px;
-    font-weight: 600;
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input-wrapper input {
+    margin-bottom: 0;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .search-icon-badge {
+    position: absolute;
+    right: 12px;
+    pointer-events: none;
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  .exercise-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid var(--ios-separator);
+    border-radius: var(--ios-radius-md);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    display: none;
+  }
+
+  .exercise-dropdown.show {
+    display: block;
+  }
+
+  .dropdown-category-title {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 800;
     color: var(--ios-subtext);
-    min-width: 68px;
+    background: #F8F8FA;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--ios-separator);
+    border-top: 1px solid var(--ios-separator);
+  }
+
+  .dropdown-category-title:first-child {
+    border-top: none;
+  }
+
+  .dropdown-item {
+    padding: 10px 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ios-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #F2F2F7;
+  }
+
+  .dropdown-item:active, .dropdown-item.selected {
+    background: var(--ios-tint-light);
+    color: var(--ios-tint);
+  }
+
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+
+  /* СТРОКИ СЕТОВ */
+  .set-row {
+    display: grid;
+    grid-template-columns: 24px 62px 1fr 1fr 38px 28px;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    border-radius: var(--ios-radius-md);
+    background: #FAFAFC;
+    border: 1.5px solid #EBEBF0;
+    transition: all 0.2s ease;
+  }
+
+  .set-row.completed-set {
+    background: #F2FBF4;
+    border-color: rgba(52, 199, 89, 0.35);
+  }
+
+  .set-row.warmup-set {
+    background: #F9F9FB;
+    border-color: #E0E0E6;
+  }
+
+  .set-num-badge {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ios-text-secondary);
+    text-align: center;
+  }
+
+  .set-status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    border: 1.5px solid transparent;
+  }
+
+  .set-status-pill.is-working {
+    background: var(--ios-green-light);
+    color: #117826;
+    border-color: rgba(52, 199, 89, 0.4);
+  }
+
+  .set-status-pill.is-warmup {
+    background: #EAEAEF;
+    color: #636366;
+    border-color: #D1D1D6;
   }
 
   .set-row input {
     margin-bottom: 0;
+    height: 38px;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .btn-check-set {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #C7C7CC;
+    background: #E5E5EA;
+    color: #8E8E93;
+    font-size: 17px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-check-set.checked {
+    background: var(--ios-green);
+    border-color: var(--ios-green);
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(52, 199, 89, 0.35);
+    transform: scale(1.05);
   }
 
   .btn-icon-del {
-    height: 44px;
-    width: 44px;
-    min-width: 44px;
+    height: 32px;
+    width: 28px;
     border: none;
-    border-radius: var(--ios-radius-md);
-    background: var(--ios-red-light);
-    color: var(--ios-red);
+    border-radius: 6px;
+    background: transparent;
+    color: #C7C7CC;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
+  .btn-icon-del:hover {
+    color: var(--ios-red);
+    background: var(--ios-red-light);
+  }
+
+  .smart-hint-box {
+    background: #F0F6FF;
+    border: 1px solid #CDE2FF;
+    border-radius: var(--ios-radius-md);
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #0055CC;
+    font-weight: 600;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+  }
+
   .row {
     display: flex;
     gap: 8px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .row > * {
     flex: 1;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .item {
-    background: rgba(118, 118, 128, 0.08);
+    background: #F8F8FA;
     border-radius: var(--ios-radius-md);
     padding: 10px 12px;
     margin: 8px 0;
@@ -303,10 +566,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    border: 1px solid #ECECEF;
   }
 
   .item button {
-    height: 28px;
+    height: 30px;
     padding: 0 10px;
     font-size: 12px;
     border-radius: 6px;
@@ -316,9 +580,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 9px 0;
-    border-bottom: 0.5px solid var(--ios-separator);
-    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ios-separator);
+    font-size: 14.5px;
   }
 
   .stat:last-child {
@@ -326,10 +590,9 @@
   }
 
   .muted {
-    color: var(--ios-subtext);
-    font-size: 12.5px;
+    color: var(--ios-text-secondary);
+    font-size: 13px;
     line-height: 1.45;
-    margin-top: 6px;
   }
 
   .analytics-grid {
@@ -340,169 +603,275 @@
   }
 
   .analytics-box {
-    background: rgba(118, 118, 128, 0.08);
+    background: var(--ios-input-bg);
     border-radius: var(--ios-radius-md);
-    padding: 10px;
+    padding: 12px;
+    border: 1px solid #EBEBF0;
   }
 
   .analytics-box .title {
-    font-size: 11px;
+    font-size: 11.5px;
     text-transform: uppercase;
-    font-weight: 600;
-    color: var(--ios-subtext);
+    font-weight: 700;
+    color: var(--ios-text-secondary);
     margin-bottom: 4px;
   }
 
   .analytics-box .val {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 800;
     color: var(--ios-text);
   }
 
   .analytics-box .sub {
-    font-size: 11.5px;
-    color: var(--ios-subtext);
+    font-size: 12px;
+    color: var(--ios-text-secondary);
     margin-top: 2px;
+    font-weight: 500;
   }
 
   .insight-badge {
-    padding: 10px 12px;
+    padding: 11px 13px;
     border-radius: var(--ios-radius-md);
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 13.5px;
+    line-height: 1.45;
     margin-bottom: 8px;
-    border: 0.5px solid transparent;
+    font-weight: 500;
+    border: 1px solid transparent;
   }
-  .insight-good { background: var(--ios-green-light); color: var(--ios-green); border-color: rgba(52, 199, 89, 0.3); }
-  .insight-warn { background: var(--ios-orange-light); color: var(--ios-orange); border-color: rgba(255, 149, 0, 0.3); }
-  .insight-info { background: var(--ios-tint-light); color: var(--ios-tint); border-color: rgba(0, 122, 255, 0.3); }
+  .insight-good { background: var(--ios-green-light); color: #117826; border-color: rgba(52, 199, 89, 0.4); }
+  .insight-warn { background: var(--ios-orange-light); color: #9E5800; border-color: rgba(255, 149, 0, 0.4); }
+  .insight-info { background: var(--ios-tint-light); color: #004DB3; border-color: rgba(0, 122, 255, 0.3); }
 
   .history-entry {
-    border-bottom: 0.5px solid var(--ios-separator);
-    padding: 12px 0;
+    border-bottom: 1px solid var(--ios-separator);
+    padding: 14px 0;
   }
   .history-entry:last-child { border-bottom: none; }
   .history-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
-  .bar-container {
-    margin-bottom: 12px;
+  .badge-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
   }
 
-  .bar-container label {
+  .view-toggle-container {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
+    background: #E5E5EA;
+    border-radius: 8px;
+    padding: 2px;
+    margin-bottom: 10px;
+    width: fit-content;
   }
 
-  .bar {
-    height: 8px;
-    background: rgba(118, 118, 128, 0.16);
-    border-radius: 4px;
-    overflow: hidden;
+  .view-toggle-btn {
+    border: none;
+    background: transparent;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ios-text-secondary);
   }
 
-  .bar > div {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  .view-toggle-btn.active {
+    background: #FFFFFF;
+    color: #000000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
   }
 
-  .sup {
+  /* RP-ШКАЛА */
+  .rp-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin: 10px 0;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .rp-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ios-input-bg);
+    padding: 6px 8px;
+    border-radius: 6px;
+  }
+
+  .rp-indicator-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .rp-muscle-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rp-muscle-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 0.5px solid var(--ios-separator);
-    font-size: 15px;
-    cursor: pointer;
+    padding: 9px 12px;
+    border-radius: var(--ios-radius-md);
+    font-size: 13px;
+    border: 1px solid transparent;
   }
 
-  .sup:last-child {
-    border-bottom: none;
+  .rp-card-mv {
+    background: var(--ios-soft-red-light);
+    border-color: rgba(255, 141, 133, 0.4);
+    color: #9C2A20;
   }
 
-  .sup input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    margin: 0;
-    accent-color: var(--ios-tint);
-    cursor: pointer;
+  .rp-card-mev {
+    background: var(--ios-yellow-light);
+    border-color: rgba(255, 204, 0, 0.45);
+    color: #8A6800;
+  }
+
+  .rp-card-mav {
+    background: var(--ios-green-light);
+    border-color: rgba(52, 199, 89, 0.35);
+    color: #117826;
+  }
+
+  .rp-card-mrv {
+    background: var(--ios-red-light);
+    border-color: rgba(255, 59, 48, 0.45);
+    color: #B31B12;
+  }
+
+  .chart-fallback-notice {
+    padding: 14px;
+    background: #F8F8FA;
+    border: 1px dashed var(--ios-separator);
+    border-radius: var(--ios-radius-md);
+    color: var(--ios-subtext);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
   }
 
   canvas {
     max-width: 100%;
-    margin-top: 8px;
+    margin-top: 10px;
   }
 </style>
 </head>
 <body>
 
 <div class="app-header">
-  <h1>💪 Мой дневник</h1>
+  <h1>⚡ Силовой трекер</h1>
 </div>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('w')">Зал</button>
   <button class="tab" onclick="showTab('h')">История</button>
   <button class="tab" onclick="showTab('a')">Аналитика</button>
-  <button class="tab" onclick="showTab('n')">Еда</button>
-  <button class="tab" onclick="showTab('d')">Данные</button>
 </div>
 
 <!-- ВКЛАДКА: ЗАЛ -->
 <div id="tab-w">
+
+ <!-- СЕКУНДОМЕР И НАСТРАИВАЕМЫЙ ТАЙМЕР -->
+ <div class="timer-card">
+  <div class="timer-grid">
+    <!-- Секундомер -->
+    <div class="timer-box">
+      <div class="timer-header">
+        <span>⏱ СЕКУНДОМЕР</span>
+      </div>
+      <div class="timer-display" id="swDisplay">00:00</div>
+      <div class="timer-actions">
+        <button id="swToggleBtn" class="btn-timer-primary" onclick="toggleStopwatch()">Старт</button>
+        <button class="btn-timer-reset" onclick="resetStopwatch()">Сброс</button>
+      </div>
+    </div>
+
+    <!-- Таймер отдыха -->
+    <div class="timer-box">
+      <div class="timer-header">
+        <span>⏳ ОТДЫХ</span>
+        <span id="timerStatus" style="color:var(--ios-tint); font-size:11px; font-weight:700;">Готов</span>
+      </div>
+      <div class="timer-display" id="cdDisplay">01:30</div>
+      <div class="timer-actions">
+        <button id="cdToggleBtn" class="btn-timer-primary" onclick="toggleCountdown()">Старт</button>
+        <button class="btn-timer-reset" onclick="resetCountdown()">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ручной ввод минут и секунд -->
+  <div class="custom-timer-inputs">
+    <span>Установка отдыха:</span>
+    <input type="text" id="cdMin" inputmode="numeric" placeholder="Мин" value="1" onfocus="this.select()" oninput="handleNumericInput(this, 0, 59, onCustomTimerChange)">
+    <span style="font-weight:bold;">:</span>
+    <input type="text" id="cdSec" inputmode="numeric" placeholder="Сек" value="30" onfocus="this.select()" oninput="handleNumericInput(this, 0, 59, onCustomTimerChange)">
+    <button class="small" style="height:30px; font-size:11.5px; padding:0 8px;" onclick="applyCustomTimer()">Задать</button>
+  </div>
+ </div>
+
+ <!-- ПАРАМЕТРЫ САМОЧУВСТВИЯ И ВЕСА ТЕЛА -->
  <div class="card">
   <div class="row">
    <div>
     <label>Самочувствие (1–10)</label>
-    <input type="text" id="well" inputmode="numeric" placeholder="7" value="7" onfocus="this.select()" oninput="handleNumericInput(this, 1, 10, saveDraft)" onblur="validateInputOnBlur(this, 1, 10, 7, saveDraft)">
+    <input type="text" id="well" inputmode="numeric" placeholder="8" value="8" onfocus="this.select()" oninput="handleNumericInput(this, 1, 10, saveDraft)" onblur="validateInputOnBlur(this, 1, 10, 8, saveDraft)">
    </div>
    <div>
     <label>Текущий вес тела, кг</label>
-    <input type="text" id="curW" inputmode="decimal" placeholder="80" onfocus="this.select()" oninput="handleDecimalInput(this, onCurWInput)" onblur="validateDecimalOnBlur(this, 30, 300, (DB.profile && DB.profile.weight)||80, onCurWInput)">
+    <input type="text" id="curW" inputmode="decimal" placeholder="80" onfocus="this.select()" oninput="handleDecimalInput(this, onCurWInput)" onblur="validateDecimalOnBlur(this, 30, 300, 80, onCurWInput)">
    </div>
   </div>
  </div>
 
+ <!-- ДОБАВЛЕНИЕ УПРАЖНЕНИЙ С ЖИВЫМ ПОИСКОМ -->
  <div class="card">
-  <h3>Упражнения</h3>
-  <label>Выберите упражнение</label>
-  <select id="exSel" onchange="onExChange()"></select>
+  <h3>Упражнение и подходы</h3>
+  <label>Выберите или найдите упражнение</label>
   
-  <div id="setRowsContainer" style="margin-top: 10px;"></div>
+  <div class="search-container">
+    <div class="search-input-wrapper">
+      <input type="text" id="exSearchInput" placeholder="Нажмите для выбора или введите имя..." autocomplete="off" onfocus="openExDropdown()" oninput="filterExDropdown()">
+      <span class="search-icon-badge">🔍</span>
+    </div>
+    <div id="exDropdownList" class="exercise-dropdown"></div>
+  </div>
+  
+  <div id="smartHint" class="smart-hint-box">💡 Выберите упражнение</div>
+
+  <div id="setRowsContainer" style="margin-top: 8px;"></div>
   
   <div class="row" style="margin-top: 10px;">
    <button class="small" onclick="addSetRow()">+ Подход</button>
    <button class="small active" onclick="addExToWorkout()">+ В тренировку</button>
   </div>
 
-  <div id="exList" style="margin-top: 12px;"></div>
+  <div id="exList" style="margin-top: 14px;"></div>
  </div>
 
+ <!-- СИСТЕМНАЯ НАГРУЗКА И СОХРАНЕНИЕ -->
  <div class="card">
-  <label for="rpe">Тяжесть / RPE: <span id="rpeVal" style="font-weight:600; color:var(--ios-tint);">7 — Умеренно (3 повт. в запасе)</span></label>
-  <input type="range" id="rpe" min="1" max="10" step="0.5" value="7" oninput="updateRPEUI(); saveDraft();">
-  
-  <div id="cnsLiveEstimate" style="font-size: 13px; font-weight: 500; color: var(--ios-subtext); margin-top: 6px; line-height: 1.4;">
-    Оценка системной нагрузки: 0.0 (Низкая)
+  <div id="cnsLiveEstimate" style="font-size: 13.5px; font-weight: 600; color: var(--ios-text-secondary); line-height: 1.45;">
+    Оценка ЦНС: 0.0 (Низкая)
   </div>
 
   <button id="saveBtn" class="act" style="margin-top: 14px;" onclick="saveWorkout()" disabled>Сохранить тренировку</button>
- </div>
-
- <div class="card">
-  <h3>➕ Своё упражнение</h3>
-  <input id="exName" placeholder="Название упражнения">
-  <div class="row">
-   <input id="exP" placeholder="Главная мышца (целевая)">
-   <input id="exS" placeholder="Вторичные (через запятую)">
-  </div>
-  <button class="small" onclick="addCustomEx()">Добавить упражнение</button>
  </div>
 </div>
 
@@ -510,8 +879,20 @@
 <div id="tab-h" style="display:none">
   <div class="card">
     <h3>📋 Журнал тренировок</h3>
-    <p class="muted" style="margin-bottom: 12px;">Полная история ваших занятий, разбивка по сетам и сравнение с предыдущими результатами.</p>
+    <p class="muted" style="margin-bottom: 12px;">История тренировок с зафиксированным весом тела на дату сессии и разделением на рабочие и разминочные сеты.</p>
     <div id="historyList"></div>
+  </div>
+
+  <!-- Блок управления данными / Бэкап -->
+  <div class="card">
+    <h3>💾 Резервное копирование данных</h3>
+    <p class="muted" style="margin-bottom:12px;">Данные хранятся локально в браузере с защитой от сбоев. Автобэкап скачивается каждые 5 тренировок.</p>
+    <div class="row">
+      <button class="small active" onclick="exportData()">📥 Экспорт (Бэкап)</button>
+      <button class="small" onclick="$('impFile').click()">📤 Импорт (Восстановить)</button>
+      <input type="file" id="impFile" accept=".json" style="display:none;" onchange="importData(event)">
+    </div>
+    <button class="small del" style="width:100%; margin-top:10px;" onclick="wipeAllData()">Удалить все данные</button>
   </div>
 </div>
 
@@ -519,148 +900,107 @@
 <div id="tab-a" style="display:none">
  <div class="card">
   <div class="row">
-   <button id="btnPeriod7" class="small active" onclick="setPeriod(7)">Неделя</button>
-   <button id="btnPeriod30" class="small" onclick="setPeriod(30)">Месяц</button>
-   <button id="btnPeriod3650" class="small" onclick="setPeriod(3650)">Всё время</button>
+   <button id="btnPeriod7" class="small active" onclick="setPeriod(7)">7 дн</button>
+   <button id="btnPeriod30" class="small" onclick="setPeriod(30)">30 дн</button>
+   <button id="btnPeriod90" class="small" onclick="setPeriod(90)">3 мес</button>
+   <button id="btnPeriod3650" class="small" onclick="setPeriod(3650)">Все</button>
   </div>
-  <div id="stats" style="margin-top:10px;"></div>
+  <div id="stats" style="margin-top:12px;"></div>
  </div>
 
  <div class="card">
-  <h3>💡 Тренировочные выводы и рекомендации</h3>
+  <h3>💡 Тренировочные выводы</h3>
   <div id="insightsList"></div>
  </div>
 
  <div class="card">
-  <h3>📈 Детальный анализ упражнения</h3>
+  <h3>📈 Прогрессия в упражнении (1RM и рабочий вес)</h3>
   <select id="progSel" onchange="renderProg()"></select>
   <div id="progDetailView" style="margin-top: 8px;"></div>
   <canvas id="chartProg"></canvas>
+  <div id="chartProgFallback" class="chart-fallback-notice" style="display:none;">📊 График прогрессии недоступен без подключения к интернету</div>
  </div>
 
  <div class="card">
-  <h3>📊 Распределение нагрузки по мышцам (кг)</h3>
-  <canvas id="chartMuscles"></canvas>
- </div>
-
- <div class="card">
-  <h3>🏋️ Общий тоннаж и интенсивность</h3>
+  <h3>🏋️ Рабочий тоннаж за тренировку</h3>
+  <p class="muted">Чистый тоннаж только зафиксированных рабочих подходов (без разминки).</p>
   <canvas id="chartTonnage"></canvas>
+  <div id="chartTonnageFallback" class="chart-fallback-notice" style="display:none;">📊 График тоннажа недоступен без подключения к интернету</div>
+ </div>
+
+ <!-- ОБЪЕМЫ МЫШЕЧНЫХ ГРУПП И ОЦЕНКА ПО RP -->
+ <div class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <h3 style="margin-bottom:0;">📊 Нагрузка по мышечным группам</h3>
+  </div>
+  <div class="view-toggle-container">
+    <button id="btnMusModeSets" class="view-toggle-btn active" onclick="setMuscleViewMode('sets')">Рабочие сеты (RP)</button>
+    <button id="btnMusModeTonnage" class="view-toggle-btn" onclick="setMuscleViewMode('tonnage')">Тоннаж (кг)</button>
+  </div>
+
+  <div id="rpLegendBox" class="rp-legend">
+    <div class="rp-legend-item"><span class="rp-indicator-dot" style="background:#FF8D85;"></span><span>MV &lt; 6 (Поддержание)</span></div>
+    <div class="rp-legend-item"><span class="rp-indicator-dot" style="background:#FFCC00;"></span><span>MEV 6–10 (Мин. объем)</span></div>
+    <div class="rp-legend-item"><span class="rp-indicator-dot" style="background:#34C759;"></span><span>MAV 10–20 (Оптимум)</span></div>
+    <div class="rp-legend-item"><span class="rp-indicator-dot" style="background:#FF3B30;"></span><span>MRV &gt; 20 (Перегрузка)</span></div>
+  </div>
+
+  <canvas id="chartMuscles"></canvas>
+  <div id="chartMusclesFallback" class="chart-fallback-notice" style="display:none;">📊 График объема мышц недоступен без подключения к интернету</div>
+
+  <div id="rpMuscleDetails" class="rp-muscle-list"></div>
  </div>
 
  <div class="card">
-  <h3>🧠 Системная / нервно-мышечная нагрузка</h3>
+  <h3>🧠 Системная нагрузка на ЦНС</h3>
   <canvas id="chartCNS"></canvas>
- </div>
-</div>
-
-<!-- ВКЛАДКА: ЕДА -->
-<div id="tab-n" style="display:none">
- <div class="card">
-  <h3>👤 Мои данные</h3>
-  <div class="row">
-   <div>
-    <label>Пол</label>
-    <select id="pfSex" onchange="updateProfileField('sex', this.value)"><option value="m">М</option><option value="f">Ж</option></select>
-   </div>
-   <div>
-    <label>Возраст</label>
-    <input type="text" id="pfAge" inputmode="numeric" placeholder="25" onfocus="this.select()" oninput="handleNumericInput(this, 1, 120, null)" onblur="validateInputOnBlur(this, 10, 100, 25, (val) => updateProfileField('age', val))">
-   </div>
-  </div>
-  <div class="row">
-   <div>
-    <label>Рост, см</label>
-    <input type="text" id="pfH" inputmode="numeric" placeholder="180" onfocus="this.select()" oninput="handleNumericInput(this, 50, 260, null)" onblur="validateInputOnBlur(this, 100, 240, 180, (val) => updateProfileField('height', val))">
-   </div>
-   <div>
-    <label>Вес, кг</label>
-    <input type="text" id="pfW" inputmode="decimal" placeholder="80" onfocus="this.select()" oninput="handleDecimalInput(this, null)" onblur="validateDecimalOnBlur(this, 30, 300, 80, (val) => { updateProfileField('weight', val); if($('curW')) $('curW').value=val; })">
-   </div>
-  </div>
-  <label>Цель</label>
-  <select id="pfGoal" onchange="updateProfileField('goal', this.value)">
-   <option value="maintain">Поддержание веса</option>
-   <option value="gain">Набор массы</option>
-   <option value="cut">Снижение веса</option>
-  </select>
-  <div id="profileCalc" class="item" style="display:block; line-height:1.5;"></div>
-  <button class="small" style="width:100%; margin-top:8px;" onclick="applyGoals()">Применить эти цифры к целям дня</button>
- </div>
-
- <div class="card">
-  <h3>🎯 Цели на день</h3>
-  <div class="row">
-   <div><label>Ккал</label><input type="text" id="gKcal" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 10000, null)" onblur="validateInputOnBlur(this, 500, 7000, 2500, saveGoals)"></div>
-   <div><label>Белки, г</label><input type="text" id="gP" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 600, null)" onblur="validateInputOnBlur(this, 10, 400, 160, saveGoals)"></div>
-   <div><label>Жиры, г</label><input type="text" id="gF" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 400, null)" onblur="validateInputOnBlur(this, 10, 300, 80, saveGoals)"></div>
-   <div><label>Углев., г</label><input type="text" id="gC" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 1000, null)" onblur="validateInputOnBlur(this, 10, 800, 300, saveGoals)"></div>
-  </div>
- </div>
-
- <div class="card">
-  <h3>🍽 Съедено сегодня</h3>
-  <select id="foodSel" onchange="onFoodChange()"></select>
-  <div class="row">
-   <input type="text" id="grams" placeholder="Граммы готовой еды" inputmode="decimal" onfocus="this.select()" onkeydown="if(event.key==='Enter') addMeal()">
-   <select id="unitSel" style="display:none" onchange="unitChanged()">
-    <option value="pcs">штуки</option>
-    <option value="g">граммы</option>
-   </select>
-   <button class="small" style="max-width: 60px;" onclick="addMeal()">+</button>
-  </div>
-  <div id="mealList"></div>
-  <div id="mealTotals" style="margin-top:12px;"></div>
- </div>
-
- <div class="card">
-  <h3>💊 БАДы сегодня</h3>
-  <div id="supList"></div>
-  <div class="row" style="margin-top:12px;">
-   <input id="newSup" placeholder="Добавить свой БАД" onkeydown="if(event.key==='Enter') addSup()">
-   <button class="small" style="max-width:60px;" onclick="addSup()">+</button>
-  </div>
- </div>
-
- <div class="card">
-  <h3>➕ Свой продукт (на 100 г)</h3>
-  <input id="fName" placeholder="Название">
-  <div class="row">
-   <input type="text" id="fK" placeholder="Ккал" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 1000, null)">
-   <input type="text" id="fP" placeholder="Белки" inputmode="decimal" onfocus="this.select()" oninput="handleDecimalInput(this, null)">
-   <input type="text" id="fF" placeholder="Жиры" inputmode="decimal" onfocus="this.select()" oninput="handleDecimalInput(this, null)">
-   <input type="text" id="fC" placeholder="Углев." inputmode="decimal" onfocus="this.select()" oninput="handleDecimalInput(this, null)">
-  </div>
-  <input type="text" id="fU" placeholder="Вес 1 штуки в г (напр. 55)" inputmode="numeric" onfocus="this.select()" oninput="handleNumericInput(this, 0, 2000, null)">
-  <button class="small" onclick="addFood()">Добавить продукт</button>
- </div>
-</div>
-
-<!-- ВКЛАДКА: ДАННЫЕ -->
-<div id="tab-d" style="display:none">
- <div class="card">
-  <p class="muted" style="margin-bottom:12px;">Данные хранятся локально на вашем устройстве. Рекомендуется периодически сохранять резервную копию.</p>
-  <button class="act" onclick="exportData()">Скачать копию (бэкап)</button>
-  <br>
-  <label>Восстановить из копии</label>
-  <input type="file" id="imp" accept=".json" onchange="importData(event)">
-  <br>
-  <button class="act del" onclick="if(confirm('Вы уверены? Все сохраненные данные будут удалены безвозвратно!')){localStorage.removeItem('myGymV2');localStorage.removeItem('myGymV2_draft');location.reload()}">Удалить все данные</button>
+  <div id="chartCNSFallback" class="chart-fallback-notice" style="display:none;">📊 График ЦНС недоступен без подключения к интернету</div>
  </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 const KEY = 'myGymV2';
+const BACKUP_KEY = 'myGymV2:backup';
 const DRAFT_KEY = 'myGymV2_draft';
 
-// Ключевые слова для калистеники / веса тела
-const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'приседания со своим весом'];
+const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'приседания со своим весом', 'выходы'];
 
 function isBodyweightEx(name) {
   if (!name) return false;
   const lower = name.toLowerCase();
   return BW_KEYWORDS.some(kw => lower.includes(kw));
+}
+
+function isDumbbellEx(name) {
+  if (!name) return false;
+  return name.toLowerCase().includes('гантел');
+}
+
+function sanitizeNumber(val, defaultVal = 0) {
+  if (val === null || val === undefined || val === '') return defaultVal;
+  const n = typeof val === 'string' ? parseFloat(val.replace(',', '.')) : Number(val);
+  return isNaN(n) ? defaultVal : n;
+}
+
+function getValidBodyWeight(val, fallbackVal = 80) {
+  const n = typeof val === 'string' ? parseFloat(val.replace(',', '.')) : Number(val);
+  if (!isNaN(n) && n > 0) return n;
+  const fb = typeof fallbackVal === 'string' ? parseFloat(fallbackVal.replace(',', '.')) : Number(fallbackVal);
+  if (!isNaN(fb) && fb > 0) return fb;
+  return 80;
+}
+
+function getEffectiveWeight(exName, rawWeight, bodyWeight = 80) {
+  const w = sanitizeNumber(rawWeight, 0);
+  const bw = getValidBodyWeight(bodyWeight, 80);
+  if (isBodyweightEx(exName)) {
+    return bw + w;
+  }
+  if (isDumbbellEx(exName)) {
+    return w * 2;
+  }
+  return w;
 }
 
 function escapeHTML(str) {
@@ -670,13 +1010,6 @@ function escapeHTML(str) {
   })[m]);
 }
 
-function sanitizeNumber(val, defaultVal = 0) {
-  if (val === null || val === undefined || val === '') return defaultVal;
-  const n = typeof val === 'string' ? parseFloat(val.replace(',', '.')) : Number(val);
-  return isNaN(n) ? defaultVal : n;
-}
-
-/* Безопасная обработка ввода цифр без затирания при стирании Backspace */
 function handleNumericInput(el, min, max, callback) {
   let v = el.value.replace(/[^0-9]/g, '');
   el.value = v;
@@ -685,9 +1018,10 @@ function handleNumericInput(el, min, max, callback) {
 
 function validateInputOnBlur(el, min, max, defVal, callback) {
   let v = parseInt(el.value, 10);
-  if (isNaN(v)) v = defVal;
-  if (min !== undefined && v < min) v = min;
-  if (max !== undefined && v > max) v = max;
+  if (isNaN(v) || (min !== undefined && v < min) || (max !== undefined && v > max)) {
+    flashError(el);
+    v = isNaN(v) ? defVal : (min !== undefined && v < min ? min : max);
+  }
   el.value = v;
   if (callback) callback(v);
 }
@@ -702,219 +1036,130 @@ function handleDecimalInput(el, callback) {
 
 function validateDecimalOnBlur(el, min, max, defVal, callback) {
   let v = parseFloat(el.value);
-  if (isNaN(v)) v = defVal;
-  if (min !== undefined && v < min) v = min;
-  if (max !== undefined && v > max) v = max;
+  if (isNaN(v) || (min !== undefined && v < min) || (max !== undefined && v > max)) {
+    flashError(el);
+    v = isNaN(v) ? defVal : (min !== undefined && v < min ? min : max);
+  }
   el.value = v;
   if (callback) callback(v);
 }
 
+function flashError(elem) {
+  if (!elem) return;
+  elem.classList.add('error');
+  setTimeout(() => elem.classList.remove('error'), 900);
+}
+
+/* =========================================================================
+   2. ЕДИНЫЙ ЗВУКОВОЙ КОНТЕКСТ ДЛЯ IOS SAFARI И МОБИЛЬНЫХ БРАУЗЕРОВ
+   ========================================================================= */
+let globalAudioCtx = null;
+
+function initOrGetAudioContext() {
+  if (!globalAudioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      globalAudioCtx = new AudioContextClass();
+    }
+  }
+  if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+    globalAudioCtx.resume().catch(() => {});
+  }
+  return globalAudioCtx;
+}
+
+// Активируем аудиоконтекст по первому пользовательскому жесту
+['touchstart', 'touchend', 'mousedown', 'keydown', 'click'].forEach(evtType => {
+  document.addEventListener(evtType, () => {
+    initOrGetAudioContext();
+  }, { once: true, passive: true });
+});
+
+function playBeep() {
+  try {
+    const ctx = initOrGetAudioContext();
+    if (!ctx) return;
+    
+    const playTone = (freq, start, duration) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.25, start);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration);
+    };
+
+    const now = ctx.currentTime;
+    playTone(880, now, 0.15);
+    playTone(880, now + 0.2, 0.15);
+    playTone(1760, now + 0.4, 0.35);
+  } catch (e) {
+    console.warn("Audio playback issue:", e);
+  }
+}
+
+/* =========================================================================
+   4. БЕЗОПАСНОЕ УДАЛЕНИЕ И ПРОВЕРКА ГРАФИКОВ CHART.JS (ОТКАЗОУСТОЙЧИВОСТЬ CDN)
+   ========================================================================= */
 function destroyChart(chartInstance, canvasId) {
   if (chartInstance && typeof chartInstance.destroy === 'function') {
     chartInstance.destroy();
   }
-  const el = $(canvasId);
-  if (el) {
-    const existing = Chart.getChart(el);
-    if (existing) {
-      existing.destroy();
+  if (typeof Chart !== 'undefined') {
+    const el = $(canvasId);
+    if (el) {
+      const existing = Chart.getChart(el);
+      if (existing) existing.destroy();
     }
   }
   return null;
 }
-
-/* --- РАСШИРЕННАЯ БАЗА УПРАЖНЕНИЙ И МЫШЕЧНЫХ СВЯЗЕЙ --- */
 const BASE_EX = {
-  "Становая тяга": {
-    target: "Бицепс бедра и ягодицы",
-    muscles: {
-      "Ягодичные мышцы": 0.28,
-      "Бицепс бедра": 0.25,
-      "Разгибатели позвоночника": 0.20,
-      "Мышцы кора и пресс": 0.12,
-      "Квадрицепсы": 0.08,
-      "Трапеции и верх спины": 0.05,
-      "Широчайшие мышцы (статика)": 0.02
-    },
-    cns: 1.0,
-    isCompound: true
-  },
-  "Румынская тяга": {
-    target: "Бицепс бедра",
-    muscles: { "Бицепс бедра": 0.45, "Ягодичные мышцы": 0.35, "Разгибатели позвоночника": 0.15, "Мышцы кора и пресс": 0.05 },
-    cns: 0.75,
-    isCompound: true
-  },
-  "Приседания со штангой": {
-    target: "Квадрицепсы",
-    muscles: { "Квадрицепсы": 0.50, "Ягодичные мышцы": 0.25, "Бицепс бедра": 0.10, "Разгибатели позвоночника": 0.10, "Мышцы кора и пресс": 0.05 },
-    cns: 0.95,
-    isCompound: true
-  },
-  "Приседания со своим весом": {
-    target: "Квадрицепсы",
-    muscles: { "Квадрицепсы": 0.55, "Ягодичные мышцы": 0.30, "Бицепс бедра": 0.10, "Мышцы кора и пресс": 0.05 },
-    cns: 0.3,
-    isCompound: true
-  },
-  "Жим ногами": {
-    target: "Квадрицепсы",
-    muscles: { "Квадрицепсы": 0.65, "Ягодичные мышцы": 0.25, "Бицепс бедра": 0.10 },
-    cns: 0.65,
-    isCompound: true
-  },
-  "Выпады": {
-    target: "Квадрицепсы и ягодицы",
-    muscles: { "Квадрицепсы": 0.45, "Ягодичные мышцы": 0.40, "Бицепс бедра": 0.15 },
-    cns: 0.55,
-    isCompound: true
-  },
-  "Болгарские приседания": {
-    target: "Ягодичные и квадрицепсы",
-    muscles: { "Ягодичные мышцы": 0.45, "Квадрицепсы": 0.40, "Бицепс бедра": 0.15 },
-    cns: 0.6,
-    isCompound: true
-  },
-  "Ягодичный мост": {
-    target: "Ягодичные мышцы",
-    muscles: { "Ягодичные мышцы": 0.65, "Бицепс бедра": 0.25, "Мышцы кора и пресс": 0.10 },
-    cns: 0.55,
-    isCompound: true
-  },
-  "Разгибание ног (тренажёр)": {
-    target: "Квадрицепсы",
-    muscles: { "Квадрицепсы": 1.0 },
-    cns: 0.25,
-    isCompound: false
-  },
-  "Сгибание ног (тренажёр)": {
-    target: "Бицепс бедра",
-    muscles: { "Бицепс бедра": 1.0 },
-    cns: 0.25,
-    isCompound: false
-  },
-  "Жим лёжа": {
-    target: "Грудные мышцы",
-    muscles: { "Грудные мышцы": 0.55, "Трицепс": 0.30, "Передняя дельта": 0.15 },
-    cns: 0.75,
-    isCompound: true
-  },
-  "Жим гантелей лёжа": {
-    target: "Грудные мышцы",
-    muscles: { "Грудные мышцы": 0.60, "Трицепс": 0.25, "Передняя дельта": 0.15 },
-    cns: 0.65,
-    isCompound: true
-  },
-  "Жим в тренажёре на грудь": {
-    target: "Грудные мышцы",
-    muscles: { "Грудные мышцы": 0.65, "Трицепс": 0.20, "Передняя дельта": 0.15 },
-    cns: 0.45,
-    isCompound: true
-  },
-  "Отжимания на брусьях": {
-    target: "Грудные и трицепс",
-    muscles: { "Грудные мышцы": 0.45, "Трицепс": 0.40, "Передняя дельта": 0.15 },
-    cns: 0.6,
-    isCompound: true
-  },
-  "Отжимания от пола": {
-    target: "Грудные мышцы",
-    muscles: { "Грудные мышцы": 0.50, "Трицепс": 0.35, "Передняя дельта": 0.15 },
-    cns: 0.4,
-    isCompound: true
-  },
-  "Подтягивания": {
-    target: "Широчайшие мышцы",
-    muscles: { "Широчайшие мышцы": 0.60, "Бицепс": 0.25, "Трапеции и верх спины": 0.10, "Задняя дельта": 0.05 },
-    cns: 0.7,
-    isCompound: true
-  },
-  "Тяга блока сверху": {
-    target: "Широчайшие мышцы",
-    muscles: { "Широчайшие мышцы": 0.65, "Бицепс": 0.25, "Задняя дельта": 0.10 },
-    cns: 0.5,
-    isCompound: true
-  },
-  "Тяга горизонтального блока": {
-    target: "Широчайшие и спина",
-    muscles: { "Широчайшие мышцы": 0.50, "Трапеции и верх спины": 0.30, "Бицепс": 0.20 },
-    cns: 0.5,
-    isCompound: true
-  },
-  "Тяга штанги в наклоне": {
-    target: "Спина и широчайшие",
-    muscles: { "Широчайшие мышцы": 0.45, "Трапеции и верх спины": 0.25, "Разгибатели позвоночника": 0.15, "Бицепс": 0.15 },
-    cns: 0.8,
-    isCompound: true
-  },
-  "Тяга гантели одной рукой": {
-    target: "Широчайшие мышцы",
-    muscles: { "Широчайшие мышцы": 0.65, "Бицепс": 0.20, "Задняя дельта": 0.15 },
-    cns: 0.5,
-    isCompound: true
-  },
-  "Жим стоя/сидя (плечи)": {
-    target: "Дельтовидные мышцы",
-    muscles: { "Передняя дельта": 0.40, "Средняя дельта": 0.25, "Трицепс": 0.25, "Трапеции и верх спины": 0.10 },
-    cns: 0.7,
-    isCompound: true
-  },
-  "Махи гантелями в стороны": {
-    target: "Средняя дельта",
-    muscles: { "Средняя дельта": 0.90, "Трапеции и верх спины": 0.10 },
-    cns: 0.25,
-    isCompound: false
-  },
-  "Подъём на бицепс": {
-    target: "Бицепс",
-    muscles: { "Бицепс": 0.85, "Предплечья": 0.15 },
-    cns: 0.3,
-    isCompound: false
-  },
-  "Разгибания на трицепс": {
-    target: "Трицепс",
-    muscles: { "Трицепс": 1.0 },
-    cns: 0.25,
-    isCompound: false
-  },
-  "Пресс/скручивания": {
-    target: "Мышцы кора и пресс",
-    muscles: { "Мышцы кора и пресс": 1.0 },
-    cns: 0.2,
-    isCompound: false
-  }
+  // 1. Грудь
+  "Жим гантелей лёжа": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.7, isCompound: true },
+  "Жим гантелей на наклонной": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.7, isCompound: true },
+  "Жим лёжа": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.8, isCompound: true },
+  "Отжимания на брусьях": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.65, isCompound: true },
+  "Отжимания от пола": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.4, isCompound: true },
+
+  // 2. Спина
+  "Подтягивания": { category: "Спина", target: "Спина", muscles: { "Спина": 1.0, "Бицепс": 0.5, "Плечи": 0.5 }, cns: 0.75, isCompound: true },
+  "Тяга блока сверху": { category: "Спина", target: "Спина", muscles: { "Спина": 1.0, "Бицепс": 0.5, "Плечи": 0.5 }, cns: 0.5, isCompound: true },
+  "Тяга гантели одной рукой": { category: "Спина", target: "Спина", muscles: { "Спина": 1.0, "Бицепс": 0.5, "Плечи": 0.5 }, cns: 0.55, isCompound: true },
+  "Тяга горизонтального блока": { category: "Спина", target: "Спина", muscles: { "Спина": 1.0, "Бицепс": 0.5, "Плечи": 0.5 }, cns: 0.5, isCompound: true },
+  "Тяга штанги в наклоне": { category: "Спина", target: "Спина", muscles: { "Спина": 1.0, "Бицепс": 0.5, "Плечи": 0.5, "Разгибатели спины": 0.5 }, cns: 0.85, isCompound: true },
+
+  // 3. Ноги
+  "Болгарские приседания": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.65, isCompound: true },
+  "Выпады": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.6, isCompound: true },
+  "Жим ногами": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.65, isCompound: true },
+  "Приседания со своим весом": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.3, isCompound: true },
+  "Приседания со штангой": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.95, isCompound: true },
+  "Разгибание ног (тренажёр)": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0 }, cns: 0.25, isCompound: false },
+  "Румынская тяга": { category: "Ноги", target: "Бицепс бедра и ягодицы", muscles: { "Бицепс бедра": 1.0, "Ягодицы": 1.0, "Разгибатели спины": 0.5 }, cns: 0.75, isCompound: true },
+  "Сгибание ног (тренажёр)": { category: "Ноги", target: "Бицепс бедра", muscles: { "Бицепс бедра": 1.0 }, cns: 0.25, isCompound: false },
+  "Становая тяга": { category: "Ноги", target: "Бицепс бедра и ягодицы", muscles: { "Бицепс бедра": 1.0, "Ягодицы": 1.0, "Разгибатели спины": 0.5, "Спина": 0.5 }, cns: 1.0, isCompound: true },
+  "Ягодичный мост": { category: "Ноги", target: "Ягодицы", muscles: { "Ягодицы": 1.0, "Бицепс бедра": 0.5 }, cns: 0.55, isCompound: true },
+
+  // 4. Плечи
+  "Жим гантелей сидя (плечи)": { category: "Плечи", target: "Плечи", muscles: { "Плечи": 1.0, "Трицепс": 0.5 }, cns: 0.6, isCompound: true },
+  "Жим стоя (армейский)": { category: "Плечи", target: "Плечи", muscles: { "Плечи": 1.0, "Трицепс": 0.5 }, cns: 0.75, isCompound: true },
+  "Махи гантелями в стороны": { category: "Плечи", target: "Плечи", muscles: { "Плечи": 1.0 }, cns: 0.25, isCompound: false },
+
+  // 5. Руки
+  "Подъём штанги на бицепс": { category: "Руки", target: "Бицепс", muscles: { "Бицепс": 1.0 }, cns: 0.3, isCompound: false },
+  "Разгибания на трицепс на блоке": { category: "Руки", target: "Трицепс", muscles: { "Трицепс": 1.0 }, cns: 0.25, isCompound: false },
+  "Французский жим": { category: "Руки", target: "Трицепс", muscles: { "Трицепс": 1.0 }, cns: 0.35, isCompound: false },
+
+  // 6. Пресс
+  "Пресс/скручивания": { category: "Пресс", target: "Пресс (Кор)", muscles: { "Пресс (Кор)": 1.0 }, cns: 0.2, isCompound: false }
 };
 
-const FOODS = {
-  "Куриная грудка гриль/варёная":{k:165,p:31,f:4,c:0},
-  "Говядина тушёная":{k:232,p:26,f:14,c:0},
-  "Лосось":{k:208,p:20,f:13,c:0},
-  "Минтай/треска":{k:82,p:18,f:1,c:0},
-  "Скумбрия":{k:258,p:18,f:20,c:0},
-  "Яйцо куриное":{k:155,p:13,f:11,c:1,u:55},
-  "Творог 5%":{k:121,p:17,f:5,c:3},
-  "Творог 0%":{k:72,p:17,f:0,c:1},
-  "Протеин (1 скуп)":{k:400,p:75,f:7,c:7,u:30},
-  "Гречка варёная":{k:132,p:5,f:1,c:25},
-  "Рис варёный":{k:130,p:3,f:0,c:28},
-  "Макароны варёные":{k:157,p:6,f:1,c:31},
-  "Овсянка на воде":{k:88,p:3,f:2,c:15},
-  "Картофель варёный":{k:82,p:2,f:0,c:17,u:90},
-  "Хлеб чёрный (1 ломтик)":{k:214,p:7,f:1,c:41,u:30},
-  "Хлеб белый (1 ломтик)":{k:265,p:9,f:3,c:49,u:25},
-  "Банан":{k:96,p:2,f:1,c:21,u:120},
-  "Яблоко":{k:52,p:0,f:0,c:14,u:150},
-  "Огурец":{k:15,p:1,f:0,c:3,u:100},
-  "Помидор":{k:20,p:1,f:0,c:4,u:90},
-  "Салат овощной с маслом":{k:90,p:2,f:7,c:6},
-  "Масло оливковое":{k:884,p:0,f:100,c:0},
-  "Орехи микс":{k:620,p:20,f:55,c:16},
-  "Сыр твёрдый (ломтик)":{k:356,p:26,f:27,c:0,u:25},
-  "Суп куриный с лапшой":{k:50,p:3,f:2,c:6},
-  "Борщ с мясом":{k:70,p:3,f:3,c:9},
-  "Плов с курицей":{k:170,p:8,f:7,c:22},
-  "Котлета домашняя":{k:240,p:17,f:18,c:2,u:100}
-};
+const CATEGORY_ORDER = ["Грудь", "Спина", "Ноги", "Плечи", "Руки", "Пресс"];
 
 function today() {
   const d = new Date();
@@ -927,140 +1172,689 @@ function today() {
 function defDB() {
   return {
     w: [],
-    meals: {},
-    sup: {},
-    ex: {},
-    supList: ["Креатин 5 г", "Омега-3", "Витамин D", "Магний"],
-    foods: Object.assign({}, FOODS),
-    goals: { kcal: 2600, p: 160, f: 85, c: 300 },
-    profile: { sex: 'm', age: 25, height: 180, weight: 80, goal: 'maintain' }
+    profile: { weight: 80 }
+  };
+}
+
+/* =========================================================================
+   БЕЗОПАСНАЯ ВАЛИДАЦИЯ И НОРМАЛИЗАЦИЯ ДАННЫХ БАЗЫ
+   ========================================================================= */
+function normalizeBoolean(value, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (value === 1) return true;
+  if (value === 0) return false;
+  if (typeof value === 'string') {
+    const s = value.trim().toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+  }
+  return fallback;
+}
+
+function parseValidReps(val) {
+  if (val === null || val === undefined || val === '') return null;
+  let n;
+  if (typeof val === 'number') {
+    n = val;
+  } else if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (!/^-?\d+$/.test(trimmed)) return null;
+    n = Number(trimmed);
+  } else {
+    return null;
+  }
+  if (!Number.isInteger(n) || !isFinite(n) || n <= 0) return null;
+  return n;
+}
+
+function parseValidWeight(val) {
+  if (val === null || val === undefined || val === '') return 0;
+  let n;
+  if (typeof val === 'number') {
+    n = val;
+  } else if (typeof val === 'string') {
+    const trimmed = val.trim().replace(',', '.');
+    if (trimmed === '') return 0;
+    n = Number(trimmed);
+  } else {
+    return 0;
+  }
+  if (isNaN(n) || !isFinite(n) || n < 0) return 0;
+  return n;
+}
+
+function normalizeDBData(rawInput) {
+  if (!rawInput || typeof rawInput !== 'object' || Array.isArray(rawInput)) {
+    throw new Error("Корневой элемент бэкапа должен быть JSON-объектом.");
+  }
+
+  if (rawInput.w !== undefined && rawInput.w !== null && !Array.isArray(rawInput.w)) {
+    throw new Error("Поле 'w' (список тренировок) должно быть массивом.");
+  }
+
+  const baseProfile = (rawInput.profile && typeof rawInput.profile === 'object' && !Array.isArray(rawInput.profile)) 
+    ? rawInput.profile 
+    : {};
+  const profWeight = getValidBodyWeight(baseProfile.weight, 80);
+  const normalizedProfile = { ...baseProfile, weight: profWeight };
+
+  const rawWorkouts = Array.isArray(rawInput.w) ? rawInput.w : [];
+  const seenIds = new Set();
+
+  const migratedW = rawWorkouts.map((workout, index) => {
+    if (!workout || typeof workout !== 'object' || Array.isArray(workout)) {
+      return null;
+    }
+
+    let ts = Number(workout.timestamp);
+    if (!ts || isNaN(ts) || ts <= 0) {
+      if (workout.date && typeof workout.date === 'string') {
+        const parts = workout.date.split('-').map(Number);
+        if (parts.length === 3 && !parts.some(isNaN)) {
+          ts = new Date(parts[0], parts[1] - 1, parts[2], 12, index).getTime();
+        }
+      }
+      if (!ts || isNaN(ts) || ts <= 0) {
+        ts = Date.now() - (1000 * 60 * 60 * 24 * (rawWorkouts.length - index));
+      }
+    }
+
+    let id = workout.id ? String(workout.id) : `w_${ts}_${index}`;
+    while (seenIds.has(id)) {
+      id = `${id}_${Math.random().toString(36).slice(2, 6)}`;
+    }
+    seenIds.add(id);
+
+    const sessionBW = getValidBodyWeight(workout.bodyWeight, profWeight);
+    const dateStr = (typeof workout.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(workout.date)) 
+      ? workout.date 
+      : today();
+    const timeStr = (typeof workout.time === 'string' && workout.time.trim() !== '') 
+      ? workout.time.trim() 
+      : '12:00';
+    const wellVal = Math.min(10, Math.max(1, sanitizeNumber(workout.well, 8)));
+
+    const rawExList = Array.isArray(workout.ex) ? workout.ex : [];
+    const cleanedEx = rawExList.map(ex => {
+      if (!ex || typeof ex !== 'object' || Array.isArray(ex)) return null;
+      
+      const exName = (typeof ex.n === 'string' && ex.n.trim() !== '') 
+        ? ex.n.trim() 
+        : ((typeof ex.name === 'string' && ex.name.trim() !== '') ? ex.name.trim() : 'Упражнение');
+
+      let rawSets = [];
+      if (Array.isArray(ex.sets)) {
+        rawSets = ex.sets;
+      } else if (ex.w !== undefined || ex.r !== undefined) {
+        rawSets = [{ w: ex.w, r: ex.r, isWarmup: ex.isWarmup, completed: true }];
+      }
+
+      const cleanedSets = rawSets.map(s => {
+        if (!s || typeof s !== 'object' || Array.isArray(s)) return null;
+        
+        const validReps = parseValidReps(s.r);
+        if (validReps === null) return null; // отбрасываем подход с некорректными/нулевыми повторениями
+        
+        const validW = parseValidWeight(s.w);
+
+        return {
+          ...s,
+          w: validW,
+          r: validReps,
+          isWarmup: normalizeBoolean(s.isWarmup, false),
+          completed: normalizeBoolean(s.completed, true),
+          manualOverride: normalizeBoolean(s.manualOverride, false)
+        };
+      }).filter(Boolean);
+
+      // Если в упражнении не осталось ни одного валидного подхода
+      if (cleanedSets.length === 0) return null;
+
+      return {
+        ...ex,
+        n: exName,
+        sets: cleanedSets
+      };
+    }).filter(Boolean);
+
+    return {
+      ...workout,
+      id: id,
+      timestamp: ts,
+      date: dateStr,
+      time: timeStr,
+      well: wellVal,
+      bodyWeight: sessionBW,
+      ex: cleanedEx
+    };
+  }).filter(Boolean);
+
+  return {
+    ...rawInput,
+    w: migratedW,
+    profile: normalizedProfile
   };
 }
 
 function loadDB() {
   try {
-    const raw = localStorage.getItem(KEY);
+    let raw = localStorage.getItem(KEY);
+    if (!raw) {
+      const backupRaw = localStorage.getItem(BACKUP_KEY);
+      if (backupRaw) {
+        raw = backupRaw;
+        localStorage.setItem(KEY, backupRaw);
+      }
+    }
     if (!raw) return defDB();
     const d = JSON.parse(raw);
-    if (!d || typeof d !== 'object') return defDB();
-    const b = defDB();
-    return {
-      w: Array.isArray(d.w) ? d.w : [],
-      meals: (typeof d.meals === 'object' && d.meals !== null) ? d.meals : {},
-      sup: (typeof d.sup === 'object' && d.sup !== null) ? d.sup : {},
-      ex: (typeof d.ex === 'object' && d.ex !== null) ? d.ex : {},
-      supList: Array.isArray(d.supList) ? d.supList : b.supList,
-      foods: Object.assign({}, FOODS, d.foods || {}),
-      goals: Object.assign({}, b.goals, d.goals || {}),
-      profile: Object.assign({}, b.profile, d.profile || {})
-    };
+    return normalizeDBData(d);
   } catch(e) {
-    console.error("Ошибка загрузки данных:", e);
+    console.error("Ошибка загрузки базы данных:", e);
     return defDB();
   }
 }
 
 let DB = loadDB();
-function saveDB() { localStorage.setItem(KEY, JSON.stringify(DB)); }
-function allEX() { return Object.assign({}, BASE_EX, DB.ex); }
+
+function saveDB() {
+  const previousRaw = localStorage.getItem(KEY);
+  try {
+    if (previousRaw) {
+      localStorage.setItem(BACKUP_KEY, previousRaw);
+    }
+    const newRaw = JSON.stringify(DB);
+    localStorage.setItem(KEY, newRaw);
+    return true;
+  } catch (e) {
+    console.error("Критическая ошибка сохранения базы данных:", e);
+    try {
+      if (previousRaw) {
+        localStorage.setItem(KEY, previousRaw);
+        DB = JSON.parse(previousRaw);
+      }
+    } catch (restoreErr) {
+      console.error("Ошибка отката из резервной копии:", restoreErr);
+    }
+    alert("⚠️ Ошибка сохранения! Память браузера переполнена или доступ заблокирован.\n\nПожалуйста, экспортируйте данные в файл (кнопка «Экспорт») и освободите место на устройстве.");
+    return false;
+  }
+}
+
+function allEX() { return BASE_EX; }
 
 function getExData(name) {
   const A = allEX();
-  const raw = A[name];
-  if (!raw) return { target: "Другое", muscles: { "Другое": 1.0 }, cns: 0.5, isCompound: false };
-
-  if (!raw.muscles) {
-    const musMap = {};
-    const p = raw.p || "Другое";
-    const sList = Array.isArray(raw.s) ? raw.s : [];
-    if (sList.length > 0) {
-      musMap[p] = 0.7;
-      const secCoeff = 0.3 / sList.length;
-      sList.forEach(s => musMap[s] = secCoeff);
-    } else {
-      musMap[p] = 1.0;
-    }
-    return { target: p, muscles: musMap, cns: raw.cns || 0.5, isCompound: sList.length > 0 };
-  }
-
-  return raw;
+  return A[name] || { category: "Другое", target: "Другое", muscles: { "Другое": 1.0 }, cns: 0.5, isCompound: false };
 }
 
-/* Расчет расчетного 1RM по модифицированной формуле Эпли с ограничением высоких повторов */
+/* Расчет 1RM (Эпли) */
 function calculate1RM(weight, reps) {
   const w = parseFloat(weight) || 0;
   const r = parseInt(reps, 10) || 0;
   if (w <= 0 || r <= 0) return 0;
   if (r === 1) return Math.round(w * 10) / 10;
-  // Для повторений выше 15 формула 1RM теряет точность, вводим плавный логарифмический демпфер
   const effectiveReps = r > 15 ? 15 + Math.log2(r - 14) * 2 : r;
   const e1rm = w * (1 + effectiveReps / 30);
   return Math.round(e1rm * 10) / 10;
 }
 
-/* --- Глобальное состояние --- */
+/* =========================================================================
+   3 & 5. СБОР ВСЕХ ПОДХОДОВ С УЧЕТОМ ДУБЛИКАТОВ И СТРОГОГО ВЕСА СЕССИИ
+   ========================================================================= */
+function getHistorical1RM(exName) {
+  let best = 0;
+  (DB.w || []).forEach(w => {
+    const historicalBW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+    const matchingExs = (w.ex || []).filter(e => e && e.n === exName);
+    const allSets = matchingExs.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
+    
+    allSets.forEach(s => {
+      if (!s.completed) return;
+      const effW = getEffectiveWeight(exName, s.w, historicalBW);
+      const r = sanitizeNumber(s.r, 0);
+      const e1rm = calculate1RM(effW, r);
+      if (e1rm > best) best = e1rm;
+    });
+  });
+  return best > 0 ? best : null;
+}
+
+function getPastMaxWorkingWeight(exName) {
+  const allWorkouts = (DB.w || []).slice().sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+  for (const w of allWorkouts) {
+    const workoutBW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+    const matchingExs = (w.ex || []).filter(e => e && e.n === exName);
+    if (matchingExs.length > 0) {
+      const allSets = matchingExs.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
+      const workingSets = allSets.filter(s => !s.isWarmup && s.completed);
+      let maxW = 0;
+      workingSets.forEach(s => {
+        const effW = getEffectiveWeight(exName, s.w, workoutBW);
+        if (effW > maxW) maxW = effW;
+      });
+      if (maxW > 0) return maxW;
+    }
+  }
+  return null;
+}
+
+function getRepRecord(exName, targetReps) {
+  if (!targetReps || targetReps <= 0) return null;
+  const isBW = isBodyweightEx(exName);
+  const isDB = isDumbbellEx(exName);
+  let bestEffW = -1;
+  let bestRawW = 0;
+  let recDate = '';
+
+  (DB.w || []).forEach(w => {
+    const sessionBW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+    const matchingExs = (w.ex || []).filter(e => e && e.n === exName);
+    const allSets = matchingExs.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
+
+    allSets.forEach(s => {
+      if (s.isWarmup || !s.completed) return;
+      const r = sanitizeNumber(s.r, 0);
+      const rawW = sanitizeNumber(s.w, 0);
+      const effW = getEffectiveWeight(exName, rawW, sessionBW);
+      if (r >= targetReps) {
+        if (effW > bestEffW) {
+          bestEffW = effW;
+          bestRawW = rawW;
+          recDate = w.date;
+        }
+      }
+    });
+  });
+
+  if (bestEffW >= 0) {
+    return { effW: bestEffW, rawW: bestRawW, date: recDate, isBW, isDB };
+  }
+  return null;
+}
+
+function findLastPerformance(exName) {
+  if (!DB.w || !DB.w.length) return null;
+  const allWorkouts = (DB.w || []).slice().sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+  for (const w of allWorkouts) {
+    const matchingExs = (w.ex || []).filter(e => e && e.n === exName);
+    if (matchingExs.length > 0) {
+      const allSets = matchingExs.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
+      const completedOnly = allSets.filter(s => s.completed);
+      if (completedOnly.length > 0) {
+        const sessionBW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+        return { sets: completedOnly, date: w.date, bodyWeight: sessionBW };
+      }
+    }
+  }
+  return null;
+}
+
+function updateSmartHint(specificReps = null) {
+  const hintEl = $('smartHint');
+  const exName = selectedExercise;
+  
+  if (specificReps && specificReps > 0) {
+    const pr = getRepRecord(exName, specificReps);
+    if (pr) {
+      const wText = pr.isBW ? `${pr.rawW > 0 ? '+'+pr.rawW : '0'} кг (всего ${pr.effW} кг)` : `${pr.rawW} кг`;
+      hintEl.innerHTML = `🏆 <b>Личный рекорд на ${specificReps} повт:</b> ${wText} <span style="opacity:0.75;">(${pr.date})</span>`;
+      hintEl.style.display = 'flex';
+      return;
+    }
+  }
+
+  const past = findLastPerformance(exName);
+  if (!past || !past.sets || !past.sets.length) {
+    hintEl.innerHTML = `💡 <b>Новое упражнение!</b> Первый подход по умолчанию будет рабочим.`;
+    hintEl.style.display = 'flex';
+    return;
+  }
+
+  const workingSetsOnly = past.sets.filter(s => !s.isWarmup);
+  const targetSets = workingSetsOnly.length ? workingSetsOnly : past.sets;
+  const setsSummary = targetSets.map((s, idx) => `#${idx+1}: <b>${s.w} кг × ${s.r}</b>`).join(' | ');
+
+  hintEl.innerHTML = `💡 Пр. раз (${past.date || ''}): ${setsSummary}`;
+  hintEl.style.display = 'flex';
+}
+
+function evaluateSetTypes(setsList, exName) {
+  const currentBodyWeight = getValidBodyWeight($('curW')?.value, DB.profile?.weight);
+  const pastMaxW = getPastMaxWorkingWeight(exName);
+
+  let hasHitWorkSet = false;
+
+  return setsList.map((set, index) => {
+    if (set.manualOverride) {
+      return {
+        ...set,
+        isWarmup: !!set.isWarmup
+      };
+    }
+
+    let isWarm = false;
+    const rawW = sanitizeNumber(set.w, 0);
+    const effW = getEffectiveWeight(exName, rawW, currentBodyWeight);
+
+    if (pastMaxW !== null && pastMaxW > 0) {
+      if (hasHitWorkSet) {
+        isWarm = false;
+      } else {
+        if (effW >= 0.8 * pastMaxW) {
+          isWarm = false;
+          hasHitWorkSet = true;
+        } else {
+          isWarm = true;
+        }
+      }
+    } else {
+      if (index === 0) {
+        isWarm = false;
+        hasHitWorkSet = true;
+      } else {
+        isWarm = false;
+      }
+    }
+
+    return {
+      ...set,
+      isWarmup: isWarm
+    };
+  });
+}
+
+function toggleSetWarmupManual(index) {
+  if (!currentSetRows[index]) return;
+  currentSetRows[index].manualOverride = true;
+  currentSetRows[index].isWarmup = !currentSetRows[index].isWarmup;
+  renderSetRowsUI();
+  calcLiveCNS();
+  saveDraft();
+}
+
+/* ГЛОБАЛЬНОЕ СОСТОЯНИЕ */
 let curWorkout = [];       
 let currentSetRows = [];   
-let period = 7, ch1 = null, ch2 = null, ch3 = null, ch4 = null, lastSugg = null;
+let selectedExercise = "Жим лёжа";
+let period = 7;
+let muscleViewMode = 'sets';
+let ch1 = null, ch2 = null, ch3 = null, ch4 = null;
 
-function fillSelects() {
+/* =========================================================================
+   1. НЕУБИВАЕМЫЕ ФОНОВЫЕ ТАЙМЕРЫ НА ОСНОВЕ СИСТЕМНОГО ТАЙМШТАМПА DATE.NOW()
+   ========================================================================= */
+// Секундомер
+let swRunning = false;
+let swStartTime = 0;
+let swAccumulatedMs = 0;
+let swInterval = null;
+
+function updateStopwatchUI() {
+  const currentElapsedMs = swRunning ? (swAccumulatedMs + (Date.now() - swStartTime)) : swAccumulatedMs;
+  const totalSec = Math.floor(currentElapsedMs / 1000);
+  const m = String(Math.floor(totalSec / 60)).padStart(2, '0');
+  const s = String(totalSec % 60).padStart(2, '0');
+  const el = $('swDisplay');
+  if (el) el.innerText = `${m}:${s}`;
+}
+
+function toggleStopwatch() {
+  initOrGetAudioContext();
+  const btn = $('swToggleBtn');
+  if (!swRunning) {
+    swRunning = true;
+    swStartTime = Date.now();
+    btn.innerText = 'Пауза';
+    btn.className = 'btn-timer-stop';
+    clearInterval(swInterval);
+    swInterval = setInterval(updateStopwatchUI, 250);
+  } else {
+    swRunning = false;
+    swAccumulatedMs += Date.now() - swStartTime;
+    btn.innerText = 'Старт';
+    btn.className = 'btn-timer-primary';
+    clearInterval(swInterval);
+    updateStopwatchUI();
+  }
+}
+
+function resetStopwatch() {
+  swRunning = false;
+  clearInterval(swInterval);
+  swAccumulatedMs = 0;
+  swStartTime = 0;
+  $('swDisplay').innerText = '00:00';
+  $('swToggleBtn').innerText = 'Старт';
+  $('swToggleBtn').className = 'btn-timer-primary';
+}
+
+// Таймер отдыха
+let cdRunning = false;
+let cdDurationSeconds = 90;
+let cdRemainingSeconds = 90;
+let cdEndTime = 0;
+let cdInterval = null;
+
+function formatTime(sec) {
+  const safeSec = Math.max(0, sec);
+  const m = String(Math.floor(safeSec / 60)).padStart(2, '0');
+  const s = String(safeSec % 60).padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function updateCountdownUI() {
+  if (!cdRunning) {
+    $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
+    return;
+  }
+  const now = Date.now();
+  const diffMs = cdEndTime - now;
+  const rem = Math.max(0, Math.ceil(diffMs / 1000));
+  cdRemainingSeconds = rem;
+  $('cdDisplay').innerText = formatTime(rem);
+
+  if (diffMs <= 0) {
+    clearInterval(cdInterval);
+    cdRunning = false;
+    cdRemainingSeconds = 0;
+    $('cdDisplay').innerText = '00:00';
+    $('cdToggleBtn').innerText = 'Старт';
+    $('cdToggleBtn').className = 'btn-timer-primary';
+    $('timerStatus').innerText = 'Время вышло!';
+    $('timerStatus').style.color = 'var(--ios-red)';
+    playBeep();
+  }
+}
+
+function onCustomTimerChange() {
+  const m = parseInt($('cdMin').value, 10) || 0;
+  const s = parseInt($('cdSec').value, 10) || 0;
+  const total = m * 60 + s;
+  if (total > 0 && !cdRunning) {
+    cdDurationSeconds = total;
+    cdRemainingSeconds = total;
+    $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
+  }
+}
+
+function applyCustomTimer() {
+  const m = Math.min(59, Math.max(0, parseInt($('cdMin').value, 10) || 0));
+  const s = Math.min(59, Math.max(0, parseInt($('cdSec').value, 10) || 0));
+  let total = m * 60 + s;
+  if (total <= 0) total = 60;
+  cdDurationSeconds = total;
+  resetCountdown();
+}
+
+function startRestTimerAuto() {
+  initOrGetAudioContext();
+  clearInterval(cdInterval);
+  cdRemainingSeconds = cdDurationSeconds;
+  cdEndTime = Date.now() + (cdRemainingSeconds * 1000);
+  cdRunning = true;
+  
+  $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
+  $('cdToggleBtn').innerText = 'Пауза';
+  $('cdToggleBtn').className = 'btn-timer-stop';
+  $('timerStatus').innerText = 'Идет отдых';
+  $('timerStatus').style.color = 'var(--ios-orange)';
+
+  cdInterval = setInterval(updateCountdownUI, 250);
+}
+
+function toggleCountdown() {
+  initOrGetAudioContext();
+  const btn = $('cdToggleBtn');
+  if (!cdRunning) {
+    if (cdRemainingSeconds <= 0) {
+      cdRemainingSeconds = cdDurationSeconds;
+    }
+    cdEndTime = Date.now() + (cdRemainingSeconds * 1000);
+    cdRunning = true;
+    btn.innerText = 'Пауза';
+    btn.className = 'btn-timer-stop';
+    $('timerStatus').innerText = 'Идет отдых';
+    $('timerStatus').style.color = 'var(--ios-orange)';
+    
+    clearInterval(cdInterval);
+    cdInterval = setInterval(updateCountdownUI, 250);
+  } else {
+    cdRunning = false;
+    clearInterval(cdInterval);
+    const rem = Math.max(0, Math.ceil((cdEndTime - Date.now()) / 1000));
+    cdRemainingSeconds = rem;
+    btn.innerText = 'Старт';
+    btn.className = 'btn-timer-primary';
+    $('timerStatus').innerText = 'На паузе';
+    $('timerStatus').style.color = 'var(--ios-text-secondary)';
+    updateCountdownUI();
+  }
+}
+
+function resetCountdown() {
+  cdRunning = false;
+  clearInterval(cdInterval);
+  cdRemainingSeconds = cdDurationSeconds;
+  $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
+  $('cdToggleBtn').innerText = 'Старт';
+  $('cdToggleBtn').className = 'btn-timer-primary';
+  $('timerStatus').innerText = 'Готов';
+  $('timerStatus').style.color = 'var(--ios-tint)';
+}
+
+// При возвращении вкладки из фона моментально синхронизируем таймеры
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    if (swRunning) updateStopwatchUI();
+    if (cdRunning) updateCountdownUI();
+  } else {
+    saveDraft();
+  }
+});
+window.addEventListener('focus', () => {
+  if (swRunning) updateStopwatchUI();
+  if (cdRunning) updateCountdownUI();
+});
+
+/* ПОИСК И ДРОПДАУН УПРАЖНЕНИЙ */
+function renderDropdownList(filterText = '') {
+  const listEl = $('exDropdownList');
+  if (!listEl) return;
+  
+  const query = filterText.trim().toLowerCase();
   const A = allEX();
-  $('exSel').innerHTML = '';
-  for (const k in A) $('exSel').add(new Option(k, k));
-  $('progSel').innerHTML = '';
-  for (const k in A) $('progSel').add(new Option(k, k));
-  $('foodSel').innerHTML = '';
-  for (const k in DB.foods) $('foodSel').add(new Option(k, k));
-  unitChanged();
+  const grouped = {};
+  CATEGORY_ORDER.forEach(cat => grouped[cat] = []);
+
+  for (const name in A) {
+    const ex = A[name];
+    const cat = ex.category || "Другое";
+    if (!grouped[cat]) grouped[cat] = [];
+    if (!query || name.toLowerCase().includes(query)) {
+      grouped[cat].push(name);
+    }
+  }
+
+  let html = '';
+  let totalFound = 0;
+
+  CATEGORY_ORDER.forEach(cat => {
+    const items = grouped[cat] || [];
+    if (items.length > 0) {
+      items.sort((a, b) => a.localeCompare(b, 'ru'));
+      html += `<div class="dropdown-category-title">${cat}</div>`;
+      items.forEach(name => {
+        const isSel = name === selectedExercise;
+        html += `<div class="dropdown-item ${isSel ? 'selected' : ''}" onclick="selectExercise('${escapeHTML(name)}')">
+          <span>${escapeHTML(name)}</span>
+          ${isSel ? '<span style="color:var(--ios-tint); font-weight:800;">✓</span>' : ''}
+        </div>`;
+        totalFound++;
+      });
+    }
+  });
+
+  if (totalFound === 0) {
+    html = '<div style="padding:14px; text-align:center; color:var(--ios-subtext); font-size:13px;">Ничего не найдено</div>';
+  }
+
+  listEl.innerHTML = html;
 }
 
-function fillGoals() {
-  $('gKcal').value = DB.goals.kcal || 2600;
-  $('gP').value = DB.goals.p || 160;
-  $('gF').value = DB.goals.f || 85;
-  $('gC').value = DB.goals.c || 300;
+function openExDropdown() {
+  const input = $('exSearchInput');
+  input.select();
+  renderDropdownList(input.value);
+  $('exDropdownList').classList.add('show');
 }
 
-function saveGoals() {
-  DB.goals = {
-    kcal: sanitizeNumber($('gKcal').value, 2600),
-    p: sanitizeNumber($('gP').value, 160),
-    f: sanitizeNumber($('gF').value, 85),
-    c: sanitizeNumber($('gC').value, 300)
-  };
-  saveDB();
-  renderMeals();
+function filterExDropdown() {
+  const query = $('exSearchInput').value;
+  renderDropdownList(query);
+  $('exDropdownList').classList.add('show');
+}
+
+function selectExercise(name) {
+  selectedExercise = name;
+  if ($('exSearchInput')) $('exSearchInput').value = name;
+  $('exDropdownList').classList.remove('show');
+  
+  initDefaultSetRows();
+  updateSmartHint();
+  renderSetRowsUI();
+  saveDraft();
+}
+
+document.addEventListener('click', (e) => {
+  const searchCont = document.querySelector('.search-container');
+  if (searchCont && !searchCont.contains(e.target)) {
+    $('exDropdownList').classList.remove('show');
+    if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+  }
+});
+
+function fillAnalyticsSelect() {
+  const progSel = $('progSel');
+  if (!progSel) return;
+  progSel.innerHTML = '';
+  const sortedNames = Object.keys(allEX()).sort((a,b) => a.localeCompare(b, 'ru'));
+  sortedNames.forEach(k => {
+    progSel.add(new Option(k, k));
+  });
 }
 
 function showTab(t) {
-  ['w','h','a','n','d'].forEach(x => {
+  initOrGetAudioContext();
+  ['w','h','a'].forEach(x => {
     const el = $('tab-' + x);
     if (el) el.style.display = (x === t ? '' : 'none');
   });
   document.querySelectorAll('.tabs .tab').forEach((b, i) => {
-    b.classList.toggle('active', ['w','h','a','n','d'][i] === t);
+    b.classList.toggle('active', ['w','h','a'][i] === t);
   });
   if (t === 'h') renderHistory();
   if (t === 'a') renderAnalytics();
-  if (t === 'n') { renderProfile(); renderMeals(); renderSup(); unitChanged(); }
-}
-
-/* --- RPE ползунок --- */
-function getRPEDescription(val) {
-  const v = parseFloat(val);
-  if (v <= 4) return `${v} — Очень легко (разминка)`;
-  if (v <= 6) return `${v} — Легко (4-5 повт. в запасе)`;
-  if (v === 6.5 || v === 7) return `${v} — Умеренно (3 повт. в запасе)`;
-  if (v === 7.5 || v === 8) return `${v} — Тяжело (2 повт. в запасе)`;
-  if (v === 8.5 || v === 9) return `${v} — Высокая тяжесть (1 повт. в запасе)`;
-  if (v === 9.5) return `${v} — Предел сил (0.5 повт. в запасе)`;
-  return `${v} — Полный отказ (0 повт. в запасе)`;
-}
-
-function updateRPEUI() {
-  const val = $('rpe').value;
-  $('rpeVal').innerText = getRPEDescription(val);
-  calcLiveCNS();
 }
 
 function onCurWInput() {
@@ -1068,7 +1862,6 @@ function onCurWInput() {
   const w = parseFloat(raw);
   if (!isNaN(w) && w > 0) {
     DB.profile.weight = w;
-    if ($('pfW')) $('pfW').value = w;
     saveDB();
   }
   renderSetRowsUI();
@@ -1077,166 +1870,156 @@ function onCurWInput() {
   saveDraft();
 }
 
-function saveDraft() {
-  try {
-    const draft = {
-      well: $('well').value,
-      curW: $('curW').value,
-      rpe: $('rpe').value,
-      exSel: $('exSel').value,
-      curWorkout: curWorkout,
-      currentSetRows: currentSetRows
-    };
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  } catch(e) {
-    console.error("Ошибка сохранения черновика:", e);
-  }
-}
-
-function loadDraft() {
-  try {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    const savedWeight = (DB.profile && DB.profile.weight) ? DB.profile.weight : 80;
-    
-    if (!raw) {
-      $('curW').value = savedWeight;
-      initDefaultSetRows();
-      return;
-    }
-    const draft = JSON.parse(raw);
-    if (draft && typeof draft === 'object') {
-      if (draft.well !== undefined) $('well').value = draft.well;
-      $('curW').value = draft.curW !== undefined && draft.curW !== '' ? draft.curW : savedWeight;
-      if (draft.rpe) {
-        $('rpe').value = draft.rpe;
-        updateRPEUI();
-      }
-      if (draft.exSel && $('exSel').querySelector(`option[value="${CSS.escape(draft.exSel)}"]`)) {
-        $('exSel').value = draft.exSel;
-      }
-      if (Array.isArray(draft.curWorkout)) curWorkout = draft.curWorkout;
-      if (Array.isArray(draft.currentSetRows) && draft.currentSetRows.length > 0) {
-        currentSetRows = draft.currentSetRows;
-      } else {
-        initDefaultSetRows();
-      }
-    } else {
-      $('curW').value = savedWeight;
-      initDefaultSetRows();
-    }
-  } catch(e) {
-    console.error("Ошибка загрузки черновика:", e);
-    $('curW').value = (DB.profile && DB.profile.weight) ? DB.profile.weight : 80;
-    initDefaultSetRows();
-  }
-  renderSetRowsUI();
-  renderExList();
-  calcLiveCNS();
-}
-
-function clearDraft() {
-  localStorage.removeItem(DRAFT_KEY);
-}
-
 function initDefaultSetRows() {
-  currentSetRows = [{ w: '', r: '' }];
-}
-
-function onExChange() {
-  renderSetRowsUI();
-  saveDraft();
+  currentSetRows = [{ w: '', r: '', isWarmup: false, completed: false, manualOverride: false }];
 }
 
 function addSetRow() {
-  const lastSet = currentSetRows.length > 0 ? currentSetRows[currentSetRows.length - 1] : { w: '', r: '' };
-  currentSetRows.push({ w: lastSet.w, r: lastSet.r });
+  const lastSet = currentSetRows.length > 0 ? currentSetRows[currentSetRows.length - 1] : { w: '', r: '', isWarmup: false, completed: false };
+  currentSetRows.push({
+    w: lastSet.w !== undefined && lastSet.w !== null ? lastSet.w : '',
+    r: lastSet.r !== undefined && lastSet.r !== null ? lastSet.r : '',
+    isWarmup: false,
+    completed: false,
+    manualOverride: false
+  });
   renderSetRowsUI();
   saveDraft();
   
   setTimeout(() => {
     const inputs = document.querySelectorAll('.set-reps-input');
     if (inputs.length) inputs[inputs.length - 1].focus();
-  }, 50);
+  }, 40);
 }
 
 function removeSetRow(index) {
   if (currentSetRows.length <= 1) {
-    currentSetRows = [{ w: '', r: '' }];
+    initDefaultSetRows();
   } else {
     currentSetRows.splice(index, 1);
   }
   renderSetRowsUI();
+  calcLiveCNS();
   saveDraft();
 }
 
 function updateSetVal(index, field, value) {
   if (currentSetRows[index]) {
     currentSetRows[index][field] = value;
+    if (field === 'r') {
+      const reps = parseInt(value, 10);
+      updateSmartHint(reps);
+    }
     saveDraft();
   }
+}
+
+function toggleSetCompleted(index, phWeight, phReps) {
+  initOrGetAudioContext();
+  const set = currentSetRows[index];
+  if (!set) return;
+
+  if (!set.completed) {
+    if (set.w === '' || set.w === undefined || set.w === null) {
+      set.w = (phWeight !== undefined && phWeight !== null && phWeight !== '') ? phWeight : (isBodyweightEx(selectedExercise) ? 0 : 20);
+    }
+    if (set.r === '' || set.r === undefined || set.r === null) {
+      set.r = (phReps !== undefined && phReps !== null && phReps !== '') ? phReps : 10;
+    }
+    set.completed = true;
+    startRestTimerAuto();
+  } else {
+    set.completed = false;
+  }
+
+  renderSetRowsUI();
+  calcLiveCNS();
+  saveDraft();
 }
 
 function renderSetRowsUI() {
   const container = $('setRowsContainer');
   if (!container) return;
 
-  const currentEx = $('exSel').value;
+  const currentEx = selectedExercise;
   const isBW = isBodyweightEx(currentEx);
-  const userW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 80;
-  const placeholderText = isBW ? `+ Доп. кг (вес: ${userW})` : 'Вес, кг';
+  const userW = getValidBodyWeight($('curW')?.value, DB.profile?.weight);
+  
+  const past = findLastPerformance(currentEx);
+  const pastWorkingSets = past && past.sets ? past.sets.filter(s => !s.isWarmup) : [];
 
-  container.innerHTML = currentSetRows.map((set, i) => `
-    <div class="set-row">
-      <span class="set-num">Сет #${i + 1}</span>
-      <input type="text" inputmode="decimal" class="set-weight-input" placeholder="${placeholderText}"
-             value="${set.w !== undefined ? set.w : ''}" 
-             oninput="handleDecimalInput(this, () => updateSetVal(${i}, 'w', this.value))" onfocus="this.select()">
-      <input type="text" inputmode="numeric" class="set-reps-input" placeholder="Повторы"
-             value="${set.r !== undefined ? set.r : ''}" 
-             oninput="handleNumericInput(this, 1, 999, () => updateSetVal(${i}, 'r', this.value))" onfocus="this.select()"
-             onkeydown="if(event.key==='Enter'){ addSetRow(); }">
-      ${currentSetRows.length > 1 ? `<button class="btn-icon-del" onclick="removeSetRow(${i})">✕</button>` : '<div style="width:44px;"></div>'}
-    </div>
-  `).join('');
-}
+  currentSetRows = evaluateSetTypes(currentSetRows, currentEx);
 
-function flashError(elem) {
-  if (!elem) return;
-  elem.classList.add('error');
-  setTimeout(() => elem.classList.remove('error'), 1200);
+  container.innerHTML = currentSetRows.map((set, i) => {
+    const pastSet = pastWorkingSets[i] || (pastWorkingSets.length ? pastWorkingSets[pastWorkingSets.length - 1] : null);
+    
+    let defaultWeight = isBW ? 0 : 20;
+    let defaultReps = 10;
+    let wPlaceholder = isBW ? `+0 (${userW})` : `${defaultWeight}`;
+    let rPlaceholder = `${defaultReps}`;
+
+    if (pastSet) {
+      defaultWeight = (pastSet.w !== undefined && pastSet.w !== null && pastSet.w !== '') ? pastSet.w : defaultWeight;
+      defaultReps = (pastSet.r !== undefined && pastSet.r !== null && pastSet.r !== '') ? pastSet.r : defaultReps;
+      wPlaceholder = isBW ? `+${defaultWeight} (${userW})` : `${defaultWeight}`;
+      rPlaceholder = `${defaultReps}`;
+    }
+
+    const isWarm = !!set.isWarmup;
+    const isDone = !!set.completed;
+    const setWeightValue = (set.w !== undefined && set.w !== null) ? set.w : '';
+    const setRepsValue = (set.r !== undefined && set.r !== null) ? set.r : '';
+
+    return `
+    <div id="set-row-${i}" class="set-row ${isDone ? 'completed-set' : (isWarm ? 'warmup-set' : '')}">
+      <span class="set-num-badge">${i + 1}</span>
+      
+      <span class="set-status-pill ${isWarm ? 'is-warmup' : 'is-working'}" 
+            onclick="toggleSetWarmupManual(${i})" 
+            title="Нажмите для смены статуса (Рабочий / Разминка)">
+        ${isWarm ? 'Разминка' : 'Рабочий'}
+      </span>
+
+      <input type="text" inputmode="decimal" class="set-weight-input" placeholder="${wPlaceholder}"
+             value="${setWeightValue}" 
+             oninput="handleDecimalInput(this, () => updateSetVal(${i}, 'w', this.value))" 
+             onfocus="this.select()">
+
+      <input type="text" inputmode="numeric" class="set-reps-input" placeholder="${rPlaceholder}"
+             value="${setRepsValue}" 
+             oninput="handleNumericInput(this, 1, 100, () => updateSetVal(${i}, 'r', this.value))" 
+             onfocus="this.select()"
+             onblur="if(this.value === '') updateSmartHint();"
+             onkeydown="if(event.key==='Enter'){ toggleSetCompleted(${i}, ${defaultWeight}, ${defaultReps}); }">
+
+      <button class="btn-check-set ${isDone ? 'checked' : ''}" 
+              onclick="toggleSetCompleted(${i}, ${defaultWeight}, ${defaultReps})" 
+              title="Зафиксировать подход">
+        ✓
+      </button>
+
+      ${currentSetRows.length > 1 ? `<button class="btn-icon-del" onclick="removeSetRow(${i})">✕</button>` : '<div></div>'}
+    </div>`;
+  }).join('');
 }
 
 function addExToWorkout() {
-  const exName = $('exSel').value;
-  const isBW = isBodyweightEx(exName);
-  const validSets = [];
-  let hasError = false;
+  const exName = selectedExercise;
+  const evaluatedSets = evaluateSetTypes(currentSetRows, exName);
+  const completedSets = evaluatedSets.filter(s => s.completed && sanitizeNumber(s.r, 0) > 0);
 
-  const wInputs = document.querySelectorAll('.set-weight-input');
-  const rInputs = document.querySelectorAll('.set-reps-input');
-
-  currentSetRows.forEach((s, idx) => {
-    let w = parseFloat(String(s.w).replace(',', '.'));
-    const r = parseInt(s.r, 10);
-
-    if (isBW && (isNaN(w) || w < 0)) w = 0;
-
-    if (!isBW && (isNaN(w) || w <= 0)) { flashError(wInputs[idx]); hasError = true; }
-    if (isNaN(r) || r <= 0) { flashError(rInputs[idx]); hasError = true; }
-
-    if (!hasError) {
-      validSets.push({ w: isNaN(w) ? 0 : w, r });
-    }
-  });
-
-  if (hasError || validSets.length === 0) return;
+  if (completedSets.length === 0) {
+    alert('Пожалуйста, зафиксируйте (нажмите галочку ✓) хотя бы один подход!');
+    return;
+  }
 
   curWorkout.push({
     n: exName,
-    sets: validSets
+    sets: JSON.parse(JSON.stringify(completedSets))
   });
 
   initDefaultSetRows();
+  updateSmartHint();
   renderSetRowsUI();
   renderExList();
   calcLiveCNS();
@@ -1251,26 +2034,34 @@ function removeExFromWorkout(index) {
 }
 
 function renderExList() {
-  const userW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 80;
+  const userW = getValidBodyWeight($('curW')?.value, DB.profile?.weight);
 
   $('exList').innerHTML = curWorkout.map((e, i) => {
     const isBW = isBodyweightEx(e.n);
-    let setsText = '';
-    let totalKg = 0;
+    let workingKg = 0;
+    let setsDetails = [];
 
     if (Array.isArray(e.sets)) {
-      setsText = e.sets.map(s => {
-        const addedW = +s.w || 0;
-        const effW = isBW ? (userW + addedW) : addedW;
-        totalKg += effW * (+s.r || 0);
-        return isBW 
-          ? (addedW > 0 ? `(${userW}+${addedW})кг×${s.r}` : `${userW}кг×${s.r}`)
-          : `${s.w}кг×${s.r}`;
-      }).join(', ');
+      e.sets.forEach((s) => {
+        if (!s.completed) return;
+        const addedW = sanitizeNumber(s.w, 0);
+        const effW = getEffectiveWeight(e.n, addedW, userW);
+        if (!s.isWarmup) {
+          workingKg += effW * sanitizeNumber(s.r, 0);
+        }
+        const warmBadge = s.isWarmup ? '<span style="color:#8E8E93; font-weight:700;">[Разм]</span> ' : '<span style="color:#34C759; font-weight:700;">[Раб]</span> ';
+        const wTxt = isBW ? (addedW > 0 ? `(${userW}+${addedW})` : `${userW}`) : `${addedW}`;
+        setsDetails.push(`${warmBadge}${wTxt}×${s.r}`);
+      });
     }
 
     return `<div class="item">
-      <span><b>${escapeHTML(e.n)}</b>: ${setsText} = <b>${Math.round(totalKg)} кг</b></span>
+      <div>
+        <div style="font-weight:700; font-size:14.5px;">${escapeHTML(e.n)}</div>
+        <div style="font-size:12.5px; color:var(--ios-text-secondary); margin-top:2px;">
+          ${setsDetails.join(', ')} — <b style="color:var(--ios-text)">${Math.round(workingKg)} кг раб. тоннаж</b>
+        </div>
+      </div>
       <button class="small del" onclick="removeExFromWorkout(${i})">✕</button>
      </div>`;
   }).join('');
@@ -1278,640 +2069,624 @@ function renderExList() {
   $('saveBtn').disabled = curWorkout.length === 0;
 }
 
-function saveWorkout() {
-  if (!curWorkout.length) return;
-  const well = Math.min(10, Math.max(1, sanitizeNumber($('well').value, 7)));
-  const rpe = parseFloat($('rpe').value) || 7;
-  const bodyWeight = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 80;
-  
-  DB.profile.weight = bodyWeight;
-
-  DB.w.push({ 
-    id: 'w_' + Date.now(),
-    date: today(), 
-    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-    well, 
-    rpe, 
-    bodyWeight, 
-    ex: JSON.parse(JSON.stringify(curWorkout))
-  });
-  
-  curWorkout = [];
-  initDefaultSetRows();
-  $('well').value = '7';
-  $('rpe').value = 7;
-  updateRPEUI();
-  
-  renderSetRowsUI();
-  renderExList();
-  calcLiveCNS();
-  saveDB();
-  clearDraft();
-  alert('Тренировка успешно сохранена! ✅');
-}
-
-function addCustomEx() {
-  const nElem = $('exName'), pElem = $('exP');
-  const n = nElem.value.trim(), p = pElem.value.trim();
-  
-  let valid = true;
-  if (!n) { flashError(nElem); valid = false; }
-  if (!p) { flashError(pElem); valid = false; }
-  if (!valid) return;
-
-  const sList = $('exS').value.split(',').map(x => x.trim()).filter(x => x);
-  const musMap = {};
-  if (sList.length > 0) {
-    musMap[p] = 0.65;
-    const secCoeff = 0.35 / sList.length;
-    sList.forEach(s => musMap[s] = Math.round(secCoeff * 100) / 100);
-  } else {
-    musMap[p] = 1.0;
-  }
-
-  DB.ex[n] = { 
-    target: p, 
-    muscles: musMap, 
-    cns: 0.5, 
-    isCompound: sList.length > 0 
-  };
-  saveDB();
-  fillSelects();
-  nElem.value = ''; pElem.value = ''; $('exS').value = '';
-  alert('Упражнение добавлено ✅');
-}
-
-/* --- РАСЧЕТЫ: Тоннаж, Системная Нагрузка, Мышцы --- */
-function tonnage(e, bodyWeightOverride) { 
-  const userW = bodyWeightOverride || (DB.profile && DB.profile.weight) || 80;
-  const isBW = isBodyweightEx(e.n);
+/* РАСЧЕТЫ ТОННАЖА И НАГРУЗКИ НА ЦНС */
+function exerciseWorkingTonnage(e, sessionBodyWeight) {
+  const userW = getValidBodyWeight(sessionBodyWeight, 80);
 
   if (Array.isArray(e.sets)) {
     return e.sets.reduce((sum, s) => {
-      const addedW = sanitizeNumber(s.w, 0);
-      const effW = isBW ? (userW + addedW) : addedW;
+      if (s.isWarmup || s.completed === false) return sum;
+      const effW = getEffectiveWeight(e.n, s.w, userW);
       return sum + (effW * sanitizeNumber(s.r, 0));
     }, 0);
   }
-
-  const addedW = sanitizeNumber(e.w, 0);
-  const effW = isBW ? (userW + addedW) : addedW;
-  return (sanitizeNumber(e.s, 0)) * effW * (sanitizeNumber(e.r, 0)); 
+  return 0;
 }
 
-/* Продвинутая спортивная оценка системной / нервно-мышечной нагрузки */
 function calculateCNSLoad(workoutObj) {
   if (!workoutObj || !workoutObj.ex || !workoutObj.ex.length) return 0;
-  const rpe = workoutObj.rpe || 7;
-  const rpeStressMult = Math.pow(Math.max(1, rpe) / 7, 1.4);
-  const wBodyWeight = workoutObj.bodyWeight || (DB.profile && DB.profile.weight) || 80;
+  const wBodyWeight = getValidBodyWeight(workoutObj.bodyWeight, DB.profile?.weight);
 
-  let totalSystemicStress = 0;
+  let totalNeurologicalStress = 0;
 
   workoutObj.ex.forEach(e => {
     const exInfo = getExData(e.n);
-    const exFactor = exInfo.cns !== undefined ? exInfo.cns : (exInfo.isCompound ? 0.7 : 0.3);
-    const sets = Array.isArray(e.sets) ? e.sets : [{ w: e.w, r: e.r }];
+    const exBaseCNS = exInfo.cns !== undefined ? exInfo.cns : (exInfo.isCompound ? 0.75 : 0.3);
+    const sets = Array.isArray(e.sets) ? e.sets : [];
     
+    let historical1RM = getHistorical1RM(e.n);
+    if (historical1RM === null) {
+      let sessionBest = 0;
+      sets.forEach(s => {
+        if (!s.completed) return;
+        const effW = getEffectiveWeight(e.n, s.w, wBodyWeight);
+        const r = sanitizeNumber(s.r, 0);
+        const e1 = calculate1RM(effW, r);
+        if (e1 > sessionBest) sessionBest = e1;
+      });
+      historical1RM = sessionBest > 0 ? sessionBest : null;
+    }
+
     sets.forEach(s => {
+      if (s.isWarmup || s.completed === false) return;
+
       const r = sanitizeNumber(s.r, 0);
-      const w = sanitizeNumber(s.w, 0);
-      const effW = isBodyweightEx(e.n) ? (wBodyWeight + w) : w;
+      const effW = getEffectiveWeight(e.n, s.w, wBodyWeight);
       if (r <= 0 || effW <= 0) return;
 
-      // Оценка интенсивности: работа на 1-6 повторений нагружает ЦНС значительно сильнее многоповторки
-      let intensityWeight = 1.0;
-      if (r <= 3) intensityWeight = 1.45;
-      else if (r <= 6) intensityWeight = 1.25;
-      else if (r <= 10) intensityWeight = 1.0;
-      else if (r <= 15) intensityWeight = 0.85;
-      else intensityWeight = 0.7;
-
-      const setTonnage = effW * r;
-      // Базовый расчет стресса сета с учетом специфики движения и интенсивности
-      const setStress = (setTonnage / 350) * exFactor * intensityWeight;
-      totalSystemicStress += setStress;
+      const base1RM = historical1RM ? Math.max(effW, historical1RM) : effW;
+      const intensityPct = Math.min(1.0, Math.max(0.45, effW / base1RM));
+      const intensityStress = Math.pow(intensityPct, 2.8) * 3.8;
+      const repStrain = r <= 5 ? 1.4 : r <= 10 ? 1.15 : 0.9;
+      const setStress = intensityStress * exBaseCNS * repStrain;
+      totalNeurologicalStress += setStress;
     });
   });
 
-  const finalScore = totalSystemicStress * rpeStressMult;
-  return Math.round(finalScore * 10) / 10;
+  return Math.round(totalNeurologicalStress * 10) / 10;
 }
 
 function calcLiveCNS() {
   if (!curWorkout.length) {
-    $('cnsLiveEstimate').innerHTML = 'Оценка системной нагрузки: <b>0.0 (Низкая)</b><br><span style="font-size:11.5px; opacity:0.8;">Добавьте упражнения для расчета нагрузки на нервно-мышечную систему.</span>';
+    $('cnsLiveEstimate').innerHTML = 'Оценка ЦНС: <b>0.0 (Низкая)</b><br><span style="font-size:12px; color:var(--ios-subtext);">Зафиксируйте подходы галочкой и добавьте упражнение в тренировку.</span>';
     return;
   }
-  const curW = parseFloat($('curW').value) || (DB.profile && DB.profile.weight) || 80;
-  const tempW = { rpe: parseFloat($('rpe').value) || 7, bodyWeight: curW, ex: curWorkout };
+  const curW = getValidBodyWeight($('curW')?.value, DB.profile?.weight);
+  const tempW = { bodyWeight: curW, ex: curWorkout };
   const cnsVal = calculateCNSLoad(tempW);
-  
-  let desc = 'Низкая (восстановительная)';
+
+  let desc = 'Низкая (легкая сессия)';
   let color = 'var(--ios-green)';
-  let explanation = 'Легкий стресс, быстрое восстановление.';
-  
-  if (cnsVal > 5 && cnsVal <= 10) {
-    desc = 'Умеренная (оптимальная)';
+  let explanation = 'Стресс минимальный, быстрое восстановление.';
+
+  if (cnsVal > 5 && cnsVal <= 11) {
+    desc = 'Оптимальная рабочая';
     color = 'var(--ios-tint)';
-    explanation = 'Хороший баланс стимула и утомления.';
-  } else if (cnsVal > 10 && cnsVal <= 16) {
-    desc = 'Высокая (тяжелая работа)';
+    explanation = 'Отличный стимул гипертрофии и силы. 24–48 ч на восстановление.';
+  } else if (cnsVal > 11 && cnsVal <= 18) {
+    desc = 'Высокая (тяжелая сессия)';
     color = 'var(--ios-orange)';
-    explanation = 'Существенное утомление ЦНС. Потребуется 48+ часов отдыха.';
-  } else if (cnsVal > 16) {
+    explanation = 'Сильное утомление ЦНС и связок. Рекомендуется 48+ часов отдыха.';
+  } else if (cnsVal > 18) {
     desc = 'Предельная (околоотказная)';
     color = 'var(--ios-red)';
-    explanation = 'Очень высокая нагрузка на связки и нервную систему. Не частите с такими тренировками.';
+    explanation = 'Экстремальный стресс нервно-мышечной системы. Запланируйте разгрузку.';
   }
 
-  $('cnsLiveEstimate').innerHTML = `Оценка системной нагрузки: <b style="color:${color}">${cnsVal} — ${desc}</b><br><span style="font-size:11.5px; opacity:0.85;">${explanation}</span>`;
+  $('cnsLiveEstimate').innerHTML = `Оценка ЦНС: <b style="color:${color}">${cnsVal} — ${desc}</b><br><span style="font-size:12px; color:var(--ios-text-secondary);">${explanation}</span>`;
 }
 
 function workoutMetrics(w) {
-  let tons = 0, setsCount = 0, totalReps = 0, maxIntensityWeight = 0;
-  const wBodyWeight = w.bodyWeight || (DB.profile && DB.profile.weight) || 80;
+  let workingTons = 0, workingSets = 0, warmupSets = 0, totalWorkingReps = 0;
+  const wBodyWeight = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
 
   (w.ex || []).forEach(e => {
-    tons += tonnage(e, wBodyWeight);
-    const sets = Array.isArray(e.sets) ? e.sets : [{ w: e.w, r: e.r }];
-    setsCount += sets.length;
-    sets.forEach(s => {
-      const r = sanitizeNumber(s.r, 0);
-      const weight = sanitizeNumber(s.w, 0);
-      const effW = isBodyweightEx(e.n) ? (wBodyWeight + weight) : weight;
-      totalReps += r;
-      if (effW > maxIntensityWeight) maxIntensityWeight = effW;
+    workingTons += exerciseWorkingTonnage(e, wBodyWeight);
+    (e.sets || []).forEach(s => {
+      if (s.completed === false) return;
+      if (s.isWarmup) {
+        warmupSets++;
+      } else {
+        workingSets++;
+        totalWorkingReps += sanitizeNumber(s.r, 0);
+      }
     });
   });
 
-  const avgIntensity = totalReps > 0 ? Math.round(tons / totalReps) : 0;
-
   return {
-    tons,
-    sets: setsCount,
-    reps: totalReps,
-    avgIntensity,
-    maxWeight: maxIntensityWeight,
-    tut: totalReps * 3,
-    est: totalReps * 3 + setsCount * 120,
-    kcal: Math.round(tons * 0.025 * (wBodyWeight / 75))
+    workingTons,
+    workingSets,
+    warmupSets,
+    workingReps: totalWorkingReps
   };
 }
 
-function muscleTonnage(w) {
-  const m = {};
-  const rpe = w.rpe || 7;
-  const rpeMultiplier = rpe / 7;
-  const wBodyWeight = w.bodyWeight || (DB.profile && DB.profile.weight) || 80;
+function muscleWorkingStats(w) {
+  const mSets = {};
+  const mTons = {};
+  const wBodyWeight = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
 
   (w.ex || []).forEach(e => {
     if (!e || !e.n) return;
     const exData = getExData(e.n);
     const musMap = exData.muscles || { "Другое": 1.0 };
-    const t = tonnage(e, wBodyWeight);
 
-    for (const muscleName in musMap) {
-      const coeff = musMap[muscleName];
-      const effectiveMuscleVolume = t * coeff * rpeMultiplier;
-      m[muscleName] = (m[muscleName] || 0) + effectiveMuscleVolume;
-    }
+    (e.sets || []).forEach(s => {
+      if (s.isWarmup || s.completed === false) return;
+
+      const effW = getEffectiveWeight(e.n, s.w, wBodyWeight);
+      const reps = sanitizeNumber(s.r, 0);
+      const setTonnage = effW * reps;
+
+      for (const muscleName in musMap) {
+        const coeff = musMap[muscleName];
+        mSets[muscleName] = (mSets[muscleName] || 0) + coeff;
+        mTons[muscleName] = (mTons[muscleName] || 0) + (setTonnage * coeff);
+      }
+    });
   });
-  return m;
+  return { mSets, mTons };
 }
 
-/* --- ЖУРНАЛ И ИСТОРИЯ ТРЕНИРОВОК --- */
+/* АВТОМАТИЧЕСКИЙ БЭКАП В ФАЙЛ */
+function downloadBackupFile(filename) {
+  try {
+    const dataStr = JSON.stringify(DB, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }, 1000);
+  } catch (e) {
+    console.error("Ошибка скачивания бэкапа:", e);
+  }
+}
+
+/* СОХРАНЕНИЕ ТРЕНИРОВКИ */
+function saveWorkout() {
+  if (!curWorkout.length) return;
+  const well = Math.min(10, Math.max(1, sanitizeNumber($('well').value, 8)));
+  const parsedBW = parseFloat($('curW').value);
+  const bodyWeight = getValidBodyWeight(parsedBW, DB.profile?.weight);
+  const now = new Date();
+
+  DB.profile.weight = bodyWeight;
+
+  const newWorkout = {
+    id: `w_${Date.now()}`,
+    timestamp: Date.now(),
+    date: today(),
+    time: now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+    well,
+    bodyWeight,
+    ex: JSON.parse(JSON.stringify(curWorkout))
+  };
+
+  DB.w.push(newWorkout);
+
+  const isSaved = saveDB();
+  if (!isSaved) return;
+
+  if (DB.w.length > 0 && DB.w.length % 5 === 0) {
+    downloadBackupFile(`gym_auto_backup_${today()}.json`);
+  }
+
+  curWorkout = [];
+  initDefaultSetRows();
+  $('well').value = '8';
+
+  renderSetRowsUI();
+  renderExList();
+  calcLiveCNS();
+  clearDraft();
+  alert('Тренировка успешно сохранена! 💪');
+}
+
+/* ЧЕРНОВИК */
+function saveDraft() {
+  try {
+    const draft = {
+      well: $('well').value,
+      curW: $('curW').value,
+      selectedExercise: selectedExercise,
+      curWorkout: curWorkout,
+      currentSetRows: currentSetRows
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch(e) {}
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    const savedWeight = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
+
+    if (!raw) {
+      $('curW').value = savedWeight;
+      initDefaultSetRows();
+      if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+      return;
+    }
+    const draft = JSON.parse(raw);
+    if (draft && typeof draft === 'object') {
+      if (draft.well !== undefined) $('well').value = draft.well;
+      $('curW').value = draft.curW !== undefined && draft.curW !== '' ? draft.curW : savedWeight;
+      
+      if (draft.selectedExercise && allEX()[draft.selectedExercise]) {
+        selectedExercise = draft.selectedExercise;
+      }
+      if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+
+      if (Array.isArray(draft.curWorkout)) curWorkout = draft.curWorkout;
+      if (Array.isArray(draft.currentSetRows) && draft.currentSetRows.length > 0) {
+        currentSetRows = draft.currentSetRows;
+      } else {
+        initDefaultSetRows();
+      }
+    }
+  } catch(e) {
+    $('curW').value = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
+    initDefaultSetRows();
+    if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+  }
+  updateSmartHint();
+  renderSetRowsUI();
+  renderExList();
+  calcLiveCNS();
+}
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+/* ЖУРНАЛ И ИСТОРИЯ */
 function renderHistory() {
   const container = $('historyList');
   if (!container) return;
 
-  const workouts = (DB.w || []).slice().reverse();
+  const workouts = (DB.w || []).slice().sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   if (!workouts.length) {
-    container.innerHTML = '<div class="muted" style="text-align:center; padding: 20px 0;">У вас пока нет сохраненных тренировок.<br>Проведите занятие во вкладке «Зал».</div>';
+    container.innerHTML = '<div class="muted" style="text-align:center; padding: 24px 0;">У вас пока нет сохраненных тренировок.<br>Запишите первую во вкладке «Зал».</div>';
     return;
   }
 
-  container.innerHTML = workouts.map((w, idx) => {
-    const origIdx = DB.w.length - 1 - idx;
+  container.innerHTML = workouts.map(w => {
     const metrics = workoutMetrics(w);
     const cns = calculateCNSLoad(w);
-    const wBodyWeight = w.bodyWeight || (DB.profile && DB.profile.weight) || 80;
+    const wBodyWeight = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
 
     let exDetails = (w.ex || []).map(e => {
       const isBW = isBodyweightEx(e.n);
-      const sets = Array.isArray(e.sets) ? e.sets : [{ w: e.w, r: e.r }];
+      const sets = Array.isArray(e.sets) ? e.sets : [];
       const setsFormatted = sets.map((s, sIdx) => {
+        const isWarm = !!s.isWarmup;
         const addedW = sanitizeNumber(s.w, 0);
         const wTxt = isBW ? (addedW > 0 ? `${wBodyWeight}+${addedW}` : `${wBodyWeight}`) : `${addedW}`;
-        return `<span style="display:inline-block; background:rgba(118,118,128,0.12); padding:2px 6px; border-radius:4px; margin:2px; font-size:12px;">Сет ${sIdx+1}: <b>${wTxt} кг × ${s.r}</b></span>`;
+        const bg = isWarm ? '#EAEAEF' : '#EBF3FF';
+        const color = isWarm ? '#636366' : '#0055CC';
+        const prefix = isWarm ? 'Разм: ' : `Сет ${sIdx+1}: `;
+        return `<span style="display:inline-block; background:${bg}; color:${color}; padding:3px 7px; border-radius:6px; margin:2px; font-size:12px; font-weight:700;">${prefix}<b>${wTxt} кг × ${s.r}</b></span>`;
       }).join(' ');
 
       return `<div style="margin-top:6px;">
-        <div style="font-size:14px; font-weight:600;">${escapeHTML(e.n)}</div>
-        <div style="margin-top:2px;">${setsFormatted}</div>
+        <div style="font-size:14px; font-weight:700; color:#111;">${escapeHTML(e.n)}</div>
+        <div style="margin-top:3px;">${setsFormatted}</div>
       </div>`;
     }).join('');
 
     return `<div class="history-entry">
       <div class="history-header">
         <div>
-          <span style="font-weight:700; font-size:16px;">${w.date || 'Без даты'}</span>
-          ${w.time ? `<span class="muted" style="margin-left:6px; font-size:13px;">${w.time}</span>` : ''}
+          <span style="font-weight:800; font-size:16px; color:#111;">${w.date || 'Без даты'}</span>
+          <span class="muted" style="margin-left:6px; font-size:13px; font-weight:600;">${w.time || ''}</span>
+          <span class="muted" style="margin-left:6px; font-size:12px;">(Вес тела: ${wBodyWeight} кг)</span>
         </div>
-        <button class="small del" onclick="deleteHistoryWorkout(${origIdx})">Удалить</button>
+        <button class="small del" onclick="deleteHistoryWorkout('${w.id}')">Удалить</button>
       </div>
 
-      <div style="display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0; font-size:12.5px;">
-        <span style="background:var(--ios-tint-light); color:var(--ios-tint); padding:4px 8px; border-radius:6px; font-weight:600;">🏋️ Тоннаж: ${Math.round(metrics.tons)} кг</span>
-        <span style="background:var(--ios-purple-light); color:var(--ios-purple); padding:4px 8px; border-radius:6px; font-weight:600;">🧠 Нагрузка: ${cns}</span>
-        <span style="background:rgba(118,118,128,0.12); padding:4px 8px; border-radius:6px;">RPE: <b>${w.rpe || 7}</b></span>
-        <span style="background:rgba(118,118,128,0.12); padding:4px 8px; border-radius:6px;">Самочувствие: <b>${w.well || 7}/10</b></span>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin: 8px 0; font-size:12.5px;">
+        <span class="badge-tag" style="background:#EBF3FF; color:#0055CC;">🏋️ Раб. тоннаж: <b>${Math.round(metrics.workingTons)} кг</b></span>
+        <span class="badge-tag" style="background:var(--ios-purple-light); color:var(--ios-purple);">🧠 ЦНС: <b>${cns}</b></span>
+        <span class="badge-tag" style="background:#F2F2F7; color:#333;">Подходы: <b>${metrics.workingSets} раб</b> / ${metrics.warmupSets} разм</span>
       </div>
 
-      <div style="background:rgba(118,118,128,0.06); padding:10px; border-radius:var(--ios-radius-md); margin-top:8px;">
+      <div style="background:#F7F7FA; border:1px solid #ECECEF; padding:10px; border-radius:var(--ios-radius-md); margin-top:8px;">
         ${exDetails}
       </div>
     </div>`;
   }).join('');
 }
 
-function deleteHistoryWorkout(index) {
+function deleteHistoryWorkout(workoutId) {
   if (confirm('Удалить эту тренировку из истории?')) {
-    DB.w.splice(index, 1);
+    DB.w = (DB.w || []).filter(w => w.id !== workoutId);
     saveDB();
     renderHistory();
     if ($('tab-a').style.display !== 'none') renderAnalytics();
   }
 }
 
-/* --- ПРОФИЛЬ И ПИТАНИЕ --- */
-function workoutsPerWeek() {
-  const from = Date.now() - 28 * 86400000;
-  return (DB.w || []).filter(w => w && w.date && new Date(w.date).getTime() >= from).length / 4;
+/* =========================================================================
+   АНАЛИТИКА И ОТКАЗОУСТОЙЧИВЫЙ РЕНДЕР
+   ========================================================================= */
+function isDateInPeriod(dateStr, periodDays) {
+  if (!dateStr) return false;
+  if (periodDays >= 3650) return true;
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length !== 3) return false;
+  const workoutDate = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const diffDays = Math.floor((todayStart - workoutDate) / 86400000);
+  return diffDays >= 0 && diffDays < periodDays;
 }
 
-function updateProfileField(field, val) {
-  DB.profile[field] = val;
-  saveDB();
-  renderProfile();
-}
-
-function renderProfile() {
-  const p = DB.profile || {};
-  const sex = p.sex || 'm';
-  const age = Math.max(1, p.age || 25);
-  const height = Math.max(1, p.height || 180);
-  const weight = Math.max(1, p.weight || 80);
-  const goal = p.goal || 'maintain';
-
-  $('pfSex').value = sex;
-  $('pfAge').value = age;
-  $('pfH').value = height;
-  $('pfW').value = weight;
-  $('pfGoal').value = goal;
-
-  const bmr = sex === 'm' 
-    ? 10 * weight + 6.25 * height - 5 * age + 5 
-    : 10 * weight + 6.25 * height - 5 * age - 161;
-  const wpw = workoutsPerWeek();
-  const act = wpw <= 0 ? 1.2 : wpw < 2 ? 1.375 : wpw < 4 ? 1.45 : wpw < 6 ? 1.55 : 1.725;
-  const tdee = bmr * act;
-  const kcal = goal === 'gain' ? tdee * 1.1 : goal === 'cut' ? tdee * 0.85 : tdee;
-  const prot = Math.round(weight * (goal === 'cut' ? 2.2 : 2));
-  const fat = Math.round(weight * 1);
-  const carb = Math.max(0, Math.round((kcal - prot * 4 - fat * 9) / 4));
-  const gn = { maintain: 'поддержание', gain: 'набор', cut: 'снижение' }[goal] || '';
-
-  lastSugg = { kcal: Math.round(kcal), p: prot, f: fat, c: carb };
-  $('profileCalc').innerHTML = `Основной обмен: <b>${Math.round(bmr)}</b> ккал<br>С активностью (${wpw.toFixed(1)} трен/нед): <b>${Math.round(tdee)}</b> ккал<br>Цель «${gn}»: ≈ <b>${Math.round(kcal)}</b> ккал · Б ${prot} / Ж ${fat} / У ${carb}`;
-}
-
-function applyGoals() {
-  if (!lastSugg) return;
-  DB.goals = { kcal: lastSugg.kcal, p: lastSugg.p, f: lastSugg.f, c: lastSugg.c };
-  saveDB();
-  fillGoals();
-  renderMeals();
-  alert('Цели на день обновлены ✅');
-}
-
-function onFoodChange() {
-  unitChanged();
-  $('grams').focus();
-}
-
-function unitChanged() {
-  const f = DB.foods[$('foodSel').value];
-  if (f && f.u) {
-    $('unitSel').style.display = '';
-    $('grams').placeholder = $('unitSel').value === 'pcs' ? 'Количество штук' : 'Граммы готовой еды';
-  } else {
-    $('unitSel').style.display = 'none';
-    $('grams').placeholder = 'Граммы готовой еды';
+function calculateWorkoutsPerWeek(ws, periodDays) {
+  if (!ws || ws.length === 0) return '0.0';
+  if (periodDays <= 7) return ws.length.toFixed(1);
+  if (periodDays < 3650) {
+    const weeks = periodDays / 7;
+    return (ws.length / weeks).toFixed(1);
   }
+  const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
+  if (dates.length <= 1) return ws.length.toFixed(1);
+  const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
+  return (ws.length / (diffDays / 7)).toFixed(1);
 }
 
-function addMeal() {
-  const gElem = $('grams');
-  const n = $('foodSel').value;
-  if (!n || !DB.foods[n]) return;
-  const f = DB.foods[n];
-  const val = parseFloat(gElem.value.replace(',', '.'));
-  
-  if (isNaN(val) || val <= 0) {
-    flashError(gElem);
-    return;
-  }
-
-  let g = val, pcs = null;
-  if ($('unitSel').style.display !== 'none' && $('unitSel').value === 'pcs') {
-    pcs = val;
-    g = Math.round(val * (f.u || 100));
-  }
-  const t = today();
-  DB.meals[t] = DB.meals[t] || [];
-  DB.meals[t].push({ n, g, pcs });
-  gElem.value = '';
-  saveDB();
-  renderMeals();
+function getPeriodWeeksCount(ws, periodDays) {
+  if (periodDays <= 7) return 1.0;
+  if (periodDays < 3650) return periodDays / 7.0;
+  if (!ws.length) return 1.0;
+  const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
+  if (dates.length <= 1) return 1.0;
+  const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
+  return diffDays / 7.0;
 }
 
-function delMeal(i) {
-  const t = today();
-  if (DB.meals[t] && DB.meals[t][i] !== undefined) {
-    DB.meals[t].splice(i, 1);
-    saveDB();
-    renderMeals();
-  }
-}
-
-function renderMeals() {
-  const list = DB.meals[today()] || [];
-  $('mealList').innerHTML = list.map((m, i) => {
-    const f = DB.foods[m.n] || { k: 0, p: 0, f: 0, c: 0 };
-    const q = m.pcs ? `${m.pcs} шт (${m.g} г)` : `${m.g} г`;
-    const cal = Math.round((f.k || 0) * (m.g || 0) / 100);
-    const prot = Math.round((f.p || 0) * (m.g || 0) / 100);
-    const fat = Math.round((f.f || 0) * (m.g || 0) / 100);
-    const carb = Math.round((f.c || 0) * (m.g || 0) / 100);
-    return `<div class="item">
-      <span><b>${escapeHTML(m.n)}</b> (${q}) — ${cal} ккал <small class="muted">Б${prot} Ж${fat} У${carb}</small></span>
-      <button class="small del" onclick="delMeal(${i})">✕</button>
-    </div>`;
-  }).join('');
-
-  let t = { k: 0, p: 0, f: 0, c: 0 };
-  list.forEach(m => {
-    const f = DB.foods[m.n] || { k: 0, p: 0, f: 0, c: 0 };
-    t.k += (f.k || 0) * (m.g || 0) / 100;
-    t.p += (f.p || 0) * (m.g || 0) / 100;
-    t.f += (f.f || 0) * (m.g || 0) / 100;
-    t.c += (f.c || 0) * (m.g || 0) / 100;
-  });
-
-  const g = DB.goals;
-  const bar = (name, val, goal, col) => {
-    const pct = goal > 0 ? Math.min(100, (val / goal) * 100) : 0;
-    const left = goal - val;
-    return `<div class="bar-container">
-      <label>
-        <span>${name}: <b>${Math.round(val)}</b> / ${goal}</span>
-        <span>${left > 0 ? 'Осталось ' + Math.round(left) : 'Цель выполнена ✅'}</span>
-      </label>
-      <div class="bar"><div style="width:${pct}%; background:${col}"></div></div>
-    </div>`;
-  };
-
-  $('mealTotals').innerHTML = 
-    bar('Калории', t.k, g.kcal, 'var(--ios-tint)') +
-    bar('Белки', t.p, g.p, 'var(--ios-green)') +
-    bar('Жиры', t.f, g.f, 'var(--ios-orange)') +
-    bar('Углеводы', t.c, g.c, 'var(--ios-purple)');
-}
-
-function renderSup() {
-  const t = today();
-  DB.sup[t] = DB.sup[t] || [];
-  $('supList').innerHTML = DB.supList.map((n, idx) => 
-    `<label class="sup">
-      <span>${escapeHTML(n)}</span>
-      <input type="checkbox" ${DB.sup[t].includes(n) ? 'checked' : ''} onchange="toggleSup(${idx}, this.checked)">
-     </label>`
-  ).join('');
-}
-
-function toggleSup(idx, on) {
-  const t = today();
-  const name = DB.supList[idx];
-  if (!name) return;
-  DB.sup[t] = DB.sup[t] || [];
-  if (on) {
-    if (!DB.sup[t].includes(name)) DB.sup[t].push(name);
-  } else {
-    DB.sup[t] = DB.sup[t].filter(x => x !== name);
-  }
-  saveDB();
-}
-
-function addSup() {
-  const input = $('newSup');
-  const n = input.value.trim();
-  if (!n) { flashError(input); return; }
-  if (!DB.supList.includes(n)) DB.supList.push(n);
-  input.value = '';
-  saveDB();
-  renderSup();
-}
-
-function addFood() {
-  const nElem = $('fName');
-  const n = nElem.value.trim();
-  if (!n) { flashError(nElem); return; }
-  
-  const o = {
-    k: sanitizeNumber($('fK').value, 0),
-    p: sanitizeNumber($('fP').value, 0),
-    f: sanitizeNumber($('fF').value, 0),
-    c: sanitizeNumber($('fC').value, 0)
-  };
-  const u = sanitizeNumber($('fU').value, 0);
-  if (u > 0) o.u = u;
-  
-  DB.foods[n] = o;
-  saveDB();
-  fillSelects();
-  nElem.value = ''; $('fK').value = ''; $('fP').value = ''; $('fF').value = ''; $('fU').value = '';
-  alert('Продукт добавлен ✅');
-}
-
-/* --- АНАЛИТИКА, ВЫВОДЫ И ГРАФИКИ --- */
 function setPeriod(p) {
   period = p;
-  [7, 30, 3650].forEach(x => {
+  [7, 30, 90, 3650].forEach(x => {
     const btn = $('btnPeriod' + x);
     if (btn) btn.classList.toggle('active', x === p);
   });
   renderAnalytics();
 }
 
-/* Генерация тренировочных инсайтов для атлета */
-function generateInsights(ws) {
-  if (!ws || ws.length === 0) {
-    return ['<div class="insight-badge insight-info">ℹ️ Сохраните хотя бы одну тренировку, чтобы получить первые аналитические выводы.</div>'];
+function setMuscleViewMode(mode) {
+  muscleViewMode = mode;
+  $('btnMusModeSets').classList.toggle('active', mode === 'sets');
+  $('btnMusModeTonnage').classList.toggle('active', mode === 'tonnage');
+  $('rpLegendBox').style.display = mode === 'sets' ? 'grid' : 'none';
+  renderAnalytics();
+}
+
+function getRPStatus(weeklySets) {
+  if (weeklySets < 6) {
+    return { zone: 'MV', color: '#FF8D85', cardClass: 'rp-card-mv', desc: 'Объем ниже стимула роста. Сохраняет текущую массу.' };
+  } else if (weeklySets >= 6 && weeklySets < 10) {
+    return { zone: 'MEV', color: '#FFCC00', cardClass: 'rp-card-mev', desc: 'Минимальный стимул гипертрофии с низким утомлением.' };
+  } else if (weeklySets >= 10 && weeklySets <= 20) {
+    return { zone: 'MAV', color: '#34C759', cardClass: 'rp-card-mav', desc: 'Оптимальный диапазон стимуляции гипертрофии и силы.' };
+  } else {
+    return { zone: 'MRV', color: '#FF3B30', cardClass: 'rp-card-mrv', desc: 'Внимание! Мышца перегружена, лимит восстановления исчерпан.' };
+  }
+}
+
+function generateInsights(allWorkouts) {
+  if (!allWorkouts || allWorkouts.length === 0) {
+    return ['<div class="insight-badge insight-info">ℹ️ Проведите и сохраните хотя бы одну тренировку для расчета аналитики.</div>'];
   }
 
   const insights = [];
-
-  // 1. Анализ прогресса объемов между последними занятиями
-  if (ws.length >= 2) {
-    const lastW = ws[ws.length - 1];
-    const prevW = ws[ws.length - 2];
-    const lastTons = workoutMetrics(lastW).tons;
-    const prevTons = workoutMetrics(prevW).tons;
+  if (allWorkouts.length >= 2) {
+    const lastW = allWorkouts[allWorkouts.length - 1];
+    const prevW = allWorkouts[allWorkouts.length - 2];
+    const lastTons = workoutMetrics(lastW).workingTons;
+    const prevTons = workoutMetrics(prevW).workingTons;
 
     if (prevTons > 0) {
       const diffPct = Math.round(((lastTons - prevTons) / prevTons) * 100);
       if (diffPct > 25) {
-        insights.push(`<div class="insight-badge insight-warn">⚠️ <b>Резкий скачок объема: +${diffPct}%</b> к прошлой тренировке. Следите за восстановлением связок и качеством сна.</div>`);
-      } else if (diffPct >= 5 && diffPct <= 20) {
-        insights.push(`<div class="insight-badge insight-good">🔥 <b>Отличная прогрессия нагрузки (+${diffPct}% объема)</b> при стабильном темпе.</div>`);
+        insights.push(`<div class="insight-badge insight-warn">⚠️ <b>Скачок рабочего тоннажа: +${diffPct}%</b> к прошлой тренировке (${prevW.date}). Следите за связками и сном.</div>`);
+      } else if (diffPct >= 3 && diffPct <= 25) {
+        insights.push(`<div class="insight-badge insight-good">🔥 <b>Прогрессивная перегрузка: +${diffPct}%</b> рабочего объема к прошлой сессии (${prevW.date}).</div>`);
       } else if (diffPct < -20) {
-        insights.push(`<div class="insight-badge insight-info">📉 <b>Разгрузочная тренировка (${diffPct}% тоннажа).</b> Отличное решение для восстановления ЦНС.</div>`);
+        insights.push(`<div class="insight-badge insight-info">📉 <b>Разгрузочная сессия (${diffPct}% тоннажа)</b> — отличная возможность для восстановления ЦНС.</div>`);
+      } else {
+        insights.push(`<div class="insight-badge insight-good">✅ <b>Стабильный тоннаж</b> (${diffPct >= 0 ? '+' : ''}${diffPct}% к ${prevW.date}).</div>`);
       }
     }
   }
 
-  // 2. Системное утомление и RPE
-  const avgCNS = ws.reduce((acc, w) => acc + calculateCNSLoad(w), 0) / ws.length;
-  const highStressCount = ws.filter(w => calculateCNSLoad(w) > 12).length;
-  if (highStressCount >= 2 && ws.length <= 4) {
-    insights.push(`<div class="insight-badge insight-warn">⚡ <b>Высокая плотность тяжелых занятий</b> (${highStressCount} из ${ws.length} с высоким нервно-мышечным стрессом). Рекомендуется запланировать легкую тренировку.</div>`);
+  const avgCNS = allWorkouts.reduce((acc, w) => acc + calculateCNSLoad(w), 0) / allWorkouts.length;
+  if (avgCNS > 14) {
+    insights.push(`<div class="insight-badge insight-warn">⚡ <b>Высокая системная нагрузка на ЦНС (${avgCNS.toFixed(1)} балла)</b>. Рекомендуется выделить день на отдых.</div>`);
   } else {
-    insights.push(`<div class="insight-badge insight-good">✅ <b>Средняя нагрузка в балансе:</b> ${avgCNS.toFixed(1)} балла. Адаптация идет по плану.</div>`);
-  }
-
-  // 3. Анализ мышечного баланса
-  const mVol = {};
-  ws.forEach(w => {
-    const mt = muscleTonnage(w);
-    for (const k in mt) mVol[k] = (mVol[k] || 0) + mt[k];
-  });
-  const mSorted = Object.keys(mVol).sort((a, b) => mVol[b] - mVol[a]);
-  if (mSorted.length > 0) {
-    insights.push(`<div class="insight-badge insight-info">🎯 <b>Лидер по нагрузке за период:</b> ${mSorted[0]} (${Math.round(mVol[mSorted[0]])} кг эфф. объема).</div>`);
+    insights.push(`<div class="insight-badge insight-good">🧠 <b>Средняя нагрузка на ЦНС в оптимуме:</b> ${avgCNS.toFixed(1)} балла за сессию.</div>`);
   }
 
   return insights;
 }
 
 function renderAnalytics() {
-  const from = Date.now() - period * 86400000;
-  const ws = (DB.w || []).filter(w => w && w.date && new Date(w.date).getTime() >= from);
+  const ws = (DB.w || []).filter(w => w && w.date && isDateInPeriod(w.date, period)).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+  let totalWorkingTonnageSum = 0;
+  let totalWorkingSetsSum = 0;
+  let totalWorkingRepsSum = 0;
   
-  let tot = 0, rpeSum = 0, wellSum = 0, tut = 0, est = 0, kcalB = 0, totalSets = 0, totalReps = 0;
-  const muscles = {};
+  const aggregatedMusclesSets = {};
+  const aggregatedMusclesTons = {};
 
   ws.forEach(w => {
     const m = workoutMetrics(w);
-    tot += m.tons; tut += m.tut; est += m.est; kcalB += m.kcal;
-    totalSets += m.sets; totalReps += m.reps;
-    rpeSum += (w.rpe || 7); wellSum += (w.well || 7);
-    const mt = muscleTonnage(w);
-    for (const k in mt) muscles[k] = (muscles[k] || 0) + mt[k];
+    totalWorkingTonnageSum += m.workingTons;
+    totalWorkingSetsSum += m.workingSets;
+    totalWorkingRepsSum += m.workingReps;
+    
+    const { mSets, mTons } = muscleWorkingStats(w);
+    for (const k in mSets) aggregatedMusclesSets[k] = (aggregatedMusclesSets[k] || 0) + mSets[k];
+    for (const k in mTons) aggregatedMusclesTons[k] = (aggregatedMusclesTons[k] || 0) + mTons[k];
   });
 
+  const avgWorkingTonnagePerWorkout = ws.length ? Math.round(totalWorkingTonnageSum / ws.length) : 0;
+  const avgWorkingSetsPerWorkout = ws.length ? (totalWorkingSetsSum / ws.length).toFixed(1) : '0';
   const avgCNS = ws.length ? (ws.reduce((a, w) => a + calculateCNSLoad(w), 0) / ws.length).toFixed(1) : '0.0';
-  const avgIntensity = totalReps > 0 ? Math.round(tot / totalReps) : 0;
+  const freqPerWeek = calculateWorkoutsPerWeek(ws, period);
+  const weeksCount = getPeriodWeeksCount(ws, period);
 
   $('stats').innerHTML = `
-    <div class="stat"><span>Всего тренировок</span><b>${ws.length}</b></div>
-    <div class="stat"><span>Частота (в неделю)</span><b>${workoutsPerWeek().toFixed(1)}</b></div>
-    <div class="stat"><span>Общий тоннаж</span><b>${Math.round(tot).toLocaleString('ru')} кг</b></div>
-    <div class="stat"><span>Рабочих подходов / повторов</span><b>${totalSets} сетов / ${totalReps} повт</b></div>
-    <div class="stat"><span>Средний рабочий вес (интенсивность)</span><b>${avgIntensity} кг/повт</b></div>
-    <div class="stat"><span>Средняя системная нагрузка</span><b>${avgCNS} балла</b></div>
-    <div class="stat"><span>Средняя тяжесть (RPE)</span><b>${ws.length ? (rpeSum / ws.length).toFixed(1) : '—'}</b></div>
-    <div class="stat"><span>Среднее самочувствие</span><b>${ws.length ? (wellSum / ws.length).toFixed(1) : '—'} / 10</b></div>
-    <div class="stat"><span>Примерный расход энергии</span><b>${kcalB} ккал</b></div>
+    <div class="stat"><span>Тренировок за период</span><b>${ws.length}</b></div>
+    <div class="stat"><span>Средний рабочий тоннаж / сессия</span><b style="color:var(--ios-tint); font-size:16px;">${avgWorkingTonnagePerWorkout.toLocaleString('ru')} кг</b></div>
+    <div class="stat"><span>Всего рабочих подходов</span><b>${totalWorkingSetsSum} сетов (${totalWorkingRepsSum} повт)</b></div>
+    <div class="stat"><span>В среднем рабочих сетов / сессия</span><b>${avgWorkingSetsPerWorkout} сета</b></div>
+    <div class="stat"><span>Средняя нагрузка на ЦНС</span><b>${avgCNS} балла</b></div>
+    <div class="stat"><span>Частота тренировок</span><b>${freqPerWeek} / нед</b></div>
   `;
 
-  // Инсайты
   $('insightsList').innerHTML = generateInsights(ws).join('');
 
-  // Графики
-  const labels = Object.keys(muscles).sort((a, b) => muscles[b] - muscles[a]);
   ch1 = destroyChart(ch1, 'chartMuscles');
   ch2 = destroyChart(ch2, 'chartTonnage');
   ch4 = destroyChart(ch4, 'chartCNS');
 
-  const computedStyle = getComputedStyle(document.body);
-  const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
-  const tintColor = computedStyle.getPropertyValue('--ios-tint').trim() || '#007AFF';
+  const hasChartJS = typeof Chart !== 'undefined';
+  $('chartMusclesFallback').style.display = hasChartJS ? 'none' : 'block';
+  $('chartTonnageFallback').style.display = hasChartJS ? 'none' : 'block';
+  $('chartCNSFallback').style.display = hasChartJS ? 'none' : 'block';
 
-  ch1 = new Chart($('chartMuscles'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label: 'Эффективный объём, кг', data: labels.map(l => Math.round(muscles[l])), backgroundColor: tintColor, borderRadius: 6 }]
-    },
-    options: {
-      indexAxis: 'y',
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color: textColor } },
-        y: { ticks: { color: textColor } }
-      }
-    }
-  });
+  const textColor = '#111111';
+  const tintColor = '#007AFF';
 
-  const sorted = ws.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-  
-  ch2 = new Chart($('chartTonnage'), {
-    type: 'line',
-    data: {
-      labels: sorted.map(w => (w.date || '').slice(5)),
-      datasets: [
-        { label: 'Тоннаж (кг)', data: sorted.map(w => workoutMetrics(w).tons), borderColor: tintColor, backgroundColor: 'rgba(0,122,255,0.08)', fill: true, tension: 0.3 }
-      ]
-    },
-    options: {
-      scales: {
-        x: { ticks: { color: textColor } },
-        y: { ticks: { color: textColor } }
-      }
-    }
-  });
+  const isSetsMode = muscleViewMode === 'sets';
+  const muscleDataMap = isSetsMode ? aggregatedMusclesSets : aggregatedMusclesTons;
+  const labels = Object.keys(muscleDataMap).sort((a, b) => muscleDataMap[b] - muscleDataMap[a]);
 
-  ch4 = new Chart($('chartCNS'), {
-    type: 'line',
-    data: {
-      labels: sorted.map(w => (w.date || '').slice(5)),
-      datasets: [{ 
-        label: 'Индекс утомления (баллы)', 
-        data: sorted.map(w => calculateCNSLoad(w)), 
-        borderColor: '#AF52DE', 
-        backgroundColor: 'rgba(175, 82, 222, 0.15)',
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      scales: {
-        x: { ticks: { color: textColor } },
-        y: { beginAtZero: true, ticks: { color: textColor } }
-      }
+  if (hasChartJS) {
+    try {
+      const barColors = labels.map(l => {
+        if (!isSetsMode) return tintColor;
+        const weeklyRate = (muscleDataMap[l] || 0) / weeksCount;
+        return getRPStatus(weeklyRate).color;
+      });
+
+      ch1 = new Chart($('chartMuscles'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: isSetsMode ? 'Рабочие сеты' : 'Тоннаж (кг)',
+            data: labels.map(l => isSetsMode ? Math.round(muscleDataMap[l] * 10) / 10 : Math.round(muscleDataMap[l])),
+            backgroundColor: barColors,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const totalVal = ctx.raw;
+                  if (isSetsMode) {
+                    const weeklyRate = (totalVal / weeksCount).toFixed(1);
+                    const st = getRPStatus(parseFloat(weeklyRate));
+                    return ` ${totalVal} сетов (${weeklyRate} сет/нед) — ${st.zone}`;
+                  }
+                  return ` ${totalVal.toLocaleString('ru')} кг`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { ticks: { color: textColor } }
+          }
+        }
+      });
+
+      ch2 = new Chart($('chartTonnage'), {
+        type: 'line',
+        data: {
+          labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
+          datasets: [
+            { 
+              label: 'Рабочий тоннаж (кг)', 
+              data: ws.map(w => workoutMetrics(w).workingTons), 
+              borderColor: tintColor, 
+              backgroundColor: 'rgba(0, 122, 255, 0.08)', 
+              fill: true, 
+              tension: 0.25,
+              pointRadius: 4,
+              pointBackgroundColor: tintColor
+            }
+          ]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor, maxRotation: 45 } },
+            y: { ticks: { color: textColor }, beginAtZero: true }
+          }
+        }
+      });
+
+      ch4 = new Chart($('chartCNS'), {
+        type: 'line',
+        data: {
+          labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
+          datasets: [{
+            label: 'Индекс утомления ЦНС',
+            data: ws.map(w => calculateCNSLoad(w)),
+            borderColor: '#AF52DE',
+            backgroundColor: 'rgba(175, 82, 222, 0.12)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { beginAtZero: true, ticks: { color: textColor } }
+          }
+        }
+      });
+    } catch(e) {
+      console.warn("Chart.js render skipped:", e);
     }
-  });
+  }
+
+  const rpContainer = $('rpMuscleDetails');
+  if (isSetsMode && labels.length > 0) {
+    rpContainer.innerHTML = labels.map(muscleName => {
+      const totalSets = aggregatedMusclesSets[muscleName] || 0;
+      const weeklyRate = parseFloat((totalSets / weeksCount).toFixed(1));
+      const status = getRPStatus(weeklyRate);
+
+      let statusText = '';
+      if (status.zone === 'MV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в зоне поддержания (MV)`;
+      else if (status.zone === 'MEV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в минимальном объеме (MEV)`;
+      else if (status.zone === 'MAV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в оптимальном объеме (MAV)`;
+      else statusText = `Внимание! Мышца <b>${escapeHTML(muscleName)}</b> перегружена (MRV)`;
+
+      return `
+      <div class="rp-muscle-card ${status.cardClass}">
+        <div>
+          <div>${statusText}</div>
+          <div style="font-size:11.5px; opacity:0.85; margin-top:2px;">${status.desc}</div>
+        </div>
+        <div style="text-align:right; font-weight:800; font-size:13.5px; white-space:nowrap; margin-left:8px;">
+          ${weeklyRate} <span style="font-size:11px; font-weight:600;">сет/нед</span>
+        </div>
+      </div>`;
+    }).join('');
+    rpContainer.style.display = 'flex';
+  } else {
+    rpContainer.innerHTML = '';
+    rpContainer.style.display = 'none';
+  }
 
   renderProg();
 }
 
-/* Детальный расчет прогресса упражнения (1RM, Rep PRs, Сила, Выносливость, Объем) */
 function renderProg() {
   const n = $('progSel').value;
   const isBW = isBodyweightEx(n);
+  const isDB = isDumbbellEx(n);
   ch3 = destroyChart(ch3, 'chartProg');
+
+  const hasChartJS = typeof Chart !== 'undefined';
+  $('chartProgFallback').style.display = hasChartJS ? 'none' : 'block';
 
   if (!n) {
     $('progDetailView').innerHTML = '<div class="muted">Упражнение не выбрано</div>';
@@ -1919,191 +2694,267 @@ function renderProg() {
   }
 
   const workoutHistory = [];
-  let absoluteMaxWeight = 0;
+  let absoluteMaxRawWeight = 0;
+  let absoluteMaxEffWeight = 0;
   let absoluteMaxReps = 0;
   let absoluteBest1RM = 0;
-  let bestHeavySet = null;
-  let totalExTonnage = 0;
-  let totalExSets = 0;
-  let totalExReps = 0;
+  let bestWorkingSet = null;
+  let totalExWorkingTonnage = 0;
+  let totalExWorkingSets = 0;
+  let totalExWorkingReps = 0;
 
-  // Карта лучших повторений по весу (Rep Records)
   const repRecordsByWeight = {};
 
   (DB.w || []).forEach(w => {
     if (!w || !Array.isArray(w.ex)) return;
-    const matchedEx = w.ex.filter(e => e.n === n);
+    const matchedEx = w.ex.filter(e => e && e.n === n);
     if (!matchedEx.length) return;
 
-    const userW = w.bodyWeight || (DB.profile && DB.profile.weight) || 80;
-    let dayMaxWeight = 0;
+    const userW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+    let dayMaxEffWeight = 0;
+    let dayMaxRawWeight = 0;
     let dayMax1RM = 0;
-    let dayTonnage = 0;
-    let daySets = 0;
-    let dayReps = 0;
+    let dayWorkingTonnage = 0;
+    let dayWorkingSets = 0;
+    let dayWorkingReps = 0;
 
-    matchedEx.forEach(e => {
-      const sets = Array.isArray(e.sets) ? e.sets : [{ w: e.w, r: e.r }];
-      sets.forEach(s => {
-        const addedW = sanitizeNumber(s.w, 0);
-        const r = sanitizeNumber(s.r, 0);
-        const effW = isBW ? (userW + addedW) : addedW;
-        if (r <= 0) return;
+    const allSets = matchedEx.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
 
-        daySets++;
-        dayReps += r;
-        dayTonnage += (effW * r);
+    allSets.forEach(s => {
+      if (s.completed === false) return;
+      const rawW = sanitizeNumber(s.w, 0);
+      const r = sanitizeNumber(s.r, 0);
+      const effW = getEffectiveWeight(n, rawW, userW);
+      if (r <= 0) return;
 
-        if (effW > dayMaxWeight) dayMaxWeight = effW;
+      const est1RM = calculate1RM(effW, r);
+      if (est1RM > dayMax1RM) dayMax1RM = est1RM;
+      if (est1RM > absoluteBest1RM) {
+        absoluteBest1RM = est1RM;
+        bestWorkingSet = { effW, rawW, r, isBW, isDB, isWarmup: s.isWarmup };
+      }
+
+      if (!s.isWarmup) {
+        dayWorkingSets++;
+        dayWorkingReps += r;
+        dayWorkingTonnage += (effW * r);
+
+        if (effW > dayMaxEffWeight) dayMaxEffWeight = effW;
+        if (rawW > dayMaxRawWeight) dayMaxRawWeight = rawW;
         if (r > absoluteMaxReps) absoluteMaxReps = r;
 
-        // Расчет 1RM
-        const est1RM = calculate1RM(effW, r);
-        if (est1RM > dayMax1RM) dayMax1RM = est1RM;
-        if (est1RM > absoluteBest1RM) {
-          absoluteBest1RM = est1RM;
-          bestHeavySet = { w: effW, r, addedW, isBW };
+        if (!repRecordsByWeight[rawW] || repRecordsByWeight[rawW] < r) {
+          repRecordsByWeight[rawW] = r;
         }
+      }
+    });
 
-        // Фиксация лучшего результата на повторения с конкретным весом
-        if (!repRecordsByWeight[effW] || repRecordsByWeight[effW] < r) {
-          repRecordsByWeight[effW] = r;
-        }
+    if (dayMaxEffWeight > absoluteMaxEffWeight) absoluteMaxEffWeight = dayMaxEffWeight;
+    if (dayMaxRawWeight > absoluteMaxRawWeight) absoluteMaxRawWeight = dayMaxRawWeight;
+    totalExWorkingTonnage += dayWorkingTonnage;
+    totalExWorkingSets += dayWorkingSets;
+    totalExWorkingReps += dayWorkingReps;
+
+    if (dayMax1RM > 0) {
+      workoutHistory.push({
+        date: w.date || '',
+        time: w.time || '',
+        timestamp: w.timestamp || 0,
+        maxW: isDB ? dayMaxRawWeight : (isBW ? dayMaxEffWeight : dayMaxRawWeight),
+        est1RM: dayMax1RM,
+        workingTonnage: dayWorkingTonnage
       });
-    });
-
-    if (dayMaxWeight > absoluteMaxWeight) absoluteMaxWeight = dayMaxWeight;
-    totalExTonnage += dayTonnage;
-    totalExSets += daySets;
-    totalExReps += dayReps;
-
-    workoutHistory.push({
-      date: w.date || '',
-      maxW: dayMaxWeight,
-      est1RM: dayMax1RM,
-      tonnage: dayTonnage,
-      sets: daySets,
-      reps: dayReps
-    });
+    }
   });
 
   if (!workoutHistory.length) {
-    $('progDetailView').innerHTML = '<div class="muted">Пока нет записей по данному упражнению.</div>';
+    $('progDetailView').innerHTML = '<div class="muted">Пока нет записей по выбранному упражнению.</div>';
     return;
   }
 
-  workoutHistory.sort((a, b) => a.date.localeCompare(b.date));
+  workoutHistory.sort((a, b) => a.timestamp - b.timestamp);
 
-  // Динамика относительно прошлого раза
-  let progressText = 'Первая тренировка';
+  let progressText = 'Первая фиксация';
   if (workoutHistory.length >= 2) {
     const lastSession = workoutHistory[workoutHistory.length - 1];
     const prevSession = workoutHistory[workoutHistory.length - 2];
     const diff1RM = Math.round((lastSession.est1RM - prevSession.est1RM) * 10) / 10;
     const sign = diff1RM >= 0 ? `+${diff1RM}` : `${diff1RM}`;
-    progressText = `Динамика 1RM: <b>${sign} кг</b> относительно прошлого раза`;
+    progressText = `Динамика 1RM: <b>${sign} кг</b> относительно прошлой сессии`;
   }
 
-  // Топ-3 рекорда повторений по весу
   const sortedWeights = Object.keys(repRecordsByWeight).map(Number).sort((a,b) => b - a);
-  const repPRsText = sortedWeights.slice(0, 3).map(wt => `<b>${wt} кг × ${repRecordsByWeight[wt]} повт</b>`).join(' · ');
+  const repPRsText = sortedWeights.slice(0, 3).map(wt => {
+    const wtLabel = isDB ? `${wt} кг/гантель` : `${wt} кг`;
+    return `<b>${wtLabel} × ${repRecordsByWeight[wt]} повт</b>`;
+  }).join(' · ');
 
-  const bestSetFormatted = bestHeavySet 
-    ? (bestHeavySet.isBW ? `${bestHeavySet.w} кг (${bestHeavySet.addedW > 0 ? '+'+bestHeavySet.addedW : 'свой вес'}) × ${bestHeavySet.r}` : `${bestHeavySet.w} кг × ${bestHeavySet.r}`)
-    : '—';
+  let bestSetFormatted = '—';
+  if (bestWorkingSet) {
+    if (bestWorkingSet.isBW) {
+      bestSetFormatted = `${bestWorkingSet.effW} кг (${bestWorkingSet.rawW > 0 ? '+'+bestWorkingSet.rawW : 'вес тела'}) × ${bestWorkingSet.r}`;
+    } else if (bestWorkingSet.isDB) {
+      bestSetFormatted = `${bestWorkingSet.rawW} кг/рука (${bestWorkingSet.effW} кг сумма) × ${bestWorkingSet.r}`;
+    } else {
+      bestSetFormatted = `${bestWorkingSet.rawW} кг × ${bestWorkingSet.r}`;
+    }
+  }
+
+  const maxWorkingWeightDisplay = isDB ? `${absoluteMaxRawWeight} кг` : (isBW ? `${absoluteMaxEffWeight} кг` : `${absoluteMaxRawWeight} кг`);
+  const maxWorkingWeightSub = isDB ? 'Вес одной гантели' : (isBW ? 'С весом тела' : 'Вес снаряда');
 
   $('progDetailView').innerHTML = `
     <div class="analytics-grid">
       <div class="analytics-box">
-        <div class="title">🥇 Сила (1RM расчет)</div>
+        <div class="title">🥇 Рекорд силы (1RM)</div>
         <div class="val">${absoluteBest1RM} кг</div>
-        <div class="sub">Лучший сет: ${bestSetFormatted}</div>
+        <div class="sub">Сет: ${bestSetFormatted}</div>
       </div>
       <div class="analytics-box">
         <div class="title">⚡ Макс. рабочий вес</div>
-        <div class="val">${absoluteMaxWeight} кг</div>
-        <div class="sub">${isBW ? 'С учетом веса тела' : 'Прямой вес снаряда'}</div>
+        <div class="val">${maxWorkingWeightDisplay}</div>
+        <div class="sub">${maxWorkingWeightSub}</div>
       </div>
       <div class="analytics-box">
         <div class="title">🎯 Выносливость</div>
         <div class="val">${absoluteMaxReps} повт.</div>
-        <div class="sub">В одном подходе</div>
+        <div class="sub">В рабочем сете</div>
       </div>
       <div class="analytics-box">
-        <div class="title">📦 Суммарный объем</div>
-        <div class="val">${Math.round(totalExTonnage).toLocaleString('ru')} кг</div>
-        <div class="sub">${totalExSets} сетов / ${totalExReps} повт</div>
+        <div class="title">📦 Рабочий объем</div>
+        <div class="val">${Math.round(totalExWorkingTonnage).toLocaleString('ru')} кг</div>
+        <div class="sub">${totalExWorkingSets} сетов / ${totalExWorkingReps} повт</div>
       </div>
     </div>
 
-    <div style="background:rgba(118,118,128,0.08); border-radius:var(--ios-radius-md); padding:10px; margin-top:8px; font-size:13px; line-height:1.4;">
-      <div>🏆 <b>Рекорды повторений по весам:</b> ${repPRsText || '—'}</div>
-      <div style="margin-top:4px; color:var(--ios-subtext); font-size:12px;">📊 ${progressText}</div>
+    <div style="background:var(--ios-input-bg); border-radius:var(--ios-radius-md); padding:10px; margin-top:8px; font-size:13px; line-height:1.4; border:1px solid #EBEBF0;">
+      <div>🏆 <b>Рекорды повторений по весу:</b> ${repPRsText || '—'}</div>
+      <div style="margin-top:4px; color:var(--ios-text-secondary); font-size:12px;">📊 ${progressText}</div>
     </div>
   `;
 
-  const computedStyle = getComputedStyle(document.body);
-  const textColor = computedStyle.getPropertyValue('--ios-text').trim() || '#000';
-
-  ch3 = new Chart($('chartProg'), {
-    type: 'line',
-    data: {
-      labels: workoutHistory.map(p => p.date.slice(5)),
-      datasets: [
-        { label: 'Расчетный 1RM (кг)', data: workoutHistory.map(p => p.est1RM), borderColor: '#34C759', backgroundColor: 'rgba(52, 199, 89, 0.1)', tension: 0.3, fill: true },
-        { label: 'Макс. вес сета (кг)', data: workoutHistory.map(p => p.maxW), borderColor: '#007AFF', borderDash: [4, 4], tension: 0.3 }
-      ]
-    },
-    options: {
-      plugins: {
-        legend: { labels: { color: textColor, font: { size: 11 } } }
-      },
-      scales: {
-        x: { ticks: { color: textColor } },
-        y: { ticks: { color: textColor } }
-      }
+  if (hasChartJS) {
+    try {
+      const textColor = '#111111';
+      ch3 = new Chart($('chartProg'), {
+        type: 'line',
+        data: {
+          labels: workoutHistory.map(p => `${p.date.slice(5)} ${p.time ? p.time : ''}`),
+          datasets: [
+            { label: 'Расчетный 1RM (кг)', data: workoutHistory.map(p => p.est1RM), borderColor: '#34C759', backgroundColor: 'rgba(52, 199, 89, 0.1)', tension: 0.25, fill: true },
+            { label: isDB ? 'Макс. вес гантели (кг)' : 'Макс. рабочий вес сета (кг)', data: workoutHistory.map(p => p.maxW), borderColor: '#007AFF', borderDash: [4, 4], tension: 0.25 }
+          ]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { ticks: { color: textColor } }
+          }
+        }
+      });
+    } catch(e) {
+      console.warn("ChartProg render skipped:", e);
     }
-  });
+  }
 }
 
-/* --- ЭКСПОРТ / ИМПОРТ ДАННЫХ --- */
+/* ЭКСПОРТ И ИМПОРТ ДАННЫХ */
 function exportData() {
-  const dataStr = JSON.stringify(DB, null, 2);
-  const blob = new Blob([dataStr], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `workout-diary-backup-${today()}.json`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  downloadBackupFile(`workout-backup-${today()}.json`);
 }
 
 function importData(ev) {
-  const f = ev.target.files[0];
+  const f = ev.target.files && ev.target.files[0];
   if (!f) return;
+
   const r = new FileReader();
+
+  r.onerror = () => {
+    alert('⚠️ Ошибка при чтении файла с диска.');
+    ev.target.value = '';
+  };
+
   r.onload = () => {
     try {
-      const parsed = JSON.parse(r.result);
-      if (!parsed || typeof parsed !== 'object') throw new Error("Invalid structure");
-      localStorage.setItem(KEY, JSON.stringify(parsed));
-      alert('Данные успешно восстановлены! ✅');
+      const text = r.result;
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (jsonErr) {
+        throw new Error("Файл не является корректным JSON (синтаксическая ошибка).");
+      }
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error("Файл не содержит корректного JSON-объекта резервной копии.");
+      }
+
+      // Проверка обязательного наличия поля w
+      if (!Object.prototype.hasOwnProperty.call(parsed, 'w')) {
+        throw new Error("В файле отсутствует обязательное поле 'w' (список тренировок). Файл не является резервной копией приложения.");
+      }
+
+      if (!Array.isArray(parsed.w)) {
+        throw new Error("Поле 'w' (список тренировок) должно быть массивом.");
+      }
+
+      // Защита от случайного стирания базы при импорте пустой базы
+      const currentWorkoutsCount = (DB && Array.isArray(DB.w)) ? DB.w.length : 0;
+      if (parsed.w.length === 0 && currentWorkoutsCount > 0) {
+        const confirmed = confirm(
+          `⚠️ Внимание! Импортируемый файл содержит 0 тренировок (пустая база).\n\n` +
+          `Это действие полностью заменит вашу текущую историю (${currentWorkoutsCount} тренировок) пустой базой.\n\n` +
+          `Вы действительно хотите продолжить?`
+        );
+        if (!confirmed) {
+          ev.target.value = '';
+          return;
+        }
+      }
+
+      // Глубокая нормализация и валидация копии данных
+      const normalized = normalizeDBData(parsed);
+      if (!normalized || typeof normalized !== 'object') {
+        throw new Error("Не удалось обработать структуру бэкапа.");
+      }
+
+      // Создаем резервную копию текущей рабочей базы в BACKUP_KEY перед заменой
+      saveDB();
+
+      // Применяем проверенные данные
+      DB = normalized;
+
+      // Сохраняем новую базу в localStorage
+      if (!saveDB()) {
+        throw new Error("Не удалось записать данные в память браузера (память переполнена).");
+      }
+
+      clearDraft();
+      alert(`Данные успешно восстановлены! ✅\nЗагружено тренировок: ${normalized.w ? normalized.w.length : 0}`);
       location.reload();
-    } catch(e) {
-      alert('Ошибка чтения файла. Убедитесь, что это правильный JSON бэкап.');
+    } catch (e) {
+      alert(`⚠️ Ошибка импорта: ${e.message || 'некорректный файл'}\n\nТекущие данные не были изменены.`);
     } finally {
       ev.target.value = '';
     }
   };
+
   r.readAsText(f);
 }
 
-window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveDraft(); });
+function wipeAllData() {
+  if (confirm('Вы уверены? Все сохраненные тренировки и история будут удалены безвозвратно!')) {
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(BACKUP_KEY);
+    localStorage.removeItem(DRAFT_KEY);
+    location.reload();
+  }
+}
+
 window.addEventListener('pagehide', saveDraft);
 
-// Инициализация при старте
-fillSelects();
-fillGoals();
-renderProfile();
+// Инициализация при запуске
+fillAnalyticsSelect();
 loadDraft();
 </script>
 </body>
