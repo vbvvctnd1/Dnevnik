@@ -770,6 +770,8 @@
     max-width: 100%;
     margin-top: 10px;
   }
+.timer-card { display: none !important; }
+
 </style>
 </head>
 <body>
@@ -964,7 +966,7 @@ const KEY = 'myGymV2';
 const BACKUP_KEY = 'myGymV2:backup';
 const DRAFT_KEY = 'myGymV2_draft';
 
-const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'приседания со своим весом', 'выходы'];
+const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'выходы'];
 
 function isBodyweightEx(name) {
   if (!name) return false;
@@ -998,9 +1000,11 @@ function getEffectiveWeight(exName, rawWeight, bodyWeight = 80) {
     return bw + w;
   }
   if (isDumbbellEx(exName)) {
-    return w * 2;
+    if (exName.toLowerCase().includes('одной')) {
+      return w; // Если в названии есть "одной", берем чистый вес одного снаряда!
+    }
+    return w * 2; // Для остальных гантелей умножаем на 2
   }
-  return w;
 }
 
 function escapeHTML(str) {
@@ -1011,8 +1015,15 @@ function escapeHTML(str) {
 }
 
 function handleNumericInput(el, min, max, callback) {
-  let v = el.value.replace(/[^0-9]/g, '');
-  el.value = v;
+  let val = el.value.replace(/\D/g, '');
+  if (val !== '') {
+    let num = parseInt(val, 10);
+    if (num > 99) num = 99; // Лимит 99 повторений!
+    if (num < min) num = min;
+    el.value = num;
+  } else {
+    el.value = '';
+  }
   if (callback) callback();
 }
 
@@ -1027,10 +1038,17 @@ function validateInputOnBlur(el, min, max, defVal, callback) {
 }
 
 function handleDecimalInput(el, callback) {
-  let v = el.value.replace(',', '.').replace(/[^0-9.]/g, '');
-  const parts = v.split('.');
-  if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
-  el.value = v;
+  let val = el.value.replace(',', '.').replace(/[^0-9.]/g, '');
+  const parts = val.split('.');
+  if (parts.length > 2) val = parts[0] + '.' + parts[1];
+  
+  if (val !== '' && !val.endsWith('.')) {
+    let num = parseFloat(val);
+    if (num > 500) num = 500; // Лимит 500 кг!
+    el.value = num;
+  } else {
+    el.value = val;
+  }
   if (callback) callback();
 }
 
@@ -1137,7 +1155,6 @@ const BASE_EX = {
   "Болгарские приседания": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.65, isCompound: true },
   "Выпады": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.6, isCompound: true },
   "Жим ногами": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.65, isCompound: true },
-  "Приседания со своим весом": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.3, isCompound: true },
   "Приседания со штангой": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0, "Ягодицы": 0.5, "Бицепс бедра": 0.3 }, cns: 0.95, isCompound: true },
   "Разгибание ног (тренажёр)": { category: "Ноги", target: "Квадрицепс", muscles: { "Квадрицепс": 1.0 }, cns: 0.25, isCompound: false },
   "Румынская тяга": { category: "Ноги", target: "Бицепс бедра и ягодицы", muscles: { "Бицепс бедра": 1.0, "Ягодицы": 1.0, "Разгибатели спины": 0.5 }, cns: 0.75, isCompound: true },
@@ -1804,8 +1821,8 @@ function renderDropdownList(filterText = '') {
 
 function openExDropdown() {
   const input = $('exSearchInput');
-  input.select();
-  renderDropdownList(input.value);
+  input.value = '';
+  renderDropdownList('');
   $('exDropdownList').classList.add('show');
 }
 
