@@ -1552,28 +1552,27 @@ function evaluateSetTypes(setsList, exName) {
       };
     }
 
-    let isWarm = false;
+    if (pastMaxW === null || pastMaxW === 0) {
+      return {
+        ...set,
+        isWarmup: false
+      };
+    }
+
     const rawW = sanitizeNumber(set.w, 0);
     const effW = getEffectiveWeight(exName, rawW, currentBodyWeight);
+    
+    let isWarm = false;
 
-    if (pastMaxW !== null && pastMaxW > 0) {
-      if (hasHitWorkSet) {
+    if (!hasHitWorkSet) {
+      if (effW >= 0.8 * pastMaxW) {
+        hasHitWorkSet = true;
         isWarm = false;
       } else {
-        if (effW >= 0.8 * pastMaxW) {
-          isWarm = false;
-          hasHitWorkSet = true;
-        } else {
-          isWarm = true;
-        }
+        isWarm = true;
       }
     } else {
-      if (index === 0) {
-        isWarm = false;
-        hasHitWorkSet = true;
-      } else {
-        isWarm = false;
-      }
+      isWarm = false;
     }
 
     return {
