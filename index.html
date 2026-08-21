@@ -996,15 +996,17 @@ function getValidBodyWeight(val, fallbackVal = 80) {
 function getEffectiveWeight(exName, rawWeight, bodyWeight = 80) {
   const w = sanitizeNumber(rawWeight, 0);
   const bw = getValidBodyWeight(bodyWeight, 80);
-  if (isBodyweightEx(exName)) {
+  const name = String(exName || '').toLowerCase();
+
+  if (isBodyweightEx(name)) {
     return bw + w;
   }
-  if (isDumbbellEx(exName)) {
-    if (exName.toLowerCase().includes('одной')) {
-      return w; // Если в названии есть "одной", берем чистый вес одного снаряда!
-    }
-    return w * 2; // Для остальных гантелей умножаем на 2
+
+  if (isDumbbellEx(name)) {
+    return name.includes('одной') ? w : w * 2;
   }
+
+  return w; // ← ГЛАВНОЕ: возвращаем вес для обычных упражнений
 }
 
 function escapeHTML(str) {
