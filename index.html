@@ -778,6 +778,31 @@
   }
 .timer-card { display: none !important; }
 
+/* ===== СТИЛИ ДЛЯ ПОДХОДОВ В ИСТОРИИ ===== */
+.history-set-warmup {
+  display: inline-block;
+  background: #F0F0F5;
+  color: #8E8E93;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin: 2px 4px 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E5E5EA;
+}
+
+.history-set-working {
+  display: inline-block;
+  background: #E8F5EC;
+  color: #1A7A3A;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin: 2px 4px 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
 </style>
 </head>
 <body>
@@ -1522,9 +1547,9 @@ function updateSmartHint(specificReps = null) {
   if (specificReps && specificReps > 0) {
     const pr = getRepRecord(exName, specificReps);
     if (pr) {
-      const wText = pr.isBW ? `${pr.rawW > 0 ? '+'+pr.rawW : '0'} кг (всего ${pr.effW} кг)` : `${pr.rawW} кг`;
+      const wText = pr.isBW ? `${pr.rawW > 0 ? '+' + pr.rawW : '0'} кг (всего ${pr.effW} кг)` : `${pr.rawW} кг`;
       hintEl.innerHTML = `🏆 <b>Рекорд на ${specificReps} повт:</b> ${wText} <span style="opacity:0.75;">(${pr.date})</span>`;
-      hintEl.style.display = 'flex';
+      hintEl.style.display = 'block';
       hintEl.style.cursor = 'default';
       hintEl.onclick = null;
       return;
@@ -1534,7 +1559,7 @@ function updateSmartHint(specificReps = null) {
   const past = findLastPerformance(exName);
   if (!past || !past.sets || !past.sets.length) {
     hintEl.innerHTML = `💡 <b>Новое упражнение!</b> Введите свои данные.`;
-    hintEl.style.display = 'flex';
+    hintEl.style.display = 'block';
     hintEl.style.cursor = 'default';
     hintEl.onclick = null;
     return;
@@ -1546,10 +1571,18 @@ function updateSmartHint(specificReps = null) {
   const lastSet = past.sets[past.sets.length - 1];
   
   const fullDetails = past.sets.map((s, i) => {
-    const label = s.isWarmup ? 'Разм' : 'Раб';
-    return `${label} #${i+1}: ${s.w}×${s.r}`;
-  }).join(' · ');
-  
+    const isWarm = s.isWarmup;
+    const dot = isWarm ? '⚪' : '🟢';
+    return `
+      <div class="hint-set-item ${isWarm ? 'hint-warmup' : 'hint-working'}">
+        <span class="hint-set-num">#${i+1}</span>
+        <span class="hint-set-weight">${s.w}</span>
+        <span class="hint-set-reps">×${s.r}</span>
+        <span class="hint-set-dot">${dot}</span>
+      </div>
+    `;
+  }).join('');
+
   hintEl.dataset.full = fullDetails;
   hintEl.dataset.expanded = 'false';
   hintEl.dataset.date = past.date || '';
@@ -1565,7 +1598,7 @@ function updateSmartHint(specificReps = null) {
     (${totalSets} подходов, ${workingSets} рабочих) 
     <span style="font-size:10px; opacity:0.6; margin-left:4px; white-space:nowrap;">👆 нажми</span>
   `;
-  hintEl.style.display = 'flex';
+  hintEl.style.display = 'block';
   hintEl.style.cursor = 'pointer';
   
   hintEl.onclick = function(e) {
@@ -1579,12 +1612,24 @@ function updateSmartHint(specificReps = null) {
         <span style="font-size:10px; opacity:0.6; margin-left:4px; white-space:nowrap;">👆 нажми</span>
       `;
       this.dataset.expanded = 'false';
+      this.style.display = 'block';
     } else {
       this.innerHTML = `
-        💡 <b>${this.dataset.date}:</b> ${this.dataset.full} 
-        <span style="font-size:10px; opacity:0.6; margin-left:4px; white-space:nowrap;">👆 свернуть</span>
+        <div style="width:100%;">
+          <div style="font-weight:700; margin-bottom:6px; font-size:13px;">
+            📋 ${this.dataset.date} 
+            <span style="font-weight:400; opacity:0.6; font-size:11px;">
+              (${this.dataset.total} подходов, ${this.dataset.working} рабочих)
+            </span>
+          </div>
+          <div class="hint-grid-2col">
+            ${this.dataset.full}
+          </div>
+          <div style="font-size:10px; opacity:0.4; margin-top:6px; text-align:center;">👆 нажми чтобы свернуть</div>
+        </div>
       `;
       this.dataset.expanded = 'true';
+      this.style.display = 'block';
       this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   };
@@ -2415,14 +2460,15 @@ function renderHistory() {
       const isBW = isBodyweightEx(e.n);
       const sets = Array.isArray(e.sets) ? e.sets : [];
       const setsFormatted = sets.map((s, sIdx) => {
-        const isWarm = !!s.isWarmup;
-        const addedW = sanitizeNumber(s.w, 0);
-        const wTxt = isBW ? (addedW > 0 ? `${wBodyWeight}+${addedW}` : `${wBodyWeight}`) : `${addedW}`;
-        const bg = isWarm ? '#EAEAEF' : '#EBF3FF';
-        const color = isWarm ? '#636366' : '#0055CC';
-        const prefix = isWarm ? 'Разм: ' : `Сет ${sIdx+1}: `;
-        return `<span style="display:inline-block; background:${bg}; color:${color}; padding:3px 7px; border-radius:6px; margin:2px; font-size:12px; font-weight:700;">${prefix}<b>${wTxt} кг × ${s.r}</b></span>`;
-      }).join(' ');
+  const isWarm = !!s.isWarmup;
+  const addedW = sanitizeNumber(s.w, 0);
+  const wTxt = isBW ? (addedW > 0 ? `${wBodyWeight}+${addedW}` : `${wBodyWeight}`) : `${addedW}`;
+  const bg = isWarm ? '#EAEAEF' : '#EBF3FF';
+  const color = isWarm ? '#636366' : '#0055CC';
+  // 👇 МЕНЯЕМ ПРЕФИКС
+  const prefix = isWarm ? '🟡 Разм' : '🟢 Раб';
+  return `<span style="display:inline-block; background:${bg}; color:${color}; padding:3px 7px; border-radius:6px; margin:2px; font-size:12px; font-weight:700;">${prefix} <b>${wTxt} кг × ${s.r}</b></span>`;
+}).join(' ');
 
       return `<div style="margin-top:6px;">
         <div style="font-size:14px; font-weight:700; color:#111;">${escapeHTML(e.n)}</div>
