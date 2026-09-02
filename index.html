@@ -2589,8 +2589,29 @@ function renderProg() {
 }
 
 /* ЭКСПОРТ И ИМПОРТ ДАННЫХ */
-function exportData() {
-  downloadBackupFile(`workout-backup-${today()}.json`);
+const BACKUP_EXPORT_COUNTER_KEY = 'myGymV2:backupExportCounter';
+
+function getNextBackupNumber() {
+  const saved = parseInt(localStorage.getItem(BACKUP_EXPORT_COUNTER_KEY), 10);
+  return Number.isFinite(saved) && saved > 0 ? saved + 1 : 1;
+}
+
+function saveBackupNumber(number) {
+  localStorage.setItem(BACKUP_EXPORT_COUNTER_KEY, String(number));
+}
+
+function buildBackupFilename(number) {
+  return `Мой_дневник_№${number}_${today()}.json`;
+}
+
+async function exportData() {
+  const number = getNextBackupNumber();
+  const filename = buildBackupFilename(number);
+  const exported = await downloadBackupFile(filename);
+  if (exported) {
+    saveBackupNumber(number);
+    alert(`✅ Резервная копия №${number} создана.\n\nСохраните файл в безопасном месте.`);
+  }
 }
 
 async function shareBackupFile(filename) {
@@ -2615,7 +2636,7 @@ async function downloadBackupFile(filename) {
   try {
     if (isTelegramWebView()) {
       await shareBackupFile(filename);
-      return;
+      return true;
     }
 
     const dataStr = JSON.stringify(DB, null, 2);
@@ -2629,10 +2650,12 @@ async function downloadBackupFile(filename) {
       document.body.removeChild(a);
       URL.revokeObjectURL(a.href);
     }, 1000);
+    return true;
   } catch (e) {
-    if (e && e.name === 'AbortError') return;
+    if (e && e.name === 'AbortError') return false;
     console.error('Ошибка создания резервной копии:', e);
     alert('Не удалось создать резервную копию. Попробуйте ещё раз.');
+    return false;
   }
 }
 
