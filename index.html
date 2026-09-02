@@ -700,12 +700,120 @@
   border: 1px solid rgba(52, 199, 89, 0.3);
 }
 
+
+  /* ===== Первый запуск: интерактивная инструкция ===== */
+  .help-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--ios-separator);
+    background: var(--ios-card-bg);
+    color: var(--ios-text-secondary);
+    font-size: 21px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+
+  .tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0,0,0,.48);
+    display: none;
+    pointer-events: auto;
+  }
+
+  .tutorial-overlay.is-open { display: block; }
+
+  .tutorial-spotlight {
+    position: fixed;
+    z-index: 10000;
+    border-radius: 14px;
+    box-shadow: 0 0 0 4px rgba(0,122,255,.32), 0 0 0 9999px rgba(0,0,0,.48);
+    pointer-events: none;
+    transition: top .18s ease, left .18s ease, width .18s ease, height .18s ease;
+  }
+
+  .tutorial-card {
+    position: fixed;
+    z-index: 10001;
+    width: min(420px, calc(100vw - 28px));
+    background: #fff;
+    color: #000;
+    border-radius: 22px;
+    padding: 20px 20px 16px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.30);
+    transition: top .18s ease, left .18s ease;
+  }
+
+  .tutorial-title {
+    font-size: 22px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -.45px;
+    margin-bottom: 10px;
+  }
+
+  .tutorial-text {
+    color: #5c5c60;
+    font-size: 16px;
+    line-height: 1.42;
+    font-weight: 600;
+  }
+
+  .tutorial-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .tutorial-skip {
+    flex: 1;
+    min-height: 48px;
+    border: none;
+    background: transparent;
+    color: #5c5c60;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 13px;
+  }
+
+  .tutorial-next {
+    flex: 1.25;
+    min-height: 48px;
+    border: none;
+    background: var(--ios-tint);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 13px;
+  }
+
+  .tutorial-progress {
+    text-align: center;
+    color: #6b6b70;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 380px) {
+    .tutorial-card { padding: 17px 16px 14px; }
+    .tutorial-title { font-size: 20px; }
+    .tutorial-text { font-size: 15px; }
+  }
+
 </style>
 </head>
 <body>
 
 <div class="app-header">
   <h1>⚡ Силовой трекер</h1>
+  <button class="help-btn" type="button" onclick="startTutorial()" aria-label="Как пользоваться">?</button>
 </div>
 
 <div class="tabs">
@@ -849,11 +957,182 @@
  </div>
 </div>
 
+
+<!-- ИНТЕРАКТИВНАЯ ИНСТРУКЦИЯ -->
+<div id="tutorialOverlay" class="tutorial-overlay" aria-hidden="true">
+  <div id="tutorialSpotlight" class="tutorial-spotlight"></div>
+  <div id="tutorialCard" class="tutorial-card" role="dialog" aria-modal="true" aria-live="polite">
+    <div id="tutorialTitle" class="tutorial-title"></div>
+    <div id="tutorialText" class="tutorial-text"></div>
+    <div class="tutorial-footer">
+      <button id="tutorialSkip" class="tutorial-skip" type="button" onclick="finishTutorial()">Пропустить</button>
+      <button id="tutorialNext" class="tutorial-next" type="button" onclick="nextTutorialStep()">Дальше →</button>
+    </div>
+    <div id="tutorialProgress" class="tutorial-progress"></div>
+  </div>
+</div>
+
 <script>
 const $ = id => document.getElementById(id);
 const KEY = 'myGymV2';
 const BACKUP_KEY = 'myGymV2:backup';
 const DRAFT_KEY = 'myGymV2_draft';
+
+
+/* ===== Интерактивная инструкция первого запуска ===== */
+const TUTORIAL_SEEN_KEY = 'myGymV2:tutorialSeen';
+let tutorialIndex = 0;
+let tutorialActive = false;
+
+const tutorialSteps = [
+  {
+    target: null,
+    title: '👋 Добро пожаловать',
+    text: 'Это твой дневник тренировок. Здесь ты записываешь упражнения и подходы, сохраняешь историю и смотришь прогресс.'
+  },
+  {
+    target: '.tab[onclick="showTab(\'w\')"]',
+    title: '🏋️ Зал',
+    text: 'Здесь проходит вся текущая тренировка: самочувствие, вес тела, упражнения и подходы.'
+  },
+  {
+    target: '#exSearchInput',
+    title: '🔎 Выбери упражнение',
+    text: 'Найди упражнение по названию. После выбора появятся строки для записи подходов — вес и повторения.'
+  },
+  {
+    target: '.row button[onclick="addExToWorkout()"]',
+    title: '➕ В тренировку',
+    text: 'Когда подходы заполнены, нажми эту кнопку. Упражнение добавится в текущую тренировку.'
+  },
+  {
+    target: '#saveBtn',
+    title: '💾 Сохранить тренировку',
+    text: 'Закончил тренировку? Нажми сюда. Сессия попадёт в Историю и останется там даже после закрытия приложения.'
+  },
+  {
+    target: '.tab[onclick="showTab(\'h\')"]',
+    title: '📚 История',
+    text: 'Здесь находятся все сохранённые тренировки. Тут же можно сделать резервную копию или восстановить данные.'
+  },
+  {
+    target: '.tab[onclick="showTab(\'a\')"]',
+    title: '📊 Аналитика',
+    text: 'Здесь можно посмотреть прогресс, рабочие веса, тоннаж, нагрузку по мышцам и ЦНС.'
+  }
+];
+
+function getTutorialTarget(selector) {
+  if (!selector) return null;
+  return document.querySelector(selector);
+}
+
+function positionTutorial() {
+  if (!tutorialActive) return;
+  const card = $('tutorialCard');
+  const spot = $('tutorialSpotlight');
+  if (!card || !spot) return;
+
+  const step = tutorialSteps[tutorialIndex];
+  const target = getTutorialTarget(step.target);
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = 14;
+
+  if (!target) {
+    spot.style.display = 'none';
+    card.style.left = Math.max(margin, (vw - card.offsetWidth) / 2) + 'px';
+    card.style.top = Math.max(margin, (vh - card.offsetHeight) / 2) + 'px';
+    return;
+  }
+
+  target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+  const r = target.getBoundingClientRect();
+  spot.style.display = 'block';
+  spot.style.left = Math.max(4, r.left - 4) + 'px';
+  spot.style.top = Math.max(4, r.top - 4) + 'px';
+  spot.style.width = Math.max(8, r.width + 8) + 'px';
+  spot.style.height = Math.max(8, r.height + 8) + 'px';
+
+  // Сначала пробуем поставить карточку над элементом, затем под ним.
+  // Никогда не накладываем карточку на подсвеченную кнопку.
+  const cardW = Math.min(420, vw - margin * 2);
+  card.style.width = cardW + 'px';
+  const cardH = card.offsetHeight;
+  const left = Math.max(margin, Math.min(vw - cardW - margin, r.left + r.width / 2 - cardW / 2));
+  const safeTop = 10;
+  const safeBottom = vh - 10;
+  const gap = 18;
+
+  const above = r.top - cardH - gap;
+  const below = r.bottom + gap;
+  let top;
+  if (above >= safeTop) {
+    top = above;
+  } else if (below + cardH <= safeBottom) {
+    top = below;
+  } else {
+    // Если экран совсем маленький, выбираем сторону с большим количеством места.
+    const roomAbove = r.top - safeTop;
+    const roomBelow = safeBottom - r.bottom;
+    top = roomAbove >= roomBelow
+      ? Math.max(safeTop, r.top - cardH - gap)
+      : Math.min(safeBottom - cardH, r.bottom + gap);
+  }
+
+  card.style.left = left + 'px';
+  card.style.top = Math.max(safeTop, Math.min(safeBottom - cardH, top)) + 'px';
+}
+
+function renderTutorialStep() {
+  const step = tutorialSteps[tutorialIndex];
+  $('tutorialTitle').textContent = step.title;
+  $('tutorialText').textContent = step.text;
+  $('tutorialProgress').textContent = `${tutorialIndex + 1} из ${tutorialSteps.length}`;
+  $('tutorialNext').textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Готово ✓' : 'Дальше →';
+
+  // Каждый запуск начинается с вкладки «Зал», чтобы подсветка была понятной.
+  if (tutorialIndex > 0 && (step.target || '').includes("showTab('h')")) showTab('h');
+  if (tutorialIndex > 0 && (step.target || '').includes("showTab('a')")) showTab('a');
+  if (tutorialIndex > 0 && step.target && !step.target.includes("showTab('h')") && !step.target.includes("showTab('a')")) showTab('w');
+
+  requestAnimationFrame(positionTutorial);
+}
+
+function startTutorial() {
+  tutorialIndex = 0;
+  tutorialActive = true;
+  $('tutorialOverlay').classList.add('is-open');
+  $('tutorialOverlay').setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  renderTutorialStep();
+}
+
+function nextTutorialStep() {
+  if (!tutorialActive) return;
+  if (tutorialIndex >= tutorialSteps.length - 1) {
+    finishTutorial();
+    return;
+  }
+  tutorialIndex++;
+  renderTutorialStep();
+}
+
+function finishTutorial() {
+  tutorialActive = false;
+  localStorage.setItem(TUTORIAL_SEEN_KEY, '1');
+  $('tutorialOverlay').classList.remove('is-open');
+  $('tutorialOverlay').setAttribute('aria-hidden', 'true');
+  $('tutorialSpotlight').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+window.addEventListener('resize', () => {
+  if (tutorialActive) requestAnimationFrame(positionTutorial);
+});
+window.addEventListener('orientationchange', () => {
+  if (tutorialActive) setTimeout(positionTutorial, 80);
+});
 
 const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'выходы'];
 
@@ -2738,6 +3017,11 @@ window.addEventListener('pagehide', saveDraft);
 // Инициализация при запуске
 fillAnalyticsSelect();
 loadDraft();
+
+// Первый запуск: показываем обучение один раз. Повторно — по кнопке «?».
+if (!localStorage.getItem(TUTORIAL_SEEN_KEY)) {
+  setTimeout(startTutorial, 350);
+}
 </script>
 </body>
 </html>
