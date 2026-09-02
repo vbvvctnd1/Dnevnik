@@ -777,10 +777,10 @@
   <!-- Блок управления данными / Бэкап -->
   <div class="card">
     <h3>💾 Резервное копирование данных</h3>
-    <p class="muted" style="margin-bottom:12px;">Данные хранятся локально в браузере с защитой от сбоев. Автобэкап скачивается каждые 5 тренировок.</p>
+    <p class="muted" style="margin-bottom:12px;">Данные хранятся локально в приложении. Регулярно создавайте резервную копию, чтобы её можно было восстановить при необходимости.</p>
     <div class="row">
       <button class="small active" onclick="exportData()">📥 Экспорт (Бэкап)</button>
-      <button class="small" onclick="$('impFile').click()">📤 Импорт (Восстановить)</button>
+      <button class="small" onclick="isTelegramWebView() ? importFromClipboard() : $('impFile').click()">📤 Импорт (Восстановить)</button>
       <input type="file" id="impFile" accept=".json" style="display:none;" onchange="importData(event)">
     </div>
     <button class="small del" style="width:100%; margin-top:10px;" onclick="wipeAllData()">Удалить все данные</button>
@@ -1959,48 +1959,6 @@ function isTelegramWebView() {
       || /Telegram/i.test(ua);
 }
 
-function copyBackupToClipboard(dataStr, showNotice = true) {
-  const onSuccess = () => {
-    if (showNotice) {
-      alert('Данные скопированы, вставьте в заметки.\n\nДля восстановления позже: скопируйте сохранённый JSON в файл с расширением .json и используйте «Импорт (Восстановить)».');
-    }
-  };
-
-  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-    navigator.clipboard.writeText(dataStr)
-      .then(onSuccess)
-      .catch(() => copyExportFallback(dataStr, onSuccess));
-  } else {
-    copyExportFallback(dataStr, onSuccess);
-  }
-}
-
-function downloadBackupFile(filename, showTelegramNotice = true) {
-  try {
-    const dataStr = JSON.stringify(DB, null, 2);
-
-    // В Telegram WebView Blob-download может открывать JSON прямо на экране.
-    // Поэтому любой вызов этой функции в Telegram уходит только в буфер.
-    if (isTelegramWebView()) {
-      copyBackupToClipboard(dataStr, showTelegramNotice);
-      return;
-    }
-
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-    }, 1000);
-  } catch (e) {
-    console.error("Ошибка скачивания бэкапа:", e);
-  }
-}
-
 /* СОХРАНЕНИЕ ТРЕНИРОВКИ */
 function saveWorkout() {
   if (!curWorkout.length) return;
@@ -2025,13 +1983,6 @@ function saveWorkout() {
 
   const isSaved = saveDB();
   if (!isSaved) return;
-
-  // Автобэкап каждые 5 тренировок оставляем для обычного браузера.
-  // В Telegram не трогаем буфер пользователя автоматически — для этого есть
-  // явная кнопка «Экспорт (Бэкап)».
-  if (DB.w.length > 0 && DB.w.length % 5 === 0 && !isTelegramWebView()) {
-    downloadBackupFile(`gym_auto_backup_${today()}.json`);
-  }
 
   curWorkout = [];
   initDefaultSetRows();
@@ -2639,110 +2590,133 @@ function renderProg() {
 
 /* ЭКСПОРТ И ИМПОРТ ДАННЫХ */
 function exportData() {
-  // Единая точка экспорта: Telegram копирует JSON в буфер,
-  // обычный браузер скачивает .json-файл.
+  // Telegram: компактный бэкап одной строкой в буфер. Браузер: обычный JSON-файл.
   downloadBackupFile(`workout-backup-${today()}.json`, true);
+}
+
+function bytesToBase64(bytes) {
+  let binary = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(binary);
+}
+
+function base64ToBytes(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+async function makeBackupString() {
+  const json = JSON.stringify(DB);
+  if (typeof CompressionStream === 'function') {
+    const input = new TextEncoder().encode(json);
+    const stream = new Blob([input]).stream().pipeThrough(new CompressionStream('gzip'));
+    const compressed = new Uint8Array(await new Response(stream).arrayBuffer());
+    return 'GTR1.' + bytesToBase64(compressed);
+  }
+  return 'GTR0.' + bytesToBase64(new TextEncoder().encode(json));
+}
+
+async function readBackupString(backupString) {
+  const value = String(backupString || '').trim();
+  if (!value) throw new Error('Резервная копия пуста.');
+  if (value.startsWith('GTR1.')) {
+    if (typeof DecompressionStream !== 'function') throw new Error('Эта версия браузера не поддерживает сжатые резервные копии.');
+    const compressed = base64ToBytes(value.slice(5));
+    const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new TextDecoder().decode(await new Response(stream).arrayBuffer());
+  }
+  if (value.startsWith('GTR0.')) return new TextDecoder().decode(base64ToBytes(value.slice(5)));
+  return value;
 }
 
 function copyExportFallback(text, onSuccess) {
   try {
     const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '0';
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    const copied = document.execCommand('copy');
-    document.body.removeChild(textarea);
+    textarea.value = text; textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed'; textarea.style.left = '-9999px'; textarea.style.top = '0';
+    document.body.appendChild(textarea); textarea.focus(); textarea.select();
+    const copied = document.execCommand('copy'); document.body.removeChild(textarea);
+    if (copied) onSuccess(); else alert('Не удалось скопировать резервную копию. Попробуйте ещё раз.');
+  } catch (e) { alert('Не удалось скопировать резервную копию. Попробуйте ещё раз.'); }
+}
 
-    if (copied) {
-      onSuccess();
-    } else {
-      alert('Не удалось скопировать данные. Попробуйте ещё раз.');
+function copyBackupToClipboard(dataStr, showNotice = true) {
+  const onSuccess = () => {
+    if (showNotice) alert('Резервная копия создана и скопирована.\n\nСохраните эту строку в заметках или другом безопасном месте. Она понадобится для восстановления тренировок.');
+  };
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') navigator.clipboard.writeText(dataStr).then(onSuccess).catch(() => copyExportFallback(dataStr, onSuccess));
+  else copyExportFallback(dataStr, onSuccess);
+}
+
+async function downloadBackupFile(filename, showTelegramNotice = true) {
+  try {
+    const dataStr = isTelegramWebView() ? await makeBackupString() : JSON.stringify(DB, null, 2);
+    if (isTelegramWebView()) { copyBackupToClipboard(dataStr, showTelegramNotice); return; }
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 1000);
+  } catch (e) { console.error('Ошибка создания резервной копии:', e); alert('Не удалось создать резервную копию. Попробуйте ещё раз.'); }
+}
+
+async function importFromClipboard() {
+  try {
+    if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') throw new Error('Буфер обмена недоступен в этом окне.');
+    const text = await navigator.clipboard.readText();
+    if (!text || !text.trim()) throw new Error('Буфер обмена пуст.');
+    await processImportedBackup(text);
+  } catch (e) { alert('❌ Не удалось получить резервную копию из буфера.\n\n' + (e.message || 'Попробуйте скопировать резервную копию ещё раз.')); }
+}
+
+async function processImportedBackup(text) {
+  try {
+    const decoded = await readBackupString(text);
+    let parsed;
+    try { parsed = JSON.parse(decoded); } catch (jsonErr) { throw new Error('Резервная копия повреждена или имеет неверный формат.'); }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Резервная копия имеет неверную структуру.');
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'w') || !Array.isArray(parsed.w)) throw new Error('Это не резервная копия тренировочного трекера.');
+
+    const currentWorkoutsCount = (DB && Array.isArray(DB.w)) ? DB.w.length : 0;
+    if (!confirm(`Восстановление данных\n\n` +
+      `История тренировок будет восстановлена из резервной копии.\n` +
+      `Текущие данные приложения будут заменены этой сохранённой версией.\n\n` +
+      `Перед продолжением убедитесь, что у вас сохранена последняя резервная копия текущих тренировок.\n\n` +
+      `Текущих тренировок: ${currentWorkoutsCount}\n` +
+      `В резервной копии: ${parsed.w.length}\n\n` +
+      `Продолжить восстановление?`)) return;
+
+    const normalized = normalizeDBData(parsed);
+    if (!normalized || typeof normalized !== 'object') throw new Error('Не удалось обработать резервную копию.');
+
+    // Сначала сохраняем текущую базу как внутреннюю страховочную копию.
+    const previousDB = DB;
+    if (!saveDB()) throw new Error('Не удалось создать страховочную копию текущих данных.');
+
+    // Применяем новую базу только после всех проверок.
+    DB = normalized;
+    if (!saveDB()) {
+      DB = previousDB;
+      saveDB();
+      throw new Error('Не удалось сохранить восстановленные данные. Текущие данные восстановлены.');
     }
+    clearDraft();
+    alert(`Данные успешно восстановлены! ✅\nЗагружено тренировок: ${normalized.w ? normalized.w.length : 0}`);
+    renderSetRowsUI(); renderExList(); calcLiveCNS();
+    if (typeof renderAllCharts === 'function') renderAllCharts();
   } catch (e) {
-    alert('Не удалось скопировать данные. Попробуйте ещё раз.');
+    console.error('Ошибка импорта резервной копии:', e);
+    alert('❌ ' + (e.message || 'Не удалось восстановить данные.') + '\n\nТекущие данные приложения не изменены.');
   }
 }
 
 function importData(ev) {
-  const f = ev.target.files && ev.target.files[0];
-  if (!f) return;
-
+  const f = ev.target.files && ev.target.files[0]; if (!f) return;
   const r = new FileReader();
-
-  r.onerror = () => {
-    alert('⚠️ Ошибка при чтении файла с диска.');
-    ev.target.value = '';
-  };
-
-  r.onload = () => {
-    try {
-      const text = r.result;
-      let parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch (jsonErr) {
-        throw new Error("Файл не является корректным JSON (синтаксическая ошибка).");
-      }
-
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error("Файл не содержит корректного JSON-объекта резервной копии.");
-      }
-
-      // Проверка обязательного наличия поля w
-      if (!Object.prototype.hasOwnProperty.call(parsed, 'w')) {
-        throw new Error("В файле отсутствует обязательное поле 'w' (список тренировок). Файл не является резервной копией приложения.");
-      }
-
-      if (!Array.isArray(parsed.w)) {
-        throw new Error("Поле 'w' (список тренировок) должно быть массивом.");
-      }
-
-      // Защита от случайного стирания базы при импорте пустой базы
-      const currentWorkoutsCount = (DB && Array.isArray(DB.w)) ? DB.w.length : 0;
-      if (parsed.w.length === 0 && currentWorkoutsCount > 0) {
-        const confirmed = confirm(
-          `⚠️ Внимание! Импортируемый файл содержит 0 тренировок (пустая база).\n\n` +
-          `Это действие полностью заменит вашу текущую историю (${currentWorkoutsCount} тренировок) пустой базой.\n\n` +
-          `Вы действительно хотите продолжить?`
-        );
-        if (!confirmed) {
-          ev.target.value = '';
-          return;
-        }
-      }
-
-      // Глубокая нормализация и валидация копии данных
-      const normalized = normalizeDBData(parsed);
-      if (!normalized || typeof normalized !== 'object') {
-        throw new Error("Не удалось обработать структуру бэкапа.");
-      }
-
-      // Создаем резервную копию текущей рабочей базы в BACKUP_KEY перед заменой
-      saveDB();
-
-      // Применяем проверенные данные
-      DB = normalized;
-
-      // Сохраняем новую базу в localStorage
-      if (!saveDB()) {
-        throw new Error("Не удалось записать данные в память браузера (память переполнена).");
-      }
-
-      clearDraft();
-      alert(`Данные успешно восстановлены! ✅\nЗагружено тренировок: ${normalized.w ? normalized.w.length : 0}`);
-      location.reload();
-    } catch (e) {
-      alert(`⚠️ Ошибка импорта: ${e.message || 'некорректный файл'}\n\nТекущие данные не были изменены.`);
-    } finally {
-      ev.target.value = '';
-    }
-  };
-
+  r.onerror = () => { alert('⚠️ Ошибка при чтении файла с диска.'); ev.target.value = ''; };
+  r.onload = async () => { try { await processImportedBackup(r.result); } finally { ev.target.value = ''; } };
   r.readAsText(f);
 }
 
