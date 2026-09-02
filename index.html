@@ -235,108 +235,6 @@
     border-color: rgba(255, 59, 48, 0.3);
   }
 
-  /* ТАЙМЕР И СЕКУНДОМЕР */
-  .timer-card {
-    background: #FFFFFF;
-    border: 1px solid var(--ios-separator);
-    border-radius: var(--ios-radius-lg);
-    padding: 14px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  }
-
-  .timer-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .timer-box {
-    background: var(--ios-input-bg);
-    border-radius: var(--ios-radius-md);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .timer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--ios-text-secondary);
-    margin-bottom: 4px;
-  }
-
-  .timer-display {
-    font-size: 26px;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    color: var(--ios-text);
-    text-align: center;
-    margin: 4px 0;
-    letter-spacing: -0.5px;
-  }
-
-  .timer-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-  }
-
-  .timer-actions button {
-    flex: 1;
-    height: 32px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    border: none;
-  }
-
-  .btn-timer-primary {
-    background: var(--ios-tint);
-    color: #FFFFFF;
-  }
-
-  .btn-timer-stop {
-    background: var(--ios-orange);
-    color: #FFFFFF;
-  }
-
-  .btn-timer-reset {
-    background: #E5E5EA;
-    color: #3A3A3C;
-  }
-
-  .custom-timer-inputs {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--ios-separator);
-  }
-
-  .custom-timer-inputs input {
-    width: 48px;
-    height: 30px;
-    font-size: 13px;
-    text-align: center;
-    padding: 0;
-    margin-bottom: 0;
-    font-weight: 700;
-    background: #FFFFFF;
-    border: 1px solid #D1D1D6;
-  }
-
-  .custom-timer-inputs span {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--ios-text-secondary);
-  }
 
   /* ПОИСК И ДРОПДАУН УПРАЖНЕНИЙ */
   .search-container {
@@ -776,7 +674,6 @@
     max-width: 100%;
     margin-top: 10px;
   }
-.timer-card { display: none !important; }
 
 /* ===== СТИЛИ ДЛЯ ПОДХОДОВ В ИСТОРИИ ===== */
 .history-set-warmup {
@@ -803,188 +700,6 @@
   border: 1px solid rgba(52, 199, 89, 0.3);
 }
 
-/* ===== СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА БЭКАПА ===== */
-.backup-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
-  animation: fadeIn 0.3s ease;
-}
-
-.backup-modal-content {
-  background: #FFFFFF;
-  border-radius: 16px;
-  max-width: 400px;
-  width: 100%;
-  max-height: 90vh;
-  padding: 24px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
-}
-
-.backup-modal-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.backup-modal-header h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.backup-modal-body {
-  color: #666;
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-
-.backup-instruction-box {
-  padding: 14px;
-  background: #F0F7FF;
-  border-radius: 10px;
-  border: 1px solid #CDE2FF;
-  margin-bottom: 16px;
-}
-
-.backup-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: #1A1A1A;
-}
-
-.backup-step:last-child {
-  margin-bottom: 0;
-}
-
-.backup-step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 22px;
-  background: #007AFF;
-  color: white;
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.backup-data-preview {
-  background: #F5F5F5;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
-  font-size: 11px;
-  font-family: 'Courier New', monospace;
-  max-height: 100px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  color: #333;
-  border: 1px solid #E5E5EA;
-}
-
-.backup-success-anim {
-  display: none;
-  text-align: center;
-  padding: 16px;
-  background: #E8F5EC;
-  border-radius: 10px;
-  border: 1px solid #34C759;
-  margin-bottom: 16px;
-}
-
-.backup-success-anim.show {
-  display: block;
-  animation: popIn 0.4s ease;
-}
-
-.backup-success-anim .checkmark {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.backup-btn-copy {
-  width: 100%;
-  padding: 16px;
-  background: #007AFF;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 17px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.backup-btn-copy:active {
-  transform: scale(0.97);
-}
-
-.backup-btn-copy.copied {
-  background: #34C759;
-}
-
-.backup-btn-close {
-  width: 100%;
-  padding: 12px;
-  background: #F0F0F0;
-  color: #333;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-}
-
-.backup-tip-box {
-  padding: 10px;
-  background: #FFF9E6;
-  border-radius: 8px;
-  font-size: 12px;
-  color: #856404;
-  border: 1px solid #FFE8A0;
-  margin-top: 12px;
-}
-
-.backup-tip-box strong {
-  font-weight: 700;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  70% { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
-}
 </style>
 </head>
 <body>
@@ -1001,45 +716,6 @@
 
 <!-- ВКЛАДКА: ЗАЛ -->
 <div id="tab-w">
-
- <!-- СЕКУНДОМЕР И НАСТРАИВАЕМЫЙ ТАЙМЕР -->
- <div class="timer-card">
-  <div class="timer-grid">
-    <!-- Секундомер -->
-    <div class="timer-box">
-      <div class="timer-header">
-        <span>⏱ СЕКУНДОМЕР</span>
-      </div>
-      <div class="timer-display" id="swDisplay">00:00</div>
-      <div class="timer-actions">
-        <button id="swToggleBtn" class="btn-timer-primary" onclick="toggleStopwatch()">Старт</button>
-        <button class="btn-timer-reset" onclick="resetStopwatch()">Сброс</button>
-      </div>
-    </div>
-
-    <!-- Таймер отдыха -->
-    <div class="timer-box">
-      <div class="timer-header">
-        <span>⏳ ОТДЫХ</span>
-        <span id="timerStatus" style="color:var(--ios-tint); font-size:11px; font-weight:700;">Готов</span>
-      </div>
-      <div class="timer-display" id="cdDisplay">01:30</div>
-      <div class="timer-actions">
-        <button id="cdToggleBtn" class="btn-timer-primary" onclick="toggleCountdown()">Старт</button>
-        <button class="btn-timer-reset" onclick="resetCountdown()">Сброс</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ручной ввод минут и секунд -->
-  <div class="custom-timer-inputs">
-    <span>Установка отдыха:</span>
-    <input type="text" id="cdMin" inputmode="numeric" placeholder="Мин" value="1" onfocus="this.select()" oninput="handleNumericInput(this, 0, 59, onCustomTimerChange)">
-    <span style="font-weight:bold;">:</span>
-    <input type="text" id="cdSec" inputmode="numeric" placeholder="Сек" value="30" onfocus="this.select()" oninput="handleNumericInput(this, 0, 59, onCustomTimerChange)">
-    <button class="small" style="height:30px; font-size:11.5px; padding:0 8px;" onclick="applyCustomTimer()">Задать</button>
-  </div>
- </div>
 
  <!-- ПАРАМЕТРЫ САМОЧУВСТВИЯ И ВЕСА ТЕЛА -->
  <div class="card">
@@ -1181,36 +857,6 @@ const DRAFT_KEY = 'myGymV2_draft';
 
 const BW_KEYWORDS = ['подтягивания', 'отжимания', 'брусья', 'выходы'];
 
-// ============================================================
-// 1. ОПРЕДЕЛЕНИЕ ОКРУЖЕНИЯ (Telegram / Браузер)
-// ============================================================
-
-function isTelegramWebView() {
-    // Способ 1: Проверка объекта Telegram WebView
-    if (typeof window !== 'undefined' && window.Telegram && window.Telegram.WebView) {
-        return true;
-    }
-    
-    // Способ 2: Проверка User-Agent
-    if (typeof navigator !== 'undefined') {
-        const ua = navigator.userAgent || '';
-        if (/telegram/i.test(ua)) {
-            return true;
-        }
-    }
-    
-    // Способ 3: Проверка через WebApp (если используется)
-    if (typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp) {
-        return true;
-    }
-    
-    return false;
-}
-
-// ============================================================
-// 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ============================================================
-
 function isBodyweightEx(name) {
   if (!name) return false;
   const lower = name.toLowerCase();
@@ -1249,7 +895,7 @@ function getEffectiveWeight(exName, rawWeight, bodyWeight = 80) {
     return name.includes('одной') ? w : w * 2;
   }
 
-  return w;
+  return w; // ← ГЛАВНОЕ: возвращаем вес для обычных упражнений
 }
 
 function escapeHTML(str) {
@@ -1263,7 +909,7 @@ function handleNumericInput(el, min, max, callback) {
   let val = el.value.replace(/\D/g, '');
   if (val !== '') {
     let num = parseInt(val, 10);
-    if (num > 99) num = 99;
+    if (num > 99) num = 99; // Лимит 99 повторений!
     if (num < min) num = min;
     el.value = num;
   } else {
@@ -1289,7 +935,7 @@ function handleDecimalInput(el, callback) {
   
   if (val !== '' && !val.endsWith('.')) {
     let num = parseFloat(val);
-    if (num > 500) num = 500;
+    if (num > 500) num = 500; // Лимит 500 кг!
     el.value = num;
   } else {
     el.value = val;
@@ -1313,62 +959,10 @@ function flashError(elem) {
   setTimeout(() => elem.classList.remove('error'), 900);
 }
 
-// ============================================================
-// 3. ЗВУКОВОЙ КОНТЕКСТ
-// ============================================================
 
-let globalAudioCtx = null;
-
-function initOrGetAudioContext() {
-  if (!globalAudioCtx) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) {
-      globalAudioCtx = new AudioContextClass();
-    }
-  }
-  if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
-    globalAudioCtx.resume().catch(() => {});
-  }
-  return globalAudioCtx;
-}
-
-['touchstart', 'touchend', 'mousedown', 'keydown', 'click'].forEach(evtType => {
-  document.addEventListener(evtType, () => {
-    initOrGetAudioContext();
-  }, { once: true, passive: true });
-});
-
-function playBeep() {
-  try {
-    const ctx = initOrGetAudioContext();
-    if (!ctx) return;
-    
-    const playTone = (freq, start, duration) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, start);
-      gain.gain.setValueAtTime(0.25, start);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + duration);
-    };
-
-    const now = ctx.currentTime;
-    playTone(880, now, 0.15);
-    playTone(880, now + 0.2, 0.15);
-    playTone(1760, now + 0.4, 0.35);
-  } catch (e) {
-    console.warn("Audio playback issue:", e);
-  }
-}
-
-// ============================================================
-// 4. РАБОТА С ГРАФИКАМИ (CHART.JS)
-// ============================================================
-
+/* =========================================================================
+   4. БЕЗОПАСНОЕ УДАЛЕНИЕ И ПРОВЕРКА ГРАФИКОВ CHART.JS (ОТКАЗОУСТОЙЧИВОСТЬ CDN)
+   ========================================================================= */
 function destroyChart(chartInstance, canvasId) {
   if (chartInstance && typeof chartInstance.destroy === 'function') {
     chartInstance.destroy();
@@ -1382,11 +976,6 @@ function destroyChart(chartInstance, canvasId) {
   }
   return null;
 }
-
-// ============================================================
-// 5. БАЗА УПРАЖНЕНИЙ
-// ============================================================
-
 const BASE_EX = {
   // 1. Грудь
   "Жим гантелей лёжа": { category: "Грудь", target: "Грудь", muscles: { "Грудь": 1.0, "Трицепс": 0.5, "Плечи": 0.5 }, cns: 0.7, isCompound: true },
@@ -1444,10 +1033,9 @@ function defDB() {
   };
 }
 
-// ============================================================
-// 6. РАБОТА С БАЗОЙ ДАННЫХ (ЗАГРУЗКА/СОХРАНЕНИЕ/НОРМАЛИЗАЦИЯ)
-// ============================================================
-
+/* =========================================================================
+   БЕЗОПАСНАЯ ВАЛИДАЦИЯ И НОРМАЛИЗАЦИЯ ДАННЫХ БАЗЫ
+   ========================================================================= */
 function normalizeBoolean(value, fallback = false) {
   if (typeof value === 'boolean') return value;
   if (value === 1) return true;
@@ -1562,7 +1150,7 @@ function normalizeDBData(rawInput) {
         if (!s || typeof s !== 'object' || Array.isArray(s)) return null;
         
         const validReps = parseValidReps(s.r);
-        if (validReps === null) return null;
+        if (validReps === null) return null; // отбрасываем подход с некорректными/нулевыми повторениями
         
         const validW = parseValidWeight(s.w);
 
@@ -1576,6 +1164,7 @@ function normalizeDBData(rawInput) {
         };
       }).filter(Boolean);
 
+      // Если в упражнении не осталось ни одного валидного подхода
       if (cleanedSets.length === 0) return null;
 
       return {
@@ -1656,10 +1245,7 @@ function getExData(name) {
   return A[name] || { category: "Другое", target: "Другое", muscles: { "Другое": 1.0 }, cns: 0.5, isCompound: false };
 }
 
-// ============================================================
-// 7. РАСЧЕТ 1RM И СТАТИСТИКА
-// ============================================================
-
+/* Расчет 1RM (Эпли) */
 function calculate1RM(weight, reps) {
   const w = parseFloat(weight) || 0;
   const r = parseInt(reps, 10) || 0;
@@ -1670,6 +1256,9 @@ function calculate1RM(weight, reps) {
   return Math.round(e1rm * 10) / 10;
 }
 
+/* =========================================================================
+   3 & 5. СБОР ВСЕХ ПОДХОДОВ С УЧЕТОМ ДУБЛИКАТОВ И СТРОГОГО ВЕСА СЕССИИ
+   ========================================================================= */
 function getHistorical1RM(exName) {
   let best = 0;
   (DB.w || []).forEach(w => {
@@ -1906,10 +1495,7 @@ function toggleSetWarmupManual(index) {
   saveDraft();
 }
 
-// ============================================================
-// 8. ГЛОБАЛЬНОЕ СОСТОЯНИЕ
-// ============================================================
-
+/* ГЛОБАЛЬНОЕ СОСТОЯНИЕ */
 let curWorkout = [];       
 let currentSetRows = [];   
 let selectedExercise = "Жим лёжа";
@@ -1917,184 +1503,7 @@ let period = 7;
 let muscleViewMode = 'sets';
 let ch1 = null, ch2 = null, ch3 = null, ch4 = null;
 
-// ============================================================
-// 9. ТАЙМЕРЫ (СЕКУНДОМЕР И ТАЙМЕР ОТДЫХА)
-// ============================================================
-
-let swRunning = false;
-let swStartTime = 0;
-let swAccumulatedMs = 0;
-let swInterval = null;
-
-function updateStopwatchUI() {
-  const currentElapsedMs = swRunning ? (swAccumulatedMs + (Date.now() - swStartTime)) : swAccumulatedMs;
-  const totalSec = Math.floor(currentElapsedMs / 1000);
-  const m = String(Math.floor(totalSec / 60)).padStart(2, '0');
-  const s = String(totalSec % 60).padStart(2, '0');
-  const el = $('swDisplay');
-  if (el) el.innerText = `${m}:${s}`;
-}
-
-function toggleStopwatch() {
-  initOrGetAudioContext();
-  const btn = $('swToggleBtn');
-  if (!swRunning) {
-    swRunning = true;
-    swStartTime = Date.now();
-    btn.innerText = 'Пауза';
-    btn.className = 'btn-timer-stop';
-    clearInterval(swInterval);
-    swInterval = setInterval(updateStopwatchUI, 250);
-  } else {
-    swRunning = false;
-    swAccumulatedMs += Date.now() - swStartTime;
-    btn.innerText = 'Старт';
-    btn.className = 'btn-timer-primary';
-    clearInterval(swInterval);
-    updateStopwatchUI();
-  }
-}
-
-function resetStopwatch() {
-  swRunning = false;
-  clearInterval(swInterval);
-  swAccumulatedMs = 0;
-  swStartTime = 0;
-  $('swDisplay').innerText = '00:00';
-  $('swToggleBtn').innerText = 'Старт';
-  $('swToggleBtn').className = 'btn-timer-primary';
-}
-
-let cdRunning = false;
-let cdDurationSeconds = 90;
-let cdRemainingSeconds = 90;
-let cdEndTime = 0;
-let cdInterval = null;
-
-function formatTime(sec) {
-  const safeSec = Math.max(0, sec);
-  const m = String(Math.floor(safeSec / 60)).padStart(2, '0');
-  const s = String(safeSec % 60).padStart(2, '0');
-  return `${m}:${s}`;
-}
-
-function updateCountdownUI() {
-  if (!cdRunning) {
-    $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
-    return;
-  }
-  const now = Date.now();
-  const diffMs = cdEndTime - now;
-  const rem = Math.max(0, Math.ceil(diffMs / 1000));
-  cdRemainingSeconds = rem;
-  $('cdDisplay').innerText = formatTime(rem);
-
-  if (diffMs <= 0) {
-    clearInterval(cdInterval);
-    cdRunning = false;
-    cdRemainingSeconds = 0;
-    $('cdDisplay').innerText = '00:00';
-    $('cdToggleBtn').innerText = 'Старт';
-    $('cdToggleBtn').className = 'btn-timer-primary';
-    $('timerStatus').innerText = 'Время вышло!';
-    $('timerStatus').style.color = 'var(--ios-red)';
-    playBeep();
-  }
-}
-
-function onCustomTimerChange() {
-  const m = parseInt($('cdMin').value, 10) || 0;
-  const s = parseInt($('cdSec').value, 10) || 0;
-  const total = m * 60 + s;
-  if (total > 0 && !cdRunning) {
-    cdDurationSeconds = total;
-    cdRemainingSeconds = total;
-    $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
-  }
-}
-
-function applyCustomTimer() {
-  const m = Math.min(59, Math.max(0, parseInt($('cdMin').value, 10) || 0));
-  const s = Math.min(59, Math.max(0, parseInt($('cdSec').value, 10) || 0));
-  let total = m * 60 + s;
-  if (total <= 0) total = 60;
-  cdDurationSeconds = total;
-  resetCountdown();
-}
-
-function startRestTimerAuto() {
-  initOrGetAudioContext();
-  clearInterval(cdInterval);
-  cdRemainingSeconds = cdDurationSeconds;
-  cdEndTime = Date.now() + (cdRemainingSeconds * 1000);
-  cdRunning = true;
-  
-  $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
-  $('cdToggleBtn').innerText = 'Пауза';
-  $('cdToggleBtn').className = 'btn-timer-stop';
-  $('timerStatus').innerText = 'Идет отдых';
-  $('timerStatus').style.color = 'var(--ios-orange)';
-
-  cdInterval = setInterval(updateCountdownUI, 250);
-}
-
-function toggleCountdown() {
-  initOrGetAudioContext();
-  const btn = $('cdToggleBtn');
-  if (!cdRunning) {
-    if (cdRemainingSeconds <= 0) {
-      cdRemainingSeconds = cdDurationSeconds;
-    }
-    cdEndTime = Date.now() + (cdRemainingSeconds * 1000);
-    cdRunning = true;
-    btn.innerText = 'Пауза';
-    btn.className = 'btn-timer-stop';
-    $('timerStatus').innerText = 'Идет отдых';
-    $('timerStatus').style.color = 'var(--ios-orange)';
-    
-    clearInterval(cdInterval);
-    cdInterval = setInterval(updateCountdownUI, 250);
-  } else {
-    cdRunning = false;
-    clearInterval(cdInterval);
-    const rem = Math.max(0, Math.ceil((cdEndTime - Date.now()) / 1000));
-    cdRemainingSeconds = rem;
-    btn.innerText = 'Старт';
-    btn.className = 'btn-timer-primary';
-    $('timerStatus').innerText = 'На паузе';
-    $('timerStatus').style.color = 'var(--ios-text-secondary)';
-    updateCountdownUI();
-  }
-}
-
-function resetCountdown() {
-  cdRunning = false;
-  clearInterval(cdInterval);
-  cdRemainingSeconds = cdDurationSeconds;
-  $('cdDisplay').innerText = formatTime(cdRemainingSeconds);
-  $('cdToggleBtn').innerText = 'Старт';
-  $('cdToggleBtn').className = 'btn-timer-primary';
-  $('timerStatus').innerText = 'Готов';
-  $('timerStatus').style.color = 'var(--ios-tint)';
-}
-
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    if (swRunning) updateStopwatchUI();
-    if (cdRunning) updateCountdownUI();
-  } else {
-    saveDraft();
-  }
-});
-window.addEventListener('focus', () => {
-  if (swRunning) updateStopwatchUI();
-  if (cdRunning) updateCountdownUI();
-});
-
-// ============================================================
-// 10. ПОИСК И ДРОПДАУН УПРАЖНЕНИЙ
-// ============================================================
-
+/* ПОИСК И ДРОПДАУН УПРАЖНЕНИЙ */
 function renderDropdownList(filterText = '') {
   const listEl = $('exDropdownList');
   if (!listEl) return;
@@ -2182,7 +1591,6 @@ function fillAnalyticsSelect() {
 }
 
 function showTab(t) {
-  initOrGetAudioContext();
   ['w','h','a'].forEach(x => {
     const el = $('tab-' + x);
     if (el) el.style.display = (x === t ? '' : 'none');
@@ -2252,7 +1660,6 @@ function updateSetVal(index, field, value) {
 }
 
 function toggleSetCompleted(index, phWeight, phReps) {
-  initOrGetAudioContext();
   const set = currentSetRows[index];
   if (!set) return;
 
@@ -2264,7 +1671,6 @@ function toggleSetCompleted(index, phWeight, phReps) {
       set.r = (phReps !== undefined && phReps !== null && phReps !== '') ? phReps : 10;
     }
     set.completed = true;
-    startRestTimerAuto();
   } else {
     set.completed = false;
   }
@@ -2406,10 +1812,7 @@ function renderExList() {
   $('saveBtn').disabled = curWorkout.length === 0;
 }
 
-// ============================================================
-// 11. РАСЧЕТЫ ТОННАЖА И НАГРУЗКИ НА ЦНС
-// ============================================================
-
+/* РАСЧЕТЫ ТОННАЖА И НАГРУЗКИ НА ЦНС */
 function exerciseWorkingTonnage(e, sessionBodyWeight) {
   const userW = getValidBodyWeight(sessionBodyWeight, 80);
 
@@ -2548,943 +1951,801 @@ function muscleWorkingStats(w) {
   return { mSets, mTons };
 }
 
-// ============================================================
-// 12. ЭКСПОРТ/ИМПОРТ С ПОДДЕРЖКОЙ TELEGRAM
-// ============================================================
-
+/* АВТОМАТИЧЕСКИЙ БЭКАП В ФАЙЛ */
 function downloadBackupFile(filename) {
-    try {
-        const dataStr = JSON.stringify(DB, null, 2);
-        
-        // Если запущено в Telegram — показываем модалку с инструкцией
-        if (isTelegramWebView()) {
-            const previewLength = 300;
-            const preview = dataStr.length > previewLength 
-                ? dataStr.substring(0, previewLength) + '...\n\n(данные обрезаны)'
-                : dataStr;
-
-            // Создаем модальное окно
-            const modalHtml = `
-                <div class="backup-modal-overlay" onclick="if(event.target === this) closeBackupModal()">
-                    <div class="backup-modal-content">
-                        <div class="backup-modal-header">
-                            <h3>💾 Резервная копия</h3>
-                        </div>
-                        
-                        <div class="backup-modal-body">
-                            Ваши тренировки сохранены. Чтобы не потерять данные:
-                        </div>
-
-                        <div class="backup-instruction-box">
-                            <div class="backup-step">
-                                <span class="backup-step-num">1</span>
-                                <span>Нажмите <b>«Скопировать в заметки»</b></span>
-                            </div>
-                            <div class="backup-step">
-                                <span class="backup-step-num">2</span>
-                                <span>Откройте <b>«Заметки»</b> или любое приложение для текста</span>
-                            </div>
-                            <div class="backup-step">
-                                <span class="backup-step-num">3</span>
-                                <span>Нажмите и удерживайте поле ввода → <b>«Вставить»</b></span>
-                            </div>
-                        </div>
-                        
-                        <div class="backup-data-preview">${escapeHTML(preview)}</div>
-
-                        <div id="backupSuccessAnim" class="backup-success-anim">
-                            <span class="checkmark">✅</span>
-                            <div style="font-weight: 700; font-size: 15px; color: #117826;">Скопировано!</div>
-                            <div style="font-size: 13px; color: #2D6A4F;">Теперь вставьте текст в заметки</div>
-                        </div>
-                        
-                        <button id="backupCopyBtn" class="backup-btn-copy" onclick="copyBackupToClipboard()">
-                            📋 Скопировать в заметки
-                        </button>
-                        
-                        <button class="backup-btn-close" onclick="closeBackupModal()">
-                            Понятно, закрыть
-                        </button>
-                        
-                        <div class="backup-tip-box">
-                            💡 <strong>Зачем это нужно?</strong> Если вы потеряете телефон или очистите браузер,
-                            вы сможете восстановить все тренировки из заметок.
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const container = document.createElement('div');
-            container.innerHTML = modalHtml;
-            document.body.appendChild(container.firstElementChild);
-            
-            window._backupData = dataStr;
-            return;
-        }
-        
-        // Стандартный метод для браузера
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
-        }, 1000);
-    } catch (e) {
-        console.error("Ошибка скачивания бэкапа:", e);
-        alert('❌ Ошибка при сохранении данных. Попробуйте ещё раз.');
-    }
+  try {
+    const dataStr = JSON.stringify(DB, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }, 1000);
+  } catch (e) {
+    console.error("Ошибка скачивания бэкапа:", e);
+  }
 }
 
-function copyBackupToClipboard() {
-    const data = window._backupData;
-    if (!data) return;
-
-    const showSuccess = () => {
-        const anim = document.getElementById('backupSuccessAnim');
-        if (anim) anim.classList.add('show');
-        
-        const btn = document.getElementById('backupCopyBtn');
-        if (btn) {
-            btn.textContent = '✅ Скопировано!';
-            btn.classList.add('copied');
-            btn.disabled = true;
-        }
-    };
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(data)
-            .then(showSuccess)
-            .catch(() => fallbackCopyToClipboard(data, showSuccess));
-    } else {
-        fallbackCopyToClipboard(data, showSuccess);
-    }
-}
-
-function fallbackCopyToClipboard(text, onSuccess) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '-9999px';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        document.execCommand('copy');
-        if (onSuccess) onSuccess();
-    } catch (e) {
-        alert('❌ Не удалось скопировать. Попробуйте выделить текст вручную.');
-    }
-    document.body.removeChild(textarea);
-}
-
-function closeBackupModal() {
-    const modal = document.querySelector('.backup-modal-overlay');
-    if (modal) modal.remove();
-    window._backupData = null;
-}
-
-// ============================================================
-// 13. ИМПОРТ ДАННЫХ (С ПОДДЕРЖКОЙ TELEGRAM)
-// ============================================================
-
-function importData(ev) {
-    const f = ev.target && ev.target.files && ev.target.files[0];
-    
-    // Если это Telegram — сначала предлагаем вставить текст
-    if (isTelegramWebView() && !f) {
-        const userInput = prompt(
-            '📋 Вставьте скопированный ранее текст бэкапа в поле ниже:\n\n' +
-            '(Если вы хотите импортировать из файла, просто нажмите "Отмена")'
-        );
-        
-        if (userInput !== null && userInput.trim() !== '') {
-            try {
-                const parsed = JSON.parse(userInput.trim());
-                importParsedData(parsed);
-                return;
-            } catch (e) {
-                alert('❌ Ошибка: введённый текст не является корректным JSON.\n\n' +
-                      'Убедитесь, что вы скопировали полный текст бэкапа.');
-                if (ev.target) ev.target.value = '';
-                return;
-            }
-        }
-        
-        if (ev.target) {
-            ev.target.value = '';
-            if (!ev.target.files || ev.target.files.length === 0) return;
-        }
-    }
-    
-    // Стандартный импорт из файла
-    if (!f) {
-        if (ev.target) ev.target.value = '';
-        return;
-    }
-
-    const r = new FileReader();
-
-    r.onerror = () => {
-        alert('⚠️ Ошибка при чтении файла с диска.');
-        if (ev.target) ev.target.value = '';
-    };
-
-    r.onload = () => {
-        try {
-            const text = r.result;
-            let parsed;
-            try {
-                parsed = JSON.parse(text);
-            } catch (jsonErr) {
-                throw new Error("Файл не является корректным JSON (синтаксическая ошибка).");
-            }
-
-            importParsedData(parsed);
-        } catch (e) {
-            alert(`⚠️ Ошибка импорта: ${e.message || 'некорректный файл'}\n\nТекущие данные не были изменены.`);
-        } finally {
-            if (ev.target) ev.target.value = '';
-        }
-    };
-
-    r.readAsText(f);
-}
-
-function importParsedData(parsed) {
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error("Данные не являются корректным JSON-объектом резервной копии.");
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'w')) {
-        throw new Error("В данных отсутствует обязательное поле 'w' (список тренировок).");
-    }
-
-    if (!Array.isArray(parsed.w)) {
-        throw new Error("Поле 'w' (список тренировок) должно быть массивом.");
-    }
-
-    const currentWorkoutsCount = (DB && Array.isArray(DB.w)) ? DB.w.length : 0;
-    if (parsed.w.length === 0 && currentWorkoutsCount > 0) {
-        const confirmed = confirm(
-            `⚠️ Внимание! Импортируемые данные содержат 0 тренировок (пустая база).\n\n` +
-            `Это действие полностью заменит вашу текущую историю (${currentWorkoutsCount} тренировок) пустой базой.\n\n` +
-            `Вы действительно хотите продолжить?`
-        );
-        if (!confirmed) {
-            return;
-        }
-    }
-
-    const normalized = normalizeDBData(parsed);
-    if (!normalized || typeof normalized !== 'object') {
-        throw new Error("Не удалось обработать структуру бэкапа.");
-    }
-
-    saveDB();
-
-    DB = normalized;
-
-    if (!saveDB()) {
-        throw new Error("Не удалось записать данные в память браузера (память переполнена).");
-    }
-
-    clearDraft();
-    alert(`✅ Данные успешно восстановлены!\nЗагружено тренировок: ${normalized.w ? normalized.w.length : 0}`);
-    location.reload();
-}
-
-// ============================================================
-// 14. ЭКСПОРТ/ИМПОРТ (ОБЕРТКИ)
-// ============================================================
-
-function exportData() {
-    downloadBackupFile(`workout-backup-${today()}.json`);
-}
-
-function wipeAllData() {
-    if (confirm('Вы уверены? Все сохраненные тренировки и история будут удалены безвозвратно!')) {
-        localStorage.removeItem(KEY);
-        localStorage.removeItem(BACKUP_KEY);
-        localStorage.removeItem(DRAFT_KEY);
-        location.reload();
-    }
-}
-
-// ============================================================
-// 15. АВТОБЭКАП (В ФУНКЦИИ saveWorkout)
-// ============================================================
-
+/* СОХРАНЕНИЕ ТРЕНИРОВКИ */
 function saveWorkout() {
-    if (!curWorkout.length) return;
-    const well = Math.min(10, Math.max(1, sanitizeNumber($('well').value, 8)));
-    const parsedBW = parseFloat($('curW').value);
-    const bodyWeight = getValidBodyWeight(parsedBW, DB.profile?.weight);
-    const now = new Date();
+  if (!curWorkout.length) return;
+  const well = Math.min(10, Math.max(1, sanitizeNumber($('well').value, 8)));
+  const parsedBW = parseFloat($('curW').value);
+  const bodyWeight = getValidBodyWeight(parsedBW, DB.profile?.weight);
+  const now = new Date();
 
-    DB.profile.weight = bodyWeight;
+  DB.profile.weight = bodyWeight;
 
-    const newWorkout = {
-        id: `w_${Date.now()}`,
-        timestamp: Date.now(),
-        date: today(),
-        time: now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-        well,
-        bodyWeight,
-        ex: JSON.parse(JSON.stringify(curWorkout))
-    };
+  const newWorkout = {
+    id: `w_${Date.now()}`,
+    timestamp: Date.now(),
+    date: today(),
+    time: now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+    well,
+    bodyWeight,
+    ex: JSON.parse(JSON.stringify(curWorkout))
+  };
 
-    DB.w.push(newWorkout);
+  DB.w.push(newWorkout);
 
-    const isSaved = saveDB();
-    if (!isSaved) return;
+  const isSaved = saveDB();
+  if (!isSaved) return;
 
-    // Автобэкап каждые 5 тренировок
-    if (DB.w.length > 0 && DB.w.length % 5 === 0) {
-        if (isTelegramWebView()) {
-            // В Telegram просто показываем уведомление и копируем
-            alert('📦 Автоматический бэкап:\n\n' +
-                  'Данные скопированы в буфер обмена.\n' +
-                  'Вставьте их в заметки для сохранения.\n\n' +
-                  'Нажмите "Экспорт" в любой момент для ручного бэкапа.');
-            downloadBackupFile(`gym_auto_backup_${today()}.json`);
-        } else {
-            downloadBackupFile(`gym_auto_backup_${today()}.json`);
-        }
-    }
+  if (DB.w.length > 0 && DB.w.length % 5 === 0) {
+    downloadBackupFile(`gym_auto_backup_${today()}.json`);
+  }
 
-    curWorkout = [];
-    initDefaultSetRows();
-    $('well').value = '8';
+  curWorkout = [];
+  initDefaultSetRows();
+  $('well').value = '8';
 
-    renderSetRowsUI();
-    renderExList();
-    calcLiveCNS();
-    clearDraft();
-    alert('Тренировка успешно сохранена! 💪');
+  renderSetRowsUI();
+  renderExList();
+  calcLiveCNS();
+  clearDraft();
+  alert('Тренировка успешно сохранена! 💪');
 }
 
-// ============================================================
-// 16. ЧЕРНОВИК
-// ============================================================
-
+/* ЧЕРНОВИК */
 function saveDraft() {
-    try {
-        const draft = {
-            well: $('well').value,
-            curW: $('curW').value,
-            selectedExercise: selectedExercise,
-            curWorkout: curWorkout,
-            currentSetRows: currentSetRows
-        };
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    } catch(e) {}
+  try {
+    const draft = {
+      well: $('well').value,
+      curW: $('curW').value,
+      selectedExercise: selectedExercise,
+      curWorkout: curWorkout,
+      currentSetRows: currentSetRows
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch(e) {}
 }
 
 function loadDraft() {
-    try {
-        const raw = localStorage.getItem(DRAFT_KEY);
-        const savedWeight = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    const savedWeight = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
 
-        if (!raw) {
-            $('curW').value = savedWeight;
-            initDefaultSetRows();
-            if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
-            return;
-        }
-        const draft = JSON.parse(raw);
-        if (draft && typeof draft === 'object') {
-            if (draft.well !== undefined) $('well').value = draft.well;
-            $('curW').value = draft.curW !== undefined && draft.curW !== '' ? draft.curW : savedWeight;
-            
-            if (draft.selectedExercise && allEX()[draft.selectedExercise]) {
-                selectedExercise = draft.selectedExercise;
-            }
-            if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
-
-            if (Array.isArray(draft.curWorkout)) curWorkout = draft.curWorkout;
-            if (Array.isArray(draft.currentSetRows) && draft.currentSetRows.length > 0) {
-                currentSetRows = draft.currentSetRows;
-            } else {
-                initDefaultSetRows();
-            }
-        }
-    } catch(e) {
-        $('curW').value = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
-        initDefaultSetRows();
-        if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+    if (!raw) {
+      $('curW').value = savedWeight;
+      initDefaultSetRows();
+      if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+      return;
     }
-    updateSmartHint();
-    renderSetRowsUI();
-    renderExList();
-    calcLiveCNS();
+    const draft = JSON.parse(raw);
+    if (draft && typeof draft === 'object') {
+      if (draft.well !== undefined) $('well').value = draft.well;
+      $('curW').value = draft.curW !== undefined && draft.curW !== '' ? draft.curW : savedWeight;
+      
+      if (draft.selectedExercise && allEX()[draft.selectedExercise]) {
+        selectedExercise = draft.selectedExercise;
+      }
+      if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+
+      if (Array.isArray(draft.curWorkout)) curWorkout = draft.curWorkout;
+      if (Array.isArray(draft.currentSetRows) && draft.currentSetRows.length > 0) {
+        currentSetRows = draft.currentSetRows;
+      } else {
+        initDefaultSetRows();
+      }
+    }
+  } catch(e) {
+    $('curW').value = getValidBodyWeight(DB.profile && DB.profile.weight, 80);
+    initDefaultSetRows();
+    if ($('exSearchInput')) $('exSearchInput').value = selectedExercise;
+  }
+  updateSmartHint();
+  renderSetRowsUI();
+  renderExList();
+  calcLiveCNS();
 }
 
 function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+/* ЖУРНАЛ И ИСТОРИЯ */
+function renderHistory() {
+  const container = $('historyList');
+  if (!container) return;
+
+  const workouts = (DB.w || []).slice().sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+  if (!workouts.length) {
+    container.innerHTML = '<div class="muted" style="text-align:center; padding: 24px 0;">У вас пока нет сохраненных тренировок.<br>Запишите первую во вкладке «Зал».</div>';
+    return;
+  }
+
+  container.innerHTML = workouts.map(w => {
+    const metrics = workoutMetrics(w);
+    const cns = calculateCNSLoad(w);
+    const wBodyWeight = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+
+    let exDetails = (w.ex || []).map(e => {
+      const isBW = isBodyweightEx(e.n);
+      const sets = Array.isArray(e.sets) ? e.sets : [];
+      const setsFormatted = sets.map((s, sIdx) => {
+  const isWarm = !!s.isWarmup;
+  const addedW = sanitizeNumber(s.w, 0);
+  const wTxt = isBW ? (addedW > 0 ? `${wBodyWeight}+${addedW}` : `${wBodyWeight}`) : `${addedW}`;
+  const bg = isWarm ? '#EAEAEF' : '#EBF3FF';
+  const color = isWarm ? '#636366' : '#0055CC';
+  // 👇 МЕНЯЕМ ПРЕФИКС
+  const prefix = isWarm ? '🟡 Разм' : '🟢 Раб';
+  return `<span style="display:inline-block; background:${bg}; color:${color}; padding:3px 7px; border-radius:6px; margin:2px; font-size:12px; font-weight:700;">${prefix} <b>${wTxt} кг × ${s.r}</b></span>`;
+}).join(' ');
+
+      return `<div style="margin-top:6px;">
+        <div style="font-size:14px; font-weight:700; color:#111;">${escapeHTML(e.n)}</div>
+        <div style="margin-top:3px;">${setsFormatted}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="history-entry">
+      <div class="history-header">
+        <div>
+          <span style="font-weight:800; font-size:16px; color:#111;">${w.date || 'Без даты'}</span>
+          <span class="muted" style="margin-left:6px; font-size:13px; font-weight:600;">${w.time || ''}</span>
+          <span class="muted" style="margin-left:6px; font-size:12px;">(Вес тела: ${wBodyWeight} кг)</span>
+        </div>
+        <button class="small del" onclick="deleteHistoryWorkout('${w.id}')">Удалить</button>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin: 8px 0; font-size:12.5px;">
+        <span class="badge-tag" style="background:#EBF3FF; color:#0055CC;">🏋️ Раб. тоннаж: <b>${Math.round(metrics.workingTons)} кг</b></span>
+        <span class="badge-tag" style="background:var(--ios-purple-light); color:var(--ios-purple);">🧠 ЦНС: <b>${cns}</b></span>
+        <span class="badge-tag" style="background:#F2F2F7; color:#333;">Подходы: <b>${metrics.workingSets} раб</b> / ${metrics.warmupSets} разм</span>
+      </div>
+
+      <div style="background:#F7F7FA; border:1px solid #ECECEF; padding:10px; border-radius:var(--ios-radius-md); margin-top:8px;">
+        ${exDetails}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteHistoryWorkout(workoutId) {
+  if (confirm('Удалить эту тренировку из истории?')) {
+    DB.w = (DB.w || []).filter(w => w.id !== workoutId);
+    saveDB();
+    renderHistory();
+    if ($('tab-a').style.display !== 'none') renderAnalytics();
+  }
+}
+
+/* =========================================================================
+   АНАЛИТИКА И ОТКАЗОУСТОЙЧИВЫЙ РЕНДЕР
+   ========================================================================= */
+function isDateInPeriod(dateStr, periodDays) {
+  if (!dateStr) return false;
+  if (periodDays >= 3650) return true;
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length !== 3) return false;
+  const workoutDate = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const diffDays = Math.floor((todayStart - workoutDate) / 86400000);
+  return diffDays >= 0 && diffDays < periodDays;
+}
+
+function calculateWorkoutsPerWeek(ws, periodDays) {
+  if (!ws || ws.length === 0) return '0.0';
+  if (periodDays <= 7) return ws.length.toFixed(1);
+  if (periodDays < 3650) {
+    const weeks = periodDays / 7;
+    return (ws.length / weeks).toFixed(1);
+  }
+  const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
+  if (dates.length <= 1) return ws.length.toFixed(1);
+  const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
+  return (ws.length / (diffDays / 7)).toFixed(1);
+}
+
+function getPeriodWeeksCount(ws, periodDays) {
+  if (periodDays <= 7) return 1.0;
+  if (periodDays < 3650) return periodDays / 7.0;
+  if (!ws.length) return 1.0;
+  const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
+  if (dates.length <= 1) return 1.0;
+  const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
+  return diffDays / 7.0;
+}
+
+function setPeriod(p) {
+  period = p;
+  [7, 30, 90, 3650].forEach(x => {
+    const btn = $('btnPeriod' + x);
+    if (btn) btn.classList.toggle('active', x === p);
+  });
+  renderAnalytics();
+}
+
+function setMuscleViewMode(mode) {
+  muscleViewMode = mode;
+  $('btnMusModeSets').classList.toggle('active', mode === 'sets');
+  $('btnMusModeTonnage').classList.toggle('active', mode === 'tonnage');
+  $('rpLegendBox').style.display = mode === 'sets' ? 'grid' : 'none';
+  renderAnalytics();
+}
+
+function getRPStatus(weeklySets) {
+  if (weeklySets < 6) {
+    return { zone: 'MV', color: '#FF8D85', cardClass: 'rp-card-mv', desc: 'Объем ниже стимула роста. Сохраняет текущую массу.' };
+  } else if (weeklySets >= 6 && weeklySets < 10) {
+    return { zone: 'MEV', color: '#FFCC00', cardClass: 'rp-card-mev', desc: 'Минимальный стимул гипертрофии с низким утомлением.' };
+  } else if (weeklySets >= 10 && weeklySets <= 20) {
+    return { zone: 'MAV', color: '#34C759', cardClass: 'rp-card-mav', desc: 'Оптимальный диапазон стимуляции гипертрофии и силы.' };
+  } else {
+    return { zone: 'MRV', color: '#FF3B30', cardClass: 'rp-card-mrv', desc: 'Внимание! Мышца перегружена, лимит восстановления исчерпан.' };
+  }
+}
+
+function generateInsights(allWorkouts) {
+  if (!allWorkouts || allWorkouts.length === 0) {
+    return ['<div class="insight-badge insight-info">ℹ️ Проведите и сохраните хотя бы одну тренировку для расчета аналитики.</div>'];
+  }
+
+  const insights = [];
+  if (allWorkouts.length >= 2) {
+    const lastW = allWorkouts[allWorkouts.length - 1];
+    const prevW = allWorkouts[allWorkouts.length - 2];
+    const lastTons = workoutMetrics(lastW).workingTons;
+    const prevTons = workoutMetrics(prevW).workingTons;
+
+    if (prevTons > 0) {
+      const diffPct = Math.round(((lastTons - prevTons) / prevTons) * 100);
+      if (diffPct > 25) {
+        insights.push(`<div class="insight-badge insight-warn">⚠️ <b>Скачок рабочего тоннажа: +${diffPct}%</b> к прошлой тренировке (${prevW.date}). Следите за связками и сном.</div>`);
+      } else if (diffPct >= 3 && diffPct <= 25) {
+        insights.push(`<div class="insight-badge insight-good">🔥 <b>Прогрессивная перегрузка: +${diffPct}%</b> рабочего объема к прошлой сессии (${prevW.date}).</div>`);
+      } else if (diffPct < -20) {
+        insights.push(`<div class="insight-badge insight-info">📉 <b>Разгрузочная сессия (${diffPct}% тоннажа)</b> — отличная возможность для восстановления ЦНС.</div>`);
+      } else {
+        insights.push(`<div class="insight-badge insight-good">✅ <b>Стабильный тоннаж</b> (${diffPct >= 0 ? '+' : ''}${diffPct}% к ${prevW.date}).</div>`);
+      }
+    }
+  }
+
+  const avgCNS = allWorkouts.reduce((acc, w) => acc + calculateCNSLoad(w), 0) / allWorkouts.length;
+  if (avgCNS > 14) {
+    insights.push(`<div class="insight-badge insight-warn">⚡ <b>Высокая системная нагрузка на ЦНС (${avgCNS.toFixed(1)} балла)</b>. Рекомендуется выделить день на отдых.</div>`);
+  } else {
+    insights.push(`<div class="insight-badge insight-good">🧠 <b>Средняя нагрузка на ЦНС в оптимуме:</b> ${avgCNS.toFixed(1)} балла за сессию.</div>`);
+  }
+
+  return insights;
+}
+
+function renderAnalytics() {
+  const ws = (DB.w || []).filter(w => w && w.date && isDateInPeriod(w.date, period)).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+  let totalWorkingTonnageSum = 0;
+  let totalWorkingSetsSum = 0;
+  let totalWorkingRepsSum = 0;
+  
+  const aggregatedMusclesSets = {};
+  const aggregatedMusclesTons = {};
+
+  ws.forEach(w => {
+    const m = workoutMetrics(w);
+    totalWorkingTonnageSum += m.workingTons;
+    totalWorkingSetsSum += m.workingSets;
+    totalWorkingRepsSum += m.workingReps;
+    
+    const { mSets, mTons } = muscleWorkingStats(w);
+    for (const k in mSets) aggregatedMusclesSets[k] = (aggregatedMusclesSets[k] || 0) + mSets[k];
+    for (const k in mTons) aggregatedMusclesTons[k] = (aggregatedMusclesTons[k] || 0) + mTons[k];
+  });
+
+  const avgWorkingTonnagePerWorkout = ws.length ? Math.round(totalWorkingTonnageSum / ws.length) : 0;
+  const avgWorkingSetsPerWorkout = ws.length ? (totalWorkingSetsSum / ws.length).toFixed(1) : '0';
+  const avgCNS = ws.length ? (ws.reduce((a, w) => a + calculateCNSLoad(w), 0) / ws.length).toFixed(1) : '0.0';
+  const freqPerWeek = calculateWorkoutsPerWeek(ws, period);
+  const weeksCount = getPeriodWeeksCount(ws, period);
+
+  $('stats').innerHTML = `
+    <div class="stat"><span>Тренировок за период</span><b>${ws.length}</b></div>
+    <div class="stat"><span>Средний рабочий тоннаж / сессия</span><b style="color:var(--ios-tint); font-size:16px;">${avgWorkingTonnagePerWorkout.toLocaleString('ru')} кг</b></div>
+    <div class="stat"><span>Всего рабочих подходов</span><b>${totalWorkingSetsSum} сетов (${totalWorkingRepsSum} повт)</b></div>
+    <div class="stat"><span>В среднем рабочих сетов / сессия</span><b>${avgWorkingSetsPerWorkout} сета</b></div>
+    <div class="stat"><span>Средняя нагрузка на ЦНС</span><b>${avgCNS} балла</b></div>
+    <div class="stat"><span>Частота тренировок</span><b>${freqPerWeek} / нед</b></div>
+  `;
+
+  $('insightsList').innerHTML = generateInsights(ws).join('');
+
+  ch1 = destroyChart(ch1, 'chartMuscles');
+  ch2 = destroyChart(ch2, 'chartTonnage');
+  ch4 = destroyChart(ch4, 'chartCNS');
+
+  const hasChartJS = typeof Chart !== 'undefined';
+  $('chartMusclesFallback').style.display = hasChartJS ? 'none' : 'block';
+  $('chartTonnageFallback').style.display = hasChartJS ? 'none' : 'block';
+  $('chartCNSFallback').style.display = hasChartJS ? 'none' : 'block';
+
+  const textColor = '#111111';
+  const tintColor = '#007AFF';
+
+  const isSetsMode = muscleViewMode === 'sets';
+  const muscleDataMap = isSetsMode ? aggregatedMusclesSets : aggregatedMusclesTons;
+  const labels = Object.keys(muscleDataMap).sort((a, b) => muscleDataMap[b] - muscleDataMap[a]);
+
+  if (hasChartJS) {
+    try {
+      const barColors = labels.map(l => {
+        if (!isSetsMode) return tintColor;
+        const weeklyRate = (muscleDataMap[l] || 0) / weeksCount;
+        return getRPStatus(weeklyRate).color;
+      });
+
+      ch1 = new Chart($('chartMuscles'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: isSetsMode ? 'Рабочие сеты' : 'Тоннаж (кг)',
+            data: labels.map(l => isSetsMode ? Math.round(muscleDataMap[l] * 10) / 10 : Math.round(muscleDataMap[l])),
+            backgroundColor: barColors,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const totalVal = ctx.raw;
+                  if (isSetsMode) {
+                    const weeklyRate = (totalVal / weeksCount).toFixed(1);
+                    const st = getRPStatus(parseFloat(weeklyRate));
+                    return ` ${totalVal} сетов (${weeklyRate} сет/нед) — ${st.zone}`;
+                  }
+                  return ` ${totalVal.toLocaleString('ru')} кг`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { ticks: { color: textColor } }
+          }
+        }
+      });
+
+      ch2 = new Chart($('chartTonnage'), {
+        type: 'line',
+        data: {
+          labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
+          datasets: [
+            { 
+              label: 'Рабочий тоннаж (кг)', 
+              data: ws.map(w => workoutMetrics(w).workingTons), 
+              borderColor: tintColor, 
+              backgroundColor: 'rgba(0, 122, 255, 0.08)', 
+              fill: true, 
+              tension: 0.25,
+              pointRadius: 4,
+              pointBackgroundColor: tintColor
+            }
+          ]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor, maxRotation: 45 } },
+            y: { ticks: { color: textColor }, beginAtZero: true }
+          }
+        }
+      });
+
+      ch4 = new Chart($('chartCNS'), {
+        type: 'line',
+        data: {
+          labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
+          datasets: [{
+            label: 'Индекс утомления ЦНС',
+            data: ws.map(w => calculateCNSLoad(w)),
+            borderColor: '#AF52DE',
+            backgroundColor: 'rgba(175, 82, 222, 0.12)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { beginAtZero: true, ticks: { color: textColor } }
+          }
+        }
+      });
+    } catch(e) {
+      console.warn("Chart.js render skipped:", e);
+    }
+  }
+
+  const rpContainer = $('rpMuscleDetails');
+  if (isSetsMode && labels.length > 0) {
+    rpContainer.innerHTML = labels.map(muscleName => {
+      const totalSets = aggregatedMusclesSets[muscleName] || 0;
+      const weeklyRate = parseFloat((totalSets / weeksCount).toFixed(1));
+      const status = getRPStatus(weeklyRate);
+
+      let statusText = '';
+      if (status.zone === 'MV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в зоне поддержания (MV)`;
+      else if (status.zone === 'MEV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в минимальном объеме (MEV)`;
+      else if (status.zone === 'MAV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в оптимальном объеме (MAV)`;
+      else statusText = `Внимание! Мышца <b>${escapeHTML(muscleName)}</b> перегружена (MRV)`;
+
+      return `
+      <div class="rp-muscle-card ${status.cardClass}">
+        <div>
+          <div>${statusText}</div>
+          <div style="font-size:11.5px; opacity:0.85; margin-top:2px;">${status.desc}</div>
+        </div>
+        <div style="text-align:right; font-weight:800; font-size:13.5px; white-space:nowrap; margin-left:8px;">
+          ${weeklyRate} <span style="font-size:11px; font-weight:600;">сет/нед</span>
+        </div>
+      </div>`;
+    }).join('');
+    rpContainer.style.display = 'flex';
+  } else {
+    rpContainer.innerHTML = '';
+    rpContainer.style.display = 'none';
+  }
+
+  renderProg();
+}
+
+function renderProg() {
+  const n = $('progSel').value;
+  const isBW = isBodyweightEx(n);
+  const isDB = isDumbbellEx(n);
+  ch3 = destroyChart(ch3, 'chartProg');
+
+  const hasChartJS = typeof Chart !== 'undefined';
+  $('chartProgFallback').style.display = hasChartJS ? 'none' : 'block';
+
+  if (!n) {
+    $('progDetailView').innerHTML = '<div class="muted">Упражнение не выбрано</div>';
+    return;
+  }
+
+  const workoutHistory = [];
+  let absoluteMaxRawWeight = 0;
+  let absoluteMaxEffWeight = 0;
+  let absoluteMaxReps = 0;
+  let absoluteBest1RM = 0;
+  let bestWorkingSet = null;
+  let totalExWorkingTonnage = 0;
+  let totalExWorkingSets = 0;
+  let totalExWorkingReps = 0;
+
+  const repRecordsByWeight = {};
+
+  (DB.w || []).forEach(w => {
+    if (!w || !Array.isArray(w.ex)) return;
+    const matchedEx = w.ex.filter(e => e && e.n === n);
+    if (!matchedEx.length) return;
+
+    const userW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
+    let dayMaxEffWeight = 0;
+    let dayMaxRawWeight = 0;
+    let dayMax1RM = 0;
+    let dayWorkingTonnage = 0;
+    let dayWorkingSets = 0;
+    let dayWorkingReps = 0;
+
+    const allSets = matchedEx.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
+
+    allSets.forEach(s => {
+      if (s.completed === false) return;
+      const rawW = sanitizeNumber(s.w, 0);
+      const r = sanitizeNumber(s.r, 0);
+      const effW = getEffectiveWeight(n, rawW, userW);
+      if (r <= 0) return;
+
+      const est1RM = calculate1RM(effW, r);
+      if (est1RM > dayMax1RM) dayMax1RM = est1RM;
+      if (est1RM > absoluteBest1RM) {
+        absoluteBest1RM = est1RM;
+        bestWorkingSet = { effW, rawW, r, isBW, isDB, isWarmup: s.isWarmup };
+      }
+
+      if (!s.isWarmup) {
+        dayWorkingSets++;
+        dayWorkingReps += r;
+        dayWorkingTonnage += (effW * r);
+
+        if (effW > dayMaxEffWeight) dayMaxEffWeight = effW;
+        if (rawW > dayMaxRawWeight) dayMaxRawWeight = rawW;
+        if (r > absoluteMaxReps) absoluteMaxReps = r;
+
+        if (!repRecordsByWeight[rawW] || repRecordsByWeight[rawW] < r) {
+          repRecordsByWeight[rawW] = r;
+        }
+      }
+    });
+
+    if (dayMaxEffWeight > absoluteMaxEffWeight) absoluteMaxEffWeight = dayMaxEffWeight;
+    if (dayMaxRawWeight > absoluteMaxRawWeight) absoluteMaxRawWeight = dayMaxRawWeight;
+    totalExWorkingTonnage += dayWorkingTonnage;
+    totalExWorkingSets += dayWorkingSets;
+    totalExWorkingReps += dayWorkingReps;
+
+    if (dayMax1RM > 0) {
+      workoutHistory.push({
+        date: w.date || '',
+        time: w.time || '',
+        timestamp: w.timestamp || 0,
+        maxW: isDB ? dayMaxRawWeight : (isBW ? dayMaxEffWeight : dayMaxRawWeight),
+        est1RM: dayMax1RM,
+        workingTonnage: dayWorkingTonnage
+      });
+    }
+  });
+
+  if (!workoutHistory.length) {
+    $('progDetailView').innerHTML = '<div class="muted">Пока нет записей по выбранному упражнению.</div>';
+    return;
+  }
+
+  workoutHistory.sort((a, b) => a.timestamp - b.timestamp);
+
+  let progressText = 'Первая фиксация';
+  if (workoutHistory.length >= 2) {
+    const lastSession = workoutHistory[workoutHistory.length - 1];
+    const prevSession = workoutHistory[workoutHistory.length - 2];
+    const diff1RM = Math.round((lastSession.est1RM - prevSession.est1RM) * 10) / 10;
+    const sign = diff1RM >= 0 ? `+${diff1RM}` : `${diff1RM}`;
+    progressText = `Динамика 1RM: <b>${sign} кг</b> относительно прошлой сессии`;
+  }
+
+  const sortedWeights = Object.keys(repRecordsByWeight).map(Number).sort((a,b) => b - a);
+  const repPRsText = sortedWeights.slice(0, 3).map(wt => {
+    const wtLabel = isDB ? `${wt} кг/гантель` : `${wt} кг`;
+    return `<b>${wtLabel} × ${repRecordsByWeight[wt]} повт</b>`;
+  }).join(' · ');
+
+  let bestSetFormatted = '—';
+  if (bestWorkingSet) {
+    if (bestWorkingSet.isBW) {
+      bestSetFormatted = `${bestWorkingSet.effW} кг (${bestWorkingSet.rawW > 0 ? '+'+bestWorkingSet.rawW : 'вес тела'}) × ${bestWorkingSet.r}`;
+    } else if (bestWorkingSet.isDB) {
+      bestSetFormatted = `${bestWorkingSet.rawW} кг/рука (${bestWorkingSet.effW} кг сумма) × ${bestWorkingSet.r}`;
+    } else {
+      bestSetFormatted = `${bestWorkingSet.rawW} кг × ${bestWorkingSet.r}`;
+    }
+  }
+
+  const maxWorkingWeightDisplay = isDB ? `${absoluteMaxRawWeight} кг` : (isBW ? `${absoluteMaxEffWeight} кг` : `${absoluteMaxRawWeight} кг`);
+  const maxWorkingWeightSub = isDB ? 'Вес одной гантели' : (isBW ? 'С весом тела' : 'Вес снаряда');
+
+  $('progDetailView').innerHTML = `
+    <div class="analytics-grid">
+      <div class="analytics-box">
+        <div class="title">🥇 Рекорд силы (1RM)</div>
+        <div class="val">${absoluteBest1RM} кг</div>
+        <div class="sub">Сет: ${bestSetFormatted}</div>
+      </div>
+      <div class="analytics-box">
+        <div class="title">⚡ Макс. рабочий вес</div>
+        <div class="val">${maxWorkingWeightDisplay}</div>
+        <div class="sub">${maxWorkingWeightSub}</div>
+      </div>
+      <div class="analytics-box">
+        <div class="title">🎯 Выносливость</div>
+        <div class="val">${absoluteMaxReps} повт.</div>
+        <div class="sub">В рабочем сете</div>
+      </div>
+      <div class="analytics-box">
+        <div class="title">📦 Рабочий объем</div>
+        <div class="val">${Math.round(totalExWorkingTonnage).toLocaleString('ru')} кг</div>
+        <div class="sub">${totalExWorkingSets} сетов / ${totalExWorkingReps} повт</div>
+      </div>
+    </div>
+
+    <div style="background:var(--ios-input-bg); border-radius:var(--ios-radius-md); padding:10px; margin-top:8px; font-size:13px; line-height:1.4; border:1px solid #EBEBF0;">
+      <div>🏆 <b>Рекорды повторений по весу:</b> ${repPRsText || '—'}</div>
+      <div style="margin-top:4px; color:var(--ios-text-secondary); font-size:12px;">📊 ${progressText}</div>
+    </div>
+  `;
+
+  if (hasChartJS) {
+    try {
+      const textColor = '#111111';
+      ch3 = new Chart($('chartProg'), {
+        type: 'line',
+        data: {
+          labels: workoutHistory.map(p => `${p.date.slice(5)} ${p.time ? p.time : ''}`),
+          datasets: [
+            { label: 'Расчетный 1RM (кг)', data: workoutHistory.map(p => p.est1RM), borderColor: '#34C759', backgroundColor: 'rgba(52, 199, 89, 0.1)', tension: 0.25, fill: true },
+            { label: isDB ? 'Макс. вес гантели (кг)' : 'Макс. рабочий вес сета (кг)', data: workoutHistory.map(p => p.maxW), borderColor: '#007AFF', borderDash: [4, 4], tension: 0.25 }
+          ]
+        },
+        options: {
+          plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
+          scales: {
+            x: { ticks: { color: textColor } },
+            y: { ticks: { color: textColor } }
+          }
+        }
+      });
+    } catch(e) {
+      console.warn("ChartProg render skipped:", e);
+    }
+  }
+}
+
+/* ЭКСПОРТ И ИМПОРТ ДАННЫХ */
+function exportData() {
+  const dataStr = JSON.stringify(DB, null, 2);
+
+  // Telegram WebView не поддерживает нормальное скачивание Blob-файла:
+  // вместо показа JSON на экране копируем данные в буфер обмена.
+  const isTelegram = !!(window.Telegram && window.Telegram.WebApp) ||
+                     /Telegram/i.test(navigator.userAgent || '');
+
+  if (!isTelegram) {
+    downloadBackupFile(`workout-backup-${today()}.json`);
+    return;
+  }
+
+  const showCopiedNotice = () => {
+    alert('Данные скопированы, вставьте в заметки');
+  };
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(dataStr)
+      .then(showCopiedNotice)
+      .catch(() => copyExportFallback(dataStr, showCopiedNotice));
+  } else {
+    copyExportFallback(dataStr, showCopiedNotice);
+  }
+}
+
+function copyExportFallback(text, onSuccess) {
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    if (copied) {
+      onSuccess();
+    } else {
+      alert('Не удалось скопировать данные. Попробуйте ещё раз.');
+    }
+  } catch (e) {
+    alert('Не удалось скопировать данные. Попробуйте ещё раз.');
+  }
+}
+
+function importData(ev) {
+  const f = ev.target.files && ev.target.files[0];
+  if (!f) return;
+
+  const r = new FileReader();
+
+  r.onerror = () => {
+    alert('⚠️ Ошибка при чтении файла с диска.');
+    ev.target.value = '';
+  };
+
+  r.onload = () => {
+    try {
+      const text = r.result;
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (jsonErr) {
+        throw new Error("Файл не является корректным JSON (синтаксическая ошибка).");
+      }
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error("Файл не содержит корректного JSON-объекта резервной копии.");
+      }
+
+      // Проверка обязательного наличия поля w
+      if (!Object.prototype.hasOwnProperty.call(parsed, 'w')) {
+        throw new Error("В файле отсутствует обязательное поле 'w' (список тренировок). Файл не является резервной копией приложения.");
+      }
+
+      if (!Array.isArray(parsed.w)) {
+        throw new Error("Поле 'w' (список тренировок) должно быть массивом.");
+      }
+
+      // Защита от случайного стирания базы при импорте пустой базы
+      const currentWorkoutsCount = (DB && Array.isArray(DB.w)) ? DB.w.length : 0;
+      if (parsed.w.length === 0 && currentWorkoutsCount > 0) {
+        const confirmed = confirm(
+          `⚠️ Внимание! Импортируемый файл содержит 0 тренировок (пустая база).\n\n` +
+          `Это действие полностью заменит вашу текущую историю (${currentWorkoutsCount} тренировок) пустой базой.\n\n` +
+          `Вы действительно хотите продолжить?`
+        );
+        if (!confirmed) {
+          ev.target.value = '';
+          return;
+        }
+      }
+
+      // Глубокая нормализация и валидация копии данных
+      const normalized = normalizeDBData(parsed);
+      if (!normalized || typeof normalized !== 'object') {
+        throw new Error("Не удалось обработать структуру бэкапа.");
+      }
+
+      // Создаем резервную копию текущей рабочей базы в BACKUP_KEY перед заменой
+      saveDB();
+
+      // Применяем проверенные данные
+      DB = normalized;
+
+      // Сохраняем новую базу в localStorage
+      if (!saveDB()) {
+        throw new Error("Не удалось записать данные в память браузера (память переполнена).");
+      }
+
+      clearDraft();
+      alert(`Данные успешно восстановлены! ✅\nЗагружено тренировок: ${normalized.w ? normalized.w.length : 0}`);
+      location.reload();
+    } catch (e) {
+      alert(`⚠️ Ошибка импорта: ${e.message || 'некорректный файл'}\n\nТекущие данные не были изменены.`);
+    } finally {
+      ev.target.value = '';
+    }
+  };
+
+  r.readAsText(f);
+}
+
+function wipeAllData() {
+  if (confirm('Вы уверены? Все сохраненные тренировки и история будут удалены безвозвратно!')) {
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(BACKUP_KEY);
     localStorage.removeItem(DRAFT_KEY);
+    location.reload();
+  }
 }
 
 window.addEventListener('pagehide', saveDraft);
 
-// ============================================================
-// 17. ИСТОРИЯ ТРЕНИРОВОК
-// ============================================================
-
-function renderHistory() {
-    const container = $('historyList');
-    if (!container) return;
-
-    const workouts = (DB.w || []).slice().sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-    if (!workouts.length) {
-        container.innerHTML = '<div class="muted" style="text-align:center; padding: 24px 0;">У вас пока нет сохраненных тренировок.<br>Запишите первую во вкладке «Зал».</div>';
-        return;
-    }
-
-    container.innerHTML = workouts.map(w => {
-        const metrics = workoutMetrics(w);
-        const cns = calculateCNSLoad(w);
-        const wBodyWeight = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
-
-        let exDetails = (w.ex || []).map(e => {
-            const isBW = isBodyweightEx(e.n);
-            const sets = Array.isArray(e.sets) ? e.sets : [];
-            const setsFormatted = sets.map((s, sIdx) => {
-                const isWarm = !!s.isWarmup;
-                const addedW = sanitizeNumber(s.w, 0);
-                const wTxt = isBW ? (addedW > 0 ? `${wBodyWeight}+${addedW}` : `${wBodyWeight}`) : `${addedW}`;
-                const bg = isWarm ? '#EAEAEF' : '#EBF3FF';
-                const color = isWarm ? '#636366' : '#0055CC';
-                const prefix = isWarm ? '🟡 Разм' : '🟢 Раб';
-                return `<span style="display:inline-block; background:${bg}; color:${color}; padding:3px 7px; border-radius:6px; margin:2px; font-size:12px; font-weight:700;">${prefix} <b>${wTxt} кг × ${s.r}</b></span>`;
-            }).join(' ');
-
-            return `<div style="margin-top:6px;">
-                <div style="font-size:14px; font-weight:700; color:#111;">${escapeHTML(e.n)}</div>
-                <div style="margin-top:3px;">${setsFormatted}</div>
-            </div>`;
-        }).join('');
-
-        return `<div class="history-entry">
-            <div class="history-header">
-                <div>
-                    <span style="font-weight:800; font-size:16px; color:#111;">${w.date || 'Без даты'}</span>
-                    <span class="muted" style="margin-left:6px; font-size:13px; font-weight:600;">${w.time || ''}</span>
-                    <span class="muted" style="margin-left:6px; font-size:12px;">(Вес тела: ${wBodyWeight} кг)</span>
-                </div>
-                <button class="small del" onclick="deleteHistoryWorkout('${w.id}')">Удалить</button>
-            </div>
-
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin: 8px 0; font-size:12.5px;">
-                <span class="badge-tag" style="background:#EBF3FF; color:#0055CC;">🏋️ Раб. тоннаж: <b>${Math.round(metrics.workingTons)} кг</b></span>
-                <span class="badge-tag" style="background:var(--ios-purple-light); color:var(--ios-purple);">🧠 ЦНС: <b>${cns}</b></span>
-                <span class="badge-tag" style="background:#F2F2F7; color:#333;">Подходы: <b>${metrics.workingSets} раб</b> / ${metrics.warmupSets} разм</span>
-            </div>
-
-            <div style="background:#F7F7FA; border:1px solid #ECECEF; padding:10px; border-radius:var(--ios-radius-md); margin-top:8px;">
-                ${exDetails}
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function deleteHistoryWorkout(workoutId) {
-    if (confirm('Удалить эту тренировку из истории?')) {
-        DB.w = (DB.w || []).filter(w => w.id !== workoutId);
-        saveDB();
-        renderHistory();
-        if ($('tab-a').style.display !== 'none') renderAnalytics();
-    }
-}
-
-// ============================================================
-// 18. АНАЛИТИКА
-// ============================================================
-
-function isDateInPeriod(dateStr, periodDays) {
-    if (!dateStr) return false;
-    if (periodDays >= 3650) return true;
-    const parts = dateStr.split('-').map(Number);
-    if (parts.length !== 3) return false;
-    const workoutDate = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const diffDays = Math.floor((todayStart - workoutDate) / 86400000);
-    return diffDays >= 0 && diffDays < periodDays;
-}
-
-function calculateWorkoutsPerWeek(ws, periodDays) {
-    if (!ws || ws.length === 0) return '0.0';
-    if (periodDays <= 7) return ws.length.toFixed(1);
-    if (periodDays < 3650) {
-        const weeks = periodDays / 7;
-        return (ws.length / weeks).toFixed(1);
-    }
-    const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
-    if (dates.length <= 1) return ws.length.toFixed(1);
-    const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
-    return (ws.length / (diffDays / 7)).toFixed(1);
-}
-
-function getPeriodWeeksCount(ws, periodDays) {
-    if (periodDays <= 7) return 1.0;
-    if (periodDays < 3650) return periodDays / 7.0;
-    if (!ws.length) return 1.0;
-    const dates = ws.map(w => w.timestamp || new Date(w.date).getTime()).filter(t => !isNaN(t)).sort((a,b) => a - b);
-    if (dates.length <= 1) return 1.0;
-    const diffDays = Math.max(7, Math.ceil((dates[dates.length - 1] - dates[0]) / 86400000) + 1);
-    return diffDays / 7.0;
-}
-
-function setPeriod(p) {
-    period = p;
-    [7, 30, 90, 3650].forEach(x => {
-        const btn = $('btnPeriod' + x);
-        if (btn) btn.classList.toggle('active', x === p);
-    });
-    renderAnalytics();
-}
-
-function setMuscleViewMode(mode) {
-    muscleViewMode = mode;
-    $('btnMusModeSets').classList.toggle('active', mode === 'sets');
-    $('btnMusModeTonnage').classList.toggle('active', mode === 'tonnage');
-    $('rpLegendBox').style.display = mode === 'sets' ? 'grid' : 'none';
-    renderAnalytics();
-}
-
-function getRPStatus(weeklySets) {
-    if (weeklySets < 6) {
-        return { zone: 'MV', color: '#FF8D85', cardClass: 'rp-card-mv', desc: 'Объем ниже стимула роста. Сохраняет текущую массу.' };
-    } else if (weeklySets >= 6 && weeklySets < 10) {
-        return { zone: 'MEV', color: '#FFCC00', cardClass: 'rp-card-mev', desc: 'Минимальный стимул гипертрофии с низким утомлением.' };
-    } else if (weeklySets >= 10 && weeklySets <= 20) {
-        return { zone: 'MAV', color: '#34C759', cardClass: 'rp-card-mav', desc: 'Оптимальный диапазон стимуляции гипертрофии и силы.' };
-    } else {
-        return { zone: 'MRV', color: '#FF3B30', cardClass: 'rp-card-mrv', desc: 'Внимание! Мышца перегружена, лимит восстановления исчерпан.' };
-    }
-}
-
-function generateInsights(allWorkouts) {
-    if (!allWorkouts || allWorkouts.length === 0) {
-        return ['<div class="insight-badge insight-info">ℹ️ Проведите и сохраните хотя бы одну тренировку для расчета аналитики.</div>'];
-    }
-
-    const insights = [];
-    if (allWorkouts.length >= 2) {
-        const lastW = allWorkouts[allWorkouts.length - 1];
-        const prevW = allWorkouts[allWorkouts.length - 2];
-        const lastTons = workoutMetrics(lastW).workingTons;
-        const prevTons = workoutMetrics(prevW).workingTons;
-
-        if (prevTons > 0) {
-            const diffPct = Math.round(((lastTons - prevTons) / prevTons) * 100);
-            if (diffPct > 25) {
-                insights.push(`<div class="insight-badge insight-warn">⚠️ <b>Скачок рабочего тоннажа: +${diffPct}%</b> к прошлой тренировке (${prevW.date}). Следите за связками и сном.</div>`);
-            } else if (diffPct >= 3 && diffPct <= 25) {
-                insights.push(`<div class="insight-badge insight-good">🔥 <b>Прогрессивная перегрузка: +${diffPct}%</b> рабочего объема к прошлой сессии (${prevW.date}).</div>`);
-            } else if (diffPct < -20) {
-                insights.push(`<div class="insight-badge insight-info">📉 <b>Разгрузочная сессия (${diffPct}% тоннажа)</b> — отличная возможность для восстановления ЦНС.</div>`);
-            } else {
-                insights.push(`<div class="insight-badge insight-good">✅ <b>Стабильный тоннаж</b> (${diffPct >= 0 ? '+' : ''}${diffPct}% к ${prevW.date}).</div>`);
-            }
-        }
-    }
-
-    const avgCNS = allWorkouts.reduce((acc, w) => acc + calculateCNSLoad(w), 0) / allWorkouts.length;
-    if (avgCNS > 14) {
-        insights.push(`<div class="insight-badge insight-warn">⚡ <b>Высокая системная нагрузка на ЦНС (${avgCNS.toFixed(1)} балла)</b>. Рекомендуется выделить день на отдых.</div>`);
-    } else {
-        insights.push(`<div class="insight-badge insight-good">🧠 <b>Средняя нагрузка на ЦНС в оптимуме:</b> ${avgCNS.toFixed(1)} балла за сессию.</div>`);
-    }
-
-    return insights;
-}
-
-function renderAnalytics() {
-    const ws = (DB.w || []).filter(w => w && w.date && isDateInPeriod(w.date, period)).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-    let totalWorkingTonnageSum = 0;
-    let totalWorkingSetsSum = 0;
-    let totalWorkingRepsSum = 0;
-    
-    const aggregatedMusclesSets = {};
-    const aggregatedMusclesTons = {};
-
-    ws.forEach(w => {
-        const m = workoutMetrics(w);
-        totalWorkingTonnageSum += m.workingTons;
-        totalWorkingSetsSum += m.workingSets;
-        totalWorkingRepsSum += m.workingReps;
-        
-        const { mSets, mTons } = muscleWorkingStats(w);
-        for (const k in mSets) aggregatedMusclesSets[k] = (aggregatedMusclesSets[k] || 0) + mSets[k];
-        for (const k in mTons) aggregatedMusclesTons[k] = (aggregatedMusclesTons[k] || 0) + mTons[k];
-    });
-
-    const avgWorkingTonnagePerWorkout = ws.length ? Math.round(totalWorkingTonnageSum / ws.length) : 0;
-    const avgWorkingSetsPerWorkout = ws.length ? (totalWorkingSetsSum / ws.length).toFixed(1) : '0';
-    const avgCNS = ws.length ? (ws.reduce((a, w) => a + calculateCNSLoad(w), 0) / ws.length).toFixed(1) : '0.0';
-    const freqPerWeek = calculateWorkoutsPerWeek(ws, period);
-    const weeksCount = getPeriodWeeksCount(ws, period);
-
-    $('stats').innerHTML = `
-        <div class="stat"><span>Тренировок за период</span><b>${ws.length}</b></div>
-        <div class="stat"><span>Средний рабочий тоннаж / сессия</span><b style="color:var(--ios-tint); font-size:16px;">${avgWorkingTonnagePerWorkout.toLocaleString('ru')} кг</b></div>
-        <div class="stat"><span>Всего рабочих подходов</span><b>${totalWorkingSetsSum} сетов (${totalWorkingRepsSum} повт)</b></div>
-        <div class="stat"><span>В среднем рабочих сетов / сессия</span><b>${avgWorkingSetsPerWorkout} сета</b></div>
-        <div class="stat"><span>Средняя нагрузка на ЦНС</span><b>${avgCNS} балла</b></div>
-        <div class="stat"><span>Частота тренировок</span><b>${freqPerWeek} / нед</b></div>
-    `;
-
-    $('insightsList').innerHTML = generateInsights(ws).join('');
-
-    ch1 = destroyChart(ch1, 'chartMuscles');
-    ch2 = destroyChart(ch2, 'chartTonnage');
-    ch4 = destroyChart(ch4, 'chartCNS');
-
-    const hasChartJS = typeof Chart !== 'undefined';
-    $('chartMusclesFallback').style.display = hasChartJS ? 'none' : 'block';
-    $('chartTonnageFallback').style.display = hasChartJS ? 'none' : 'block';
-    $('chartCNSFallback').style.display = hasChartJS ? 'none' : 'block';
-
-    const textColor = '#111111';
-    const tintColor = '#007AFF';
-
-    const isSetsMode = muscleViewMode === 'sets';
-    const muscleDataMap = isSetsMode ? aggregatedMusclesSets : aggregatedMusclesTons;
-    const labels = Object.keys(muscleDataMap).sort((a, b) => muscleDataMap[b] - muscleDataMap[a]);
-
-    if (hasChartJS) {
-        try {
-            const barColors = labels.map(l => {
-                if (!isSetsMode) return tintColor;
-                const weeklyRate = (muscleDataMap[l] || 0) / weeksCount;
-                return getRPStatus(weeklyRate).color;
-            });
-
-            ch1 = new Chart($('chartMuscles'), {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: isSetsMode ? 'Рабочие сеты' : 'Тоннаж (кг)',
-                        data: labels.map(l => isSetsMode ? Math.round(muscleDataMap[l] * 10) / 10 : Math.round(muscleDataMap[l])),
-                        backgroundColor: barColors,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => {
-                                    const totalVal = ctx.raw;
-                                    if (isSetsMode) {
-                                        const weeklyRate = (totalVal / weeksCount).toFixed(1);
-                                        const st = getRPStatus(parseFloat(weeklyRate));
-                                        return ` ${totalVal} сетов (${weeklyRate} сет/нед) — ${st.zone}`;
-                                    }
-                                    return ` ${totalVal.toLocaleString('ru')} кг`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { ticks: { color: textColor } },
-                        y: { ticks: { color: textColor } }
-                    }
-                }
-            });
-
-            ch2 = new Chart($('chartTonnage'), {
-                type: 'line',
-                data: {
-                    labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
-                    datasets: [
-                        { 
-                            label: 'Рабочий тоннаж (кг)', 
-                            data: ws.map(w => workoutMetrics(w).workingTons), 
-                            borderColor: tintColor, 
-                            backgroundColor: 'rgba(0, 122, 255, 0.08)', 
-                            fill: true, 
-                            tension: 0.25,
-                            pointRadius: 4,
-                            pointBackgroundColor: tintColor
-                        }
-                    ]
-                },
-                options: {
-                    plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
-                    scales: {
-                        x: { ticks: { color: textColor, maxRotation: 45 } },
-                        y: { ticks: { color: textColor }, beginAtZero: true }
-                    }
-                }
-            });
-
-            ch4 = new Chart($('chartCNS'), {
-                type: 'line',
-                data: {
-                    labels: ws.map(w => `${(w.date || '').slice(5)} ${w.time ? w.time : ''}`),
-                    datasets: [{
-                        label: 'Индекс утомления ЦНС',
-                        data: ws.map(w => calculateCNSLoad(w)),
-                        borderColor: '#AF52DE',
-                        backgroundColor: 'rgba(175, 82, 222, 0.12)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
-                    scales: {
-                        x: { ticks: { color: textColor } },
-                        y: { beginAtZero: true, ticks: { color: textColor } }
-                    }
-                }
-            });
-        } catch(e) {
-            console.warn("Chart.js render skipped:", e);
-        }
-    }
-
-    const rpContainer = $('rpMuscleDetails');
-    if (isSetsMode && labels.length > 0) {
-        rpContainer.innerHTML = labels.map(muscleName => {
-            const totalSets = aggregatedMusclesSets[muscleName] || 0;
-            const weeklyRate = parseFloat((totalSets / weeksCount).toFixed(1));
-            const status = getRPStatus(weeklyRate);
-
-            let statusText = '';
-            if (status.zone === 'MV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в зоне поддержания (MV)`;
-            else if (status.zone === 'MEV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в минимальном объеме (MEV)`;
-            else if (status.zone === 'MAV') statusText = `Мышца <b>${escapeHTML(muscleName)}</b> в оптимальном объеме (MAV)`;
-            else statusText = `Внимание! Мышца <b>${escapeHTML(muscleName)}</b> перегружена (MRV)`;
-
-            return `
-            <div class="rp-muscle-card ${status.cardClass}">
-                <div>
-                    <div>${statusText}</div>
-                    <div style="font-size:11.5px; opacity:0.85; margin-top:2px;">${status.desc}</div>
-                </div>
-                <div style="text-align:right; font-weight:800; font-size:13.5px; white-space:nowrap; margin-left:8px;">
-                    ${weeklyRate} <span style="font-size:11px; font-weight:600;">сет/нед</span>
-                </div>
-            </div>`;
-        }).join('');
-        rpContainer.style.display = 'flex';
-    } else {
-        rpContainer.innerHTML = '';
-        rpContainer.style.display = 'none';
-    }
-
-    renderProg();
-}
-
-// ============================================================
-// 19. ПРОГРЕССИЯ В УПРАЖНЕНИИ
-// ============================================================
-
-function renderProg() {
-    const n = $('progSel').value;
-    const isBW = isBodyweightEx(n);
-    const isDB = isDumbbellEx(n);
-    ch3 = destroyChart(ch3, 'chartProg');
-
-    const hasChartJS = typeof Chart !== 'undefined';
-    $('chartProgFallback').style.display = hasChartJS ? 'none' : 'block';
-
-    if (!n) {
-        $('progDetailView').innerHTML = '<div class="muted">Упражнение не выбрано</div>';
-        return;
-    }
-
-    const workoutHistory = [];
-    let absoluteMaxRawWeight = 0;
-    let absoluteMaxEffWeight = 0;
-    let absoluteMaxReps = 0;
-    let absoluteBest1RM = 0;
-    let bestWorkingSet = null;
-    let totalExWorkingTonnage = 0;
-    let totalExWorkingSets = 0;
-    let totalExWorkingReps = 0;
-
-    const repRecordsByWeight = {};
-
-    (DB.w || []).forEach(w => {
-        if (!w || !Array.isArray(w.ex)) return;
-        const matchedEx = w.ex.filter(e => e && e.n === n);
-        if (!matchedEx.length) return;
-
-        const userW = getValidBodyWeight(w.bodyWeight, DB.profile?.weight);
-        let dayMaxEffWeight = 0;
-        let dayMaxRawWeight = 0;
-        let dayMax1RM = 0;
-        let dayWorkingTonnage = 0;
-        let dayWorkingSets = 0;
-        let dayWorkingReps = 0;
-
-        const allSets = matchedEx.flatMap(e => Array.isArray(e.sets) ? e.sets : []);
-
-        allSets.forEach(s => {
-            if (s.completed === false) return;
-            const rawW = sanitizeNumber(s.w, 0);
-            const r = sanitizeNumber(s.r, 0);
-            const effW = getEffectiveWeight(n, rawW, userW);
-            if (r <= 0) return;
-
-            const est1RM = calculate1RM(effW, r);
-            if (est1RM > dayMax1RM) dayMax1RM = est1RM;
-            if (est1RM > absoluteBest1RM) {
-                absoluteBest1RM = est1RM;
-                bestWorkingSet = { effW, rawW, r, isBW, isDB, isWarmup: s.isWarmup };
-            }
-
-            if (!s.isWarmup) {
-                dayWorkingSets++;
-                dayWorkingReps += r;
-                dayWorkingTonnage += (effW * r);
-
-                if (effW > dayMaxEffWeight) dayMaxEffWeight = effW;
-                if (rawW > dayMaxRawWeight) dayMaxRawWeight = rawW;
-                if (r > absoluteMaxReps) absoluteMaxReps = r;
-
-                if (!repRecordsByWeight[rawW] || repRecordsByWeight[rawW] < r) {
-                    repRecordsByWeight[rawW] = r;
-                }
-            }
-        });
-
-        if (dayMaxEffWeight > absoluteMaxEffWeight) absoluteMaxEffWeight = dayMaxEffWeight;
-        if (dayMaxRawWeight > absoluteMaxRawWeight) absoluteMaxRawWeight = dayMaxRawWeight;
-        totalExWorkingTonnage += dayWorkingTonnage;
-        totalExWorkingSets += dayWorkingSets;
-        totalExWorkingReps += dayWorkingReps;
-
-        if (dayMax1RM > 0) {
-            workoutHistory.push({
-                date: w.date || '',
-                time: w.time || '',
-                timestamp: w.timestamp || 0,
-                maxW: isDB ? dayMaxRawWeight : (isBW ? dayMaxEffWeight : dayMaxRawWeight),
-                est1RM: dayMax1RM,
-                workingTonnage: dayWorkingTonnage
-            });
-        }
-    });
-
-    if (!workoutHistory.length) {
-        $('progDetailView').innerHTML = '<div class="muted">Пока нет записей по выбранному упражнению.</div>';
-        return;
-    }
-
-    workoutHistory.sort((a, b) => a.timestamp - b.timestamp);
-
-    let progressText = 'Первая фиксация';
-    if (workoutHistory.length >= 2) {
-        const lastSession = workoutHistory[workoutHistory.length - 1];
-        const prevSession = workoutHistory[workoutHistory.length - 2];
-        const diff1RM = Math.round((lastSession.est1RM - prevSession.est1RM) * 10) / 10;
-        const sign = diff1RM >= 0 ? `+${diff1RM}` : `${diff1RM}`;
-        progressText = `Динамика 1RM: <b>${sign} кг</b> относительно прошлой сессии`;
-    }
-
-    const sortedWeights = Object.keys(repRecordsByWeight).map(Number).sort((a,b) => b - a);
-    const repPRsText = sortedWeights.slice(0, 3).map(wt => {
-        const wtLabel = isDB ? `${wt} кг/гантель` : `${wt} кг`;
-        return `<b>${wtLabel} × ${repRecordsByWeight[wt]} повт</b>`;
-    }).join(' · ');
-
-    let bestSetFormatted = '—';
-    if (bestWorkingSet) {
-        if (bestWorkingSet.isBW) {
-            bestSetFormatted = `${bestWorkingSet.effW} кг (${bestWorkingSet.rawW > 0 ? '+'+bestWorkingSet.rawW : 'вес тела'}) × ${bestWorkingSet.r}`;
-        } else if (bestWorkingSet.isDB) {
-            bestSetFormatted = `${bestWorkingSet.rawW} кг/рука (${bestWorkingSet.effW} кг сумма) × ${bestWorkingSet.r}`;
-        } else {
-            bestSetFormatted = `${bestWorkingSet.rawW} кг × ${bestWorkingSet.r}`;
-        }
-    }
-
-    const maxWorkingWeightDisplay = isDB ? `${absoluteMaxRawWeight} кг` : (isBW ? `${absoluteMaxEffWeight} кг` : `${absoluteMaxRawWeight} кг`);
-    const maxWorkingWeightSub = isDB ? 'Вес одной гантели' : (isBW ? 'С весом тела' : 'Вес снаряда');
-
-    $('progDetailView').innerHTML = `
-        <div class="analytics-grid">
-            <div class="analytics-box">
-                <div class="title">🥇 Рекорд силы (1RM)</div>
-                <div class="val">${absoluteBest1RM} кг</div>
-                <div class="sub">Сет: ${bestSetFormatted}</div>
-            </div>
-            <div class="analytics-box">
-                <div class="title">⚡ Макс. рабочий вес</div>
-                <div class="val">${maxWorkingWeightDisplay}</div>
-                <div class="sub">${maxWorkingWeightSub}</div>
-            </div>
-            <div class="analytics-box">
-                <div class="title">🎯 Выносливость</div>
-                <div class="val">${absoluteMaxReps} повт.</div>
-                <div class="sub">В рабочем сете</div>
-            </div>
-            <div class="analytics-box">
-                <div class="title">📦 Рабочий объем</div>
-                <div class="val">${Math.round(totalExWorkingTonnage).toLocaleString('ru')} кг</div>
-                <div class="sub">${totalExWorkingSets} сетов / ${totalExWorkingReps} повт</div>
-            </div>
-        </div>
-
-        <div style="background:var(--ios-input-bg); border-radius:var(--ios-radius-md); padding:10px; margin-top:8px; font-size:13px; line-height:1.4; border:1px solid #EBEBF0;">
-            <div>🏆 <b>Рекорды повторений по весу:</b> ${repPRsText || '—'}</div>
-            <div style="margin-top:4px; color:var(--ios-text-secondary); font-size:12px;">📊 ${progressText}</div>
-        </div>
-    `;
-
-    if (hasChartJS) {
-        try {
-            const textColor = '#111111';
-            ch3 = new Chart($('chartProg'), {
-                type: 'line',
-                data: {
-                    labels: workoutHistory.map(p => `${p.date.slice(5)} ${p.time ? p.time : ''}`),
-                    datasets: [
-                        { label: 'Расчетный 1RM (кг)', data: workoutHistory.map(p => p.est1RM), borderColor: '#34C759', backgroundColor: 'rgba(52, 199, 89, 0.1)', tension: 0.25, fill: true },
-                        { label: isDB ? 'Макс. вес гантели (кг)' : 'Макс. рабочий вес сета (кг)', data: workoutHistory.map(p => p.maxW), borderColor: '#007AFF', borderDash: [4, 4], tension: 0.25 }
-                    ]
-                },
-                options: {
-                    plugins: { legend: { labels: { color: textColor, font: { weight: 'bold' } } } },
-                    scales: {
-                        x: { ticks: { color: textColor } },
-                        y: { ticks: { color: textColor } }
-                    }
-                }
-            });
-        } catch(e) {
-            console.warn("ChartProg render skipped:", e);
-        }
-    }
-}
-
-// ============================================================
-// 20. ИНИЦИАЛИЗАЦИЯ
-// ============================================================
-
+// Инициализация при запуске
 fillAnalyticsSelect();
 loadDraft();
-
-// Выводим информацию об окружении в консоль (для отладки)
-console.log('=== ОКРУЖЕНИЕ ===');
-console.log('Telegram WebView:', isTelegramWebView());
-console.log('User-Agent:', navigator.userAgent);
-console.log('Window Width:', window.innerWidth);
-
 </script>
 </body>
 </html>
