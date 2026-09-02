@@ -1951,10 +1951,41 @@ function muscleWorkingStats(w) {
   return { mSets, mTons };
 }
 
-/* АВТОМАТИЧЕСКИЙ БЭКАП В ФАЙЛ */
-function downloadBackupFile(filename) {
+/* ЭКСПОРТ БЭКАПА: БРАУЗЕР → ФАЙЛ, TELEGRAM → БУФЕР */
+function isTelegramWebView() {
+  const ua = navigator.userAgent || '';
+  return !!(window.Telegram && window.Telegram.WebApp)
+      || !!window.TelegramWebviewProxy
+      || /Telegram/i.test(ua);
+}
+
+function copyBackupToClipboard(dataStr, showNotice = true) {
+  const onSuccess = () => {
+    if (showNotice) {
+      alert('Данные скопированы, вставьте в заметки.\n\nДля восстановления позже: скопируйте сохранённый JSON в файл с расширением .json и используйте «Импорт (Восстановить)».');
+    }
+  };
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(dataStr)
+      .then(onSuccess)
+      .catch(() => copyExportFallback(dataStr, onSuccess));
+  } else {
+    copyExportFallback(dataStr, onSuccess);
+  }
+}
+
+function downloadBackupFile(filename, showTelegramNotice = true) {
   try {
     const dataStr = JSON.stringify(DB, null, 2);
+
+    // В Telegram WebView Blob-download может открывать JSON прямо на экране.
+    // Поэтому любой вызов этой функции в Telegram уходит только в буфер.
+    if (isTelegramWebView()) {
+      copyBackupToClipboard(dataStr, showTelegramNotice);
+      return;
+    }
+
     const blob = new Blob([dataStr], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1995,7 +2026,10 @@ function saveWorkout() {
   const isSaved = saveDB();
   if (!isSaved) return;
 
-  if (DB.w.length > 0 && DB.w.length % 5 === 0) {
+  // Автобэкап каждые 5 тренировок оставляем для обычного браузера.
+  // В Telegram не трогаем буфер пользователя автоматически — для этого есть
+  // явная кнопка «Экспорт (Бэкап)».
+  if (DB.w.length > 0 && DB.w.length % 5 === 0 && !isTelegramWebView()) {
     downloadBackupFile(`gym_auto_backup_${today()}.json`);
   }
 
@@ -2605,29 +2639,9 @@ function renderProg() {
 
 /* ЭКСПОРТ И ИМПОРТ ДАННЫХ */
 function exportData() {
-  const dataStr = JSON.stringify(DB, null, 2);
-
-  // Telegram WebView не поддерживает нормальное скачивание Blob-файла:
-  // вместо показа JSON на экране копируем данные в буфер обмена.
-  const isTelegram = !!(window.Telegram && window.Telegram.WebApp) ||
-                     /Telegram/i.test(navigator.userAgent || '');
-
-  if (!isTelegram) {
-    downloadBackupFile(`workout-backup-${today()}.json`);
-    return;
-  }
-
-  const showCopiedNotice = () => {
-    alert('Данные скопированы, вставьте в заметки');
-  };
-
-  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-    navigator.clipboard.writeText(dataStr)
-      .then(showCopiedNotice)
-      .catch(() => copyExportFallback(dataStr, showCopiedNotice));
-  } else {
-    copyExportFallback(dataStr, showCopiedNotice);
-  }
+  // Единая точка экспорта: Telegram копирует JSON в буфер,
+  // обычный браузер скачивает .json-файл.
+  downloadBackupFile(`workout-backup-${today()}.json`, true);
 }
 
 function copyExportFallback(text, onSuccess) {
